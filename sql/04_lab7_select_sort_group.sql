@@ -43,4 +43,13 @@ FROM Tickets GROUP BY session_id ORDER BY tickets_sold DESC;
 SELECT session_id, movie_id, start_at, price FROM Sessions
 WHERE price >= 2000 AND status = N'Жоспарланған'
 ORDER BY start_at ASC;
+-- 13. Әр фильмнің сеанс саны және ең арзан билеті.
+SELECT movie_id,
+       COUNT(*) AS session_count,
+       MIN(price) AS cheapest_ticket
+FROM Sessions
+WHERE status = N'Жоспарланған'
+GROUP BY movie_id
+HAVING COUNT(*) >= 5
+ORDER BY session_count DESC, cheapest_ticket ASC;
 GO
