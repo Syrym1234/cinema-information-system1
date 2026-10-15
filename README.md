@@ -24,8 +24,3 @@
 ## 3. GitHub зертханасы
 
 `docs/github_lab5.md` ішіндегі **қадамдарды бір-бірлеп** орындаңыз: 3 commit, branch, Pull Request, merge және 3 Issue. Бос repository ретінде `Syrym1234/cinema-information-system1` алынған.
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 31501de (docs: remove TEST from README)
