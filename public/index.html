@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CINÉMA — Кинотеатр ақпараттық жүйесі</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <a href="#" class="brand">CIN<span>É</span>MA <small>LAB</small></a>
+    <div class="links">
+      <button class="tab active" data-tab="sessions">Сеанстар</button>
+      <button class="tab" data-tab="movies">Фильмдер</button>
+      <button class="tab" data-tab="report">Статистика</button>
+    </div>
+    <div id="connection" class="connection">SQL Server: тексерілуде</div>
+  </div>
+</header>
+<section class="hero wrap">
+  <div class="hero-label">КИНОТЕАТРДЫҢ АҚПАРАТТЫҚ ЖҮЙЕСІ · №5–7 ЗЕРТХАНАЛЫҚ</div>
+  <h1>Бүгінгі кешіңді<br><em>киномен</em> баста.</h1>
+  <p>Фильм таңдау, сеансты уақыт немесе баға бойынша сұрыптау, нақты деректер қорына билет сақтау.</p>
+  <div class="hero-facts"><span>24 ФИЛЬМ</span><span>4 ЗАЛ</span><span>560 СЕАНС</span></div>
+  <div class="hero-art"><div class="shine">✦</div><div class="film">CINÉMA<br><span>18:00</span></div></div>
+</section>
+<main class="wrap">
+ <div id="message" class="message hidden"></div>
+ <section id="sessions-view">
+  <div class="section-header"><div><span class="eyebrow">AFISHA / SELECT + WHERE + ORDER BY</span><h2>Сеанстар кестесі</h2></div><strong id="found">—</strong></div>
+  <div class="filters">
+   <label>Фильм атауы<input id="search" type="search" placeholder="Мысалы: Алматы аспаны"></label>
+   <label>Күні<input id="date" type="date"></label>
+   <label>Жанр<select id="genre"><option value="">Барлығы</option></select></label>
+   <label>Зал<select id="hall"><option value="">Барлығы</option></select></label>
+   <label>Сұрыптау<select id="sort">
+      <option value="time_asc">Уақыт: ертеден</option>
+      <option value="time_desc">Уақыт: кештен</option>
+      <option value="price_asc">Баға: арзаннан</option>
+      <option value="price_desc">Баға: қымбаттан</option>
+      <option value="rating_desc">Рейтинг: жоғарыдан</option>
+    </select></label>
+   <button id="reset" class="reset">Тазарту</button>
+  </div>
+  <p class="hint">Сұрыптау JavaScript массивімен емес, SQL Server-дегі ORDER BY командасымен орындалады. Ең көбі 150 нәтиже көрсетіледі.</p>
+  <div id="session-list" class="session-grid"><p>Сеанстар жүктелуде...</p></div>
+ </section>
+ <section id="movies-view" class="hidden">
+  <div class="section-header"><div><span class="eyebrow">DATABASE / MOVIES + GENRES</span><h2>Фильмдер</h2></div></div>
+  <div id="movie-list" class="movie-grid"></div>
+ </section>
+ <section id="report-view" class="hidden">
+  <div class="section-header"><div><span class="eyebrow">АНАЛИТИКА / GROUP BY + COUNT + SUM</span><h2>Кинотеатр есебі</h2></div></div>
+  <div id="stats" class="stats"></div>
+  <h3>Фильмдер бойынша сатылған билеттер</h3>
+  <div class="table-wrap"><table><thead><tr><th>Фильм</th><th>Билет саны</th><th>Түсім</th></tr></thead><tbody id="report-table"></tbody></table></div>
+ </section>
+</main>
+<div id="dialog" class="dialog hidden" role="dialog" aria-modal="true" aria-label="Билет алу">
+  <div id="shade" class="shade"></div>
+  <div class="dialog-card">
+    <button id="close" class="close">×</button>
+    <span class="eyebrow">БИЛЕТТІҢ ДЕМОНСТРАЦИЯЛЫҚ САТЫЛУЫ</span>
+    <h2 id="dialog-title">Билет таңдау</h2><p id="dialog-date" class="muted"></p>
+    <div class="screen">ЭКРАН</div>
+    <div id="seat-list" class="seat-list"></div>
+    <p class="hint">Сұр орындар сатылған. Бір уақытта бір билет рәсімделеді.</p>
+    <form id="ticket-form" class="book-form">
+      <label>Аты-жөніңіз<input id="full-name" required minlength="2" placeholder="Мысалы: Айша Нұржан"></label>
+      <label>Email<input id="email" required type="email" placeholder="aisha@example.com"></label>
+      <div class="selected">Таңдалған орын: <strong id="chosen-seat">—</strong> · <strong id="ticket-price">—</strong></div>
+      <button class="primary" type="submit">Демо билетті сақтау</button>
+    </form>
+    <div id="receipt" class="receipt hidden"></div>
+  </div>
+</div>
+<footer class="wrap">CINÉMA LAB · Оқу жобасы · GitHub + VS Code + SQL Server · 2026</footer>
+<script src="/app.js" defer></script>
+</body>
+</html>

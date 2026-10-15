@@ -1,0 +1,9 @@
+{
+  "name": "cinema-school-project",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Кинотеатр: зертханалық жұмыс 5, 6, 7 (қарапайым нұсқа)",
+  "main": "server/index.js",
+  "scripts": {"start": "node server/index.js", "test": "node --test tests/*.test.js"},
+  "dependencies": {"dotenv": "^16.4.7", "express": "^4.21.2", "mssql": "^11.0.1"}
+}
