@@ -1,5 +1,18 @@
 # CINÉMA LAB — Кинотеатрдың ақпараттық жүйесі
 
+## №9 және №10 зертханалық жұмыстар
+
+- [№9: архитектура және берілген түпнұсқа диаграмма](docs/lab9/README.md).
+- [№10: REST API, іске қосу, Postman және қорғау нұсқаулығы](docs/lab10/README.md).
+- [Дайын PDF есеп](output/pdf/Cinema_Lab10_Report.pdf).
+- [Postman коллекциясы](postman/CinemaLab10.postman_collection.json) · [OpenAPI](docs/lab10/openapi.json).
+
+№10 жұмыста **Movies** ресурсына GET / POST / PUT / DELETE толық CRUD қосылды.
+`npm ci` -> `.env.example` файлын `.env` ретінде баптау -> `npm start`.
+Каталогты басқару беті: <http://127.0.0.1:3000/catalog.html>.
+Тексеру: `npm test`, сервер іске қосылғанда `npm run test:postman`.
+Windows Authentication және SQL Authentication баптаулары №10 нұсқаулығында көрсетілген.
+
 ## Деректер
 
 - 9 жанр, 24 фильм, 4 зал (әрқайсысы 60 орын)

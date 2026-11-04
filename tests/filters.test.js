@@ -6,3 +6,6 @@ test('уақыт кему ретімен',()=>assert.match(chooseSort('time_desc
 test('арзан билеттер жоғарыда',()=>assert.match(chooseSort('price_asc'),/price ASC/));
 test('қымбат билеттер жоғарыда',()=>assert.match(chooseSort('price_desc'),/price DESC/));
 test('белгісіз sort енгізсе, қауіпсіз стандартты сұрыптау',()=>assert.equal(chooseSort('DROP TABLE Movies'),chooseSort('time_asc')));
+test('prototype properties cannot become SQL ORDER BY',()=>{
+  for(const key of ['constructor','toString','__proto__']) assert.equal(chooseSort(key),chooseSort('time_asc'));
+});

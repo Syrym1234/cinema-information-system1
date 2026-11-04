@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-04",
+  "baseUrl": "http://127.0.0.1:3000",
+  "browser": "Microsoft Edge (Playwright)",
+  "viewportDesktop": "1440x1080",
+  "viewportMobile": "390x844",
+  "checks": [
+    "Catalog loads 24 movies",
+    "Create via form",
+    "Read created SQL row",
+    "Edit persists rating 9.4",
+    "Delete via confirmation",
+    "GET deleted row = 404",
+    "Referenced movie deletion blocked",
+    "Mobile: no horizontal overflow",
+    "Existing movie view loads",
+    "Existing report loads",
+    "No uncaught browser errors"
+  ],
+  "passed": 11,
+  "failed": 0,
+  "errors": []
+}

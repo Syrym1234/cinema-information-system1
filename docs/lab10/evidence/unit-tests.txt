@@ -1,0 +1,23 @@
+
+> cinema-school-project@1.1.0 test
+> node --test tests/*.test.js
+
+✔ уақыт өсу ретімен (0.8123ms)
+✔ уақыт кему ретімен (0.1278ms)
+✔ арзан билеттер жоғарыда (0.0988ms)
+✔ қымбат билеттер жоғарыда (0.1223ms)
+✔ белгісіз sort енгізсе, қауіпсіз стандартты сұрыптау (0.1333ms)
+✔ prototype properties cannot become SQL ORDER BY (0.15ms)
+✔ IDs cannot overflow SQL INT or inject SQL (1.2524ms)
+✔ movie accepts Kazakh text and normalizes surrounding whitespace (0.9232ms)
+✔ full PUT requires every writable field and rejects unknown fields (0.3297ms)
+✔ numeric fields reject strings, null, rounding, overflow and unsupported ages (1.0619ms)
+✔ invalid JSON shapes and oversized or empty text are rejected (0.2553ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 92.5567

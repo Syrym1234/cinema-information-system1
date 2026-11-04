@@ -1,0 +1,196 @@
+
+> cinema-school-project@1.1.0 test:postman
+> npx --yes newman@6.2.3 run postman/CinemaLab10.postman_collection.json -e postman/Local.postman_environment.json --reporters cli,json --reporter-json-export docs/lab10/evidence/newman-results.json
+
+newman
+
+Cinema | Lab 10 | REST API + SQL Server
+
+→ 01 | SQL Server health
+  GET http://127.0.0.1:3000/api/health [200 OK, 252B, 70ms]
+  √  HTTP 200
+  √  JSON response
+  √  Real database
+
+→ 02 | Genres for the test movie
+  GET http://127.0.0.1:3000/api/metadata [200 OK, 837B, 14ms]
+  √  HTTP 200
+  √  JSON response
+  √  Genres available
+
+→ 03 | READ all movies
+  GET http://127.0.0.1:3000/api/movies [200 OK, 6.69kB, 34ms]
+  √  HTTP 200
+  √  JSON response
+  √  Movie array
+
+→ 04 | Existing session for FK protection
+  GET http://127.0.0.1:3000/api/sessions [200 OK, 55.07kB, 20ms]
+  √  HTTP 200
+  √  JSON response
+  √  Seed sessions available
+
+→ 05 | CREATE movie
+  POST http://127.0.0.1:3000/api/movies [201 Created, 475B, 7ms]
+  √  HTTP 201
+  √  JSON response
+  √  Generated ID
+  √  Location
+  √  Kazakh text round trip
+
+→ 06 | READ created movie by ID
+  GET http://127.0.0.1:3000/api/movies/28 [200 OK, 477B, 5ms]
+  √  HTTP 200
+  √  JSON response
+  √  Saved in database
+  √  Genre joined
+
+→ 07 | UPDATE full movie
+  PUT http://127.0.0.1:3000/api/movies/28 [200 OK, 452B, 32ms]
+  √  HTTP 200
+  √  JSON response
+  √  Updated rating
+
+→ 08 | READ verifies persistence
+  GET http://127.0.0.1:3000/api/movies/28 [200 OK, 485B, 5ms]
+  √  HTTP 200
+  √  JSON response
+  √  Persisted title
+  √  Persisted rating
+
+→ 09 | Reject missing fields
+  POST http://127.0.0.1:3000/api/movies [400 Bad Request, 725B, 2ms]
+  √  HTTP 400
+  √  JSON response
+  √  Error code
+  √  Readable error
+
+→ 10 | Reject invalid rating
+  PUT http://127.0.0.1:3000/api/movies/28 [400 Bad Request, 370B, 3ms]
+  √  HTTP 400
+  √  JSON response
+  √  Error code
+  √  Readable error
+
+→ 11 | Reject nonexistent genre
+  POST http://127.0.0.1:3000/api/movies [400 Bad Request, 341B, 4ms]
+  √  HTTP 400
+  √  JSON response
+  √  Error code
+  √  Readable error
+
+→ 12 | Reject SQL injection in ID
+  GET http://127.0.0.1:3000/api/movies/1%20OR%201=1 [400 Bad Request, 312B, 2ms]
+  √  HTTP 400
+  √  JSON response
+  √  Error code
+  √  Readable error
+
+→ 13 | Reject SQL INT overflow
+  GET http://127.0.0.1:3000/api/movies/2147483648 [400 Bad Request, 312B, 2ms]
+  √  HTTP 400
+  √  JSON response
+  √  Error code
+  √  Readable error
+
+→ 14 | Missing movie returns 404
+  GET http://127.0.0.1:3000/api/movies/2147483647 [404 Not Found, 285B, 6ms]
+  √  HTTP 404
+  √  JSON response
+  √  Error code
+  √  Readable error
+
+→ 15 | Update missing movie returns 404
+  PUT http://127.0.0.1:3000/api/movies/2147483647 [404 Not Found, 285B, 6ms]
+  √  HTTP 404
+  √  JSON response
+  √  Error code
+  √  Readable error
+
+→ 16 | Protect movie with sessions
+  DELETE http://127.0.0.1:3000/api/movies/4 [409 Conflict, 357B, 7ms]
+  √  HTTP 409
+  √  JSON response
+  √  Error code
+  √  Readable error
+
+→ 17 | Reject malformed JSON
+  POST http://127.0.0.1:3000/api/movies [400 Bad Request, 289B, 1ms]
+  √  HTTP 400
+  √  JSON response
+  √  Error code
+  √  Readable error
+
+→ 18 | Reject wrong Content-Type
+  POST http://127.0.0.1:3000/api/movies [415 Unsupported Media Type, 317B, 2ms]
+  √  HTTP 415
+  √  JSON response
+  √  Error code
+  √  Readable error
+
+→ 19 | Reject oversized JSON
+  POST http://127.0.0.1:3000/api/movies [413 Payload Too Large, 323B, 1ms]
+  √  HTTP 413
+  √  JSON response
+  √  Error code
+  √  Readable error
+
+→ 20 | Unsupported method
+  PATCH http://127.0.0.1:3000/api/movies/28 [405 Method Not Allowed, 360B, 1ms]
+  √  HTTP 405
+  √  JSON response
+  √  Error code
+  √  Readable error
+
+→ 21 | Unknown API route
+  GET http://127.0.0.1:3000/api/no-such-route [404 Not Found, 295B, 2ms]
+  √  HTTP 404
+  √  JSON response
+  √  Error code
+  √  Readable error
+
+→ 22 | DELETE created test movie
+  DELETE http://127.0.0.1:3000/api/movies/28 [200 OK, 276B, 6ms]
+  √  HTTP 200
+  √  JSON response
+  √  Deleted own fixture
+
+→ 23 | READ after delete
+  GET http://127.0.0.1:3000/api/movies/28 [404 Not Found, 285B, 3ms]
+  √  HTTP 404
+  √  JSON response
+  √  Error code
+  √  Readable error
+
+→ 24 | DELETE again returns 404
+  DELETE http://127.0.0.1:3000/api/movies/28 [404 Not Found, 285B, 3ms]
+  √  HTTP 404
+  √  JSON response
+  √  Error code
+  √  Readable error
+
+→ 25 | Original catalog count restored
+  GET http://127.0.0.1:3000/api/movies [200 OK, 6.69kB, 6ms]
+  √  HTTP 200
+  √  JSON response
+  √  No leftover test movie
+
+┌─────────────────────────┬──────────────────┬─────────────────┐
+│                         │         executed │          failed │
+├─────────────────────────┼──────────────────┼─────────────────┤
+│              iterations │                1 │               0 │
+├─────────────────────────┼──────────────────┼─────────────────┤
+│                requests │               25 │               0 │
+├─────────────────────────┼──────────────────┼─────────────────┤
+│            test-scripts │               25 │               0 │
+├─────────────────────────┼──────────────────┼─────────────────┤
+│      prerequest-scripts │                0 │               0 │
+├─────────────────────────┼──────────────────┼─────────────────┤
+│              assertions │               94 │               0 │
+├─────────────────────────┴──────────────────┴─────────────────┤
+│ total run duration: 2.4s                                     │
+├──────────────────────────────────────────────────────────────┤
+│ total data received: 71.31kB (approx)                        │
+├──────────────────────────────────────────────────────────────┤
+│ average response time: 9ms [min: 1ms, max: 70ms, s.d.: 15ms] │
+└──────────────────────────────────────────────────────────────┘

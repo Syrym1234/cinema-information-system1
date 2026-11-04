@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1200" viewBox="0 0 1000 1200">
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L9 3L0 6Z" fill="#334155"/></marker></defs>
+<rect width="1000" height="1200" fill="white"/>
+<g font-family="Arial, sans-serif" fill="#263445" text-anchor="middle">
+<text x="500" y="49" font-size="28" font-weight="bold">Cinema Information System</text>
+<text x="500" y="81" font-size="20">Іске асқан үш деңгейлі архитектура · Lab 9–10</text>
+<rect x="60" y="120" width="880" height="200" rx="16" fill="#e9f3ff" stroke="#60a5fa" stroke-width="2"/>
+<text x="500" y="156" font-size="21" font-weight="bold">1. ПРЕЗЕНТАЦИЯ ДЕҢГЕЙІ</text>
+<rect x="95" y="180" width="490" height="110" rx="10" fill="#d2e8ff" stroke="#3b82b6"/>
+<text x="340" y="211" font-size="19" font-weight="bold">Web-интерфейс / Browser</text>
+<text x="340" y="240" font-size="16">Афиша · орын таңдау · демо билет · есеп</text>
+<text x="340" y="267" font-size="16">catalog.html + catalog.js: фильмдер CRUD</text>
+<rect x="620" y="180" width="285" height="110" rx="10" fill="white" stroke="#3b82b6"/>
+<text x="762" y="215" font-size="19" font-weight="bold">Postman / Newman</text>
+<text x="762" y="244" font-size="16">HTTP сұраныстары</text><text x="762" y="271" font-size="16">25 request · 94 assertion</text>
+<path d="M340 320V405" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="610" y="357" font-size="17">HTTP request / JSON →</text><text x="610" y="384" font-size="16">GET · POST · PUT · DELETE</text>
+<rect x="60" y="410" width="880" height="400" rx="16" fill="#fff5d6" stroke="#e0a016" stroke-width="2"/>
+<text x="500" y="449" font-size="21" font-weight="bold">2. ҚОЛДАНБАЛЫ ЛОГИКА ДЕҢГЕЙІ</text>
+<text x="500" y="477" font-size="16">Node.js + Express · server/index.js</text>
+<rect x="100" y="505" width="370" height="110" rx="10" fill="white" stroke="#c99513"/>
+<text x="285" y="538" font-size="19" font-weight="bold">REST ресурс: /api/movies</text>
+<text x="285" y="567" font-size="16">server/movies.js</text><text x="285" y="593" font-size="16">Тізім · ID · қосу · өзгерту · жою</text>
+<rect x="530" y="505" width="370" height="110" rx="10" fill="white" stroke="#c99513"/>
+<text x="715" y="538" font-size="19" font-weight="bold">Валидация және HTTP қателері</text>
+<text x="715" y="567" font-size="16">server/validation.js</text><text x="715" y="593" font-size="16">400 · 404 · 409 · 413 · 415</text>
+<path d="M285 615L395 660" fill="none" stroke="#b88810" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M715 615L605 660" fill="none" stroke="#b88810" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="200" y="665" width="600" height="110" rx="10" fill="#ffebad" stroke="#c99513"/>
+<text x="500" y="699" font-size="19" font-weight="bold">DAL: server/db.js / mssql ConnectionPool</text>
+<text x="500" y="729" font-size="16">Параметрленген SQL · .input(...) · OUTPUT</text>
+<text x="500" y="755" font-size="15">SQL auth: tedious / Windows auth: msnodesqlv8 + ODBC</text>
+<path d="M340 810V900" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M750 900V810" stroke="#334155" stroke-width="2" stroke-dasharray="8 6" marker-end="url(#arrow)"/>
+<text x="530" y="847" font-size="17">SQL сұранысы ↓</text><text x="530" y="877" font-size="17">↑ Result set</text>
+<rect x="60" y="905" width="880" height="235" rx="16" fill="#e9f6e9" stroke="#6aac50" stroke-width="2"/>
+<text x="500" y="944" font-size="21" font-weight="bold">3. ДЕРЕКТЕР ДЕҢГЕЙІ</text>
+<rect x="190" y="967" width="620" height="140" rx="25" fill="#c9e8bf" stroke="#4f8d40"/>
+<text x="500" y="1000" font-size="22" font-weight="bold">Microsoft SQL Server / CinemaSchoolDB</text>
+<text x="500" y="1033" font-size="17">Genres · Movies · Halls · Sessions</text><text x="500" y="1062" font-size="17">Customers · Tickets · MenuItems</text>
+<text x="500" y="1089" font-size="16">PK · FK · CHECK · UNIQUE</text>
+<text x="500" y="1177" font-size="16">Жауап: SQL rows → DAL → Express → HTTP status + JSON → клиент</text>
+</g></svg>

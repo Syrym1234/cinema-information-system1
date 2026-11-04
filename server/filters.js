@@ -8,6 +8,6 @@ const sortMap = {
   rating_desc: 'm.rating DESC, s.start_at ASC, s.session_id ASC'
 };
 function chooseSort(value) {
-  return sortMap[value] || sortMap.time_asc;
+  return Object.hasOwn(sortMap, value) ? sortMap[value] : sortMap.time_asc;
 }
 module.exports = { chooseSort, sortMap };

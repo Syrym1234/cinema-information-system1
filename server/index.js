@@ -2,27 +2,15 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const sql = require('mssql');
+const { sql, pool, closePool } = require('./db');
 const {chooseSort} = require('./filters');
 const app = express();
-app.use(express.json());
+app.disable('x-powered-by');
+app.use(express.json({ limit: '16kb' }));
+app.use('/api/movies', require('./movies'));
+app.get('/api/openapi.json', (_req, res) => res.sendFile(path.join(__dirname, '..', 'docs', 'lab10', 'openapi.json')));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-const dbConfig = {
-  server: process.env.DB_SERVER || 'localhost',
-  database: process.env.DB_NAME || 'CinemaSchoolDB',
-  user: process.env.DB_USER || 'sa',
-  password: process.env.DB_PASSWORD || '',
-  port: Number(process.env.DB_PORT || 1433),
-  options: {encrypt: false, trustServerCertificate: process.env.DB_TRUST_CERT !== 'false'}
-};
-let poolPromise;
-function pool() {
-  if (!poolPromise) poolPromise = new sql.ConnectionPool(dbConfig).connect().catch(err => {
-    poolPromise = null; throw err;
-  });
-  return poolPromise;
-}
 function route(handler) {
   return (req, res, next) => Promise.resolve(handler(req, res)).catch(next);
 }
@@ -39,13 +27,6 @@ app.get('/api/metadata', route(async (_req,res) => {
   const genres = await p.request().query('SELECT genre_id, genre_name FROM Genres ORDER BY genre_name');
   const halls = await p.request().query('SELECT hall_id, hall_name FROM Halls ORDER BY hall_id');
   res.json({genres:genres.recordset,halls:halls.recordset});
-}));
-app.get('/api/movies', route(async (_req,res) => {
-  const p = await pool();
-  const result = await p.request().query(`SELECT m.movie_id,m.title,m.duration_min,m.age_rating,m.release_year,
-    m.rating,m.description,g.genre_name FROM Movies m
-    JOIN Genres g ON g.genre_id=m.genre_id ORDER BY m.rating DESC,m.title ASC`);
-  res.json(result.recordset);
 }));
 app.get('/api/sessions', route(async (req,res) => {
   const p = await pool();
@@ -73,7 +54,7 @@ app.get('/api/sessions', route(async (req,res) => {
     r.input('search',sql.NVarChar(180),`%${term.replace(/[\[\]%_]/g,'[$&')}%`);
     cond.push('m.title LIKE @search');
   }
-  const result = await r.query(`SELECT TOP (150) s.session_id,s.start_at,s.price,m.title,m.rating,
+  const result = await r.query(`SELECT TOP (150) s.session_id,s.start_at,s.price,m.movie_id,m.title,m.rating,
      m.description,m.duration_min,m.age_rating,g.genre_name,h.hall_name,h.capacity,
      (SELECT COUNT(*) FROM Tickets t WHERE t.session_id=s.session_id) AS sold_count
    FROM Sessions s JOIN Movies m ON m.movie_id=s.movie_id
@@ -148,9 +129,21 @@ app.get('/api/report',route(async (_req,res)=>{
     (SELECT COUNT(*) FROM Customers) AS customers`);
   res.json({totals:total.recordset[0],counts:counts.recordset[0],movies:byMovie.recordset});
 }));
+app.use('/api', (_req, res) => res.status(404).json({ error: 'API маршруты табылмады', code: 'ROUTE_NOT_FOUND' }));
 app.use((err,_req,res,_next)=>{
-  console.error(err.message);
-  res.status(500).json({error:'SQL Server қатесі. Терминалдағы мәліметті қараңыз.'});
+  if (err.type === 'entity.parse.failed') return res.status(400).json({error:'JSON синтаксисі қате',code:'INVALID_JSON'});
+  if (err.type === 'entity.too.large') return res.status(413).json({error:'Сұраныс көлемі 16 KB шегінен асты',code:'PAYLOAD_TOO_LARGE'});
+  console.error('API error:', err.code || err.number || 'INTERNAL_ERROR');
+  const unavailable = ['ELOGIN','ESOCKET','ETIMEOUT','ECONNCLOSED','EINSTLOOKUP','ENOTOPEN'].includes(err.code);
+  res.status(unavailable ? 503 : 500).json({error: unavailable ? 'Деректер қорына қосылу мүмкін емес' : 'Сервер қатесі',code: unavailable ? 'DATABASE_UNAVAILABLE' : 'INTERNAL_ERROR'});
 });
 const port=Number(process.env.PORT||3000);
-app.listen(port,()=>console.log(`Cinema School: http://localhost:${port}`));
+if (require.main === module) {
+  const host = process.env.HOST || '127.0.0.1';
+  const server = app.listen(port,host,()=>console.log(`Cinema School: http://${host}:${port}`));
+  for (const signal of ['SIGINT', 'SIGTERM']) process.once(signal, () => {
+    server.close(() => closePool().finally(() => process.exit(0)));
+    setTimeout(() => process.exit(1), 10000).unref();
+  });
+}
+module.exports = app;
