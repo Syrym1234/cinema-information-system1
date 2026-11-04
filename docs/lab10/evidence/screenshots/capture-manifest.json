@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-04T17:27:05.123Z",
+  "capturedAt": "2026-11-04T17:43:44.512Z",
   "dateLocal": "2026-11-04",
   "baseUrl": "http://127.0.0.1:3000",
   "provenance": "01-08: live fetch in a purpose-built HTTP test viewer. 09-15 and 17: actual web application. 16: visual rendering of saved Newman JSON, not Postman UI.",
@@ -18,7 +18,7 @@
       "statusText": "OK",
       "location": null,
       "contentType": "application/json; charset=utf-8",
-      "elapsedMs": 6,
+      "elapsedMs": 9,
       "body": {
         "db_name": "CinemaSchoolDB",
         "movies": 24
@@ -40,11 +40,11 @@
       "url": "/api/movies",
       "status": 201,
       "statusText": "Created",
-      "location": "/api/movies/34",
+      "location": "/api/movies/36",
       "contentType": "application/json; charset=utf-8",
-      "elapsedMs": 4,
+      "elapsedMs": 8,
       "body": {
-        "movie_id": 34,
+        "movie_id": 36,
         "title": "Жаңа көкжиек | Lab 10",
         "genre_id": 6,
         "duration_min": 110,
@@ -59,14 +59,14 @@
       "title": "READ · фильмді ID бойынша оқу",
       "requestBody": null,
       "method": "GET",
-      "url": "/api/movies/34",
+      "url": "/api/movies/36",
       "status": 200,
       "statusText": "OK",
       "location": null,
       "contentType": "application/json; charset=utf-8",
-      "elapsedMs": 7,
+      "elapsedMs": 6,
       "body": {
-        "movie_id": 34,
+        "movie_id": 36,
         "title": "Жаңа көкжиек | Lab 10",
         "genre_id": 6,
         "duration_min": 110,
@@ -90,14 +90,14 @@
         "description": "Кинотеатр каталогына REST API арқылы қосылған оқу фильмі."
       },
       "method": "PUT",
-      "url": "/api/movies/34",
+      "url": "/api/movies/36",
       "status": 200,
       "statusText": "OK",
       "location": null,
       "contentType": "application/json; charset=utf-8",
-      "elapsedMs": 6,
+      "elapsedMs": 7,
       "body": {
-        "movie_id": 34,
+        "movie_id": 36,
         "title": "Жаңа көкжиек | Жаңартылды",
         "genre_id": 6,
         "duration_min": 110,
@@ -112,15 +112,15 @@
       "title": "DELETE · тест фильмін жою",
       "requestBody": null,
       "method": "DELETE",
-      "url": "/api/movies/34",
+      "url": "/api/movies/36",
       "status": 200,
       "statusText": "OK",
       "location": null,
       "contentType": "application/json; charset=utf-8",
-      "elapsedMs": 6,
+      "elapsedMs": 11,
       "body": {
         "message": "Фильм сәтті жойылды",
-        "movie_id": 34
+        "movie_id": 36
       }
     },
     {
@@ -128,7 +128,7 @@
       "title": "Жойылған фильм: 404 Not Found",
       "requestBody": null,
       "method": "GET",
-      "url": "/api/movies/34",
+      "url": "/api/movies/36",
       "status": 404,
       "statusText": "Not Found",
       "location": null,
@@ -176,10 +176,44 @@
       "statusText": "Conflict",
       "location": null,
       "contentType": "application/json; charset=utf-8",
-      "elapsedMs": 4,
+      "elapsedMs": 6,
       "body": {
         "error": "Фильмге сеанстар байланысқан. Фильмді жоюға болмайды",
         "code": "MOVIE_HAS_SESSIONS"
+      }
+    }
+  ],
+  "sqlChecks": [
+    {
+      "file": "18-sql-before.png",
+      "query": "SELECT movie_id, title, genre_id, duration_min, age_rating, release_year, rating FROM dbo.Movies WHERE movie_id = @id",
+      "parameters": {
+        "id": 36
+      },
+      "row": {
+        "movie_id": 36,
+        "title": "Жаңа көкжиек | Lab 10",
+        "genre_id": 6,
+        "duration_min": 110,
+        "age_rating": 12,
+        "release_year": 2026,
+        "rating": 8.5
+      }
+    },
+    {
+      "file": "19-sql-after.png",
+      "query": "SELECT movie_id, title, genre_id, duration_min, age_rating, release_year, rating FROM dbo.Movies WHERE movie_id = @id",
+      "parameters": {
+        "id": 36
+      },
+      "row": {
+        "movie_id": 36,
+        "title": "Жаңа көкжиек | Жаңартылды",
+        "genre_id": 6,
+        "duration_min": 110,
+        "age_rating": 12,
+        "release_year": 2026,
+        "rating": 9.1
       }
     }
   ]

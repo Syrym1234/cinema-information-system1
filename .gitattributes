@@ -1,2 +1,3 @@
 # PDF files must be preserved byte-for-byte and displayed as binary diffs.
 *.pdf binary
+*.docx binary

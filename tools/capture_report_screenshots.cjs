@@ -19,6 +19,7 @@ const shell = (title,body) => `<!doctype html><html lang="kk"><head><meta charse
   const page = await browser.newPage({viewport:{width:1280,height:880},deviceScaleFactor:1.5});
   const fixtureIds = new Set();
   const captures = [];
+  const sqlChecks = [];
   const errors = [];
   page.on('pageerror',e=>errors.push(e.message));
   async function api(method,url,body) {
@@ -36,6 +37,17 @@ const shell = (title,body) => `<!doctype html><html lang="kk"><head><meta charse
     await page.screenshot({path:path.join(folder,filename)});
     captures.push({file:filename,title,requestBody:requestBody||null,...result});
   }
+  async function sqlShot(filename,title,movieId) {
+    const {sql,pool}=require('../server/db');
+    const connection=await pool();
+    const query='SELECT movie_id, title, genre_id, duration_min, age_rating, release_year, rating FROM dbo.Movies WHERE movie_id = @id';
+    const result=await connection.request().input('id',sql.Int,movieId).query(query);
+    assert.equal(result.recordset.length,1);
+    const row=result.recordset[0];
+    await page.setContent(shell(title,`<div class="eyebrow">MICROSOFT SQL SERVER / НАҚТЫ SELECT НӘТИЖЕСІ</div><h1>${esc(title)}</h1><div class="meta">CinemaSchoolDB · mssql ConnectionPool · Параметр: @id = ${movieId}</div><section class="panel" style="margin-top:20px"><table><thead><tr>${Object.keys(row).map(k=>`<th>${esc(k)}</th>`).join('')}</tr></thead><tbody><tr>${Object.values(row).map(v=>`<td style="font-size:16px;padding:16px 12px">${esc(v)}</td>`).join('')}</tr></tbody></table></section><p class="small">Нәтиже Node.js mssql драйвері арқылы SQL Server-ден тікелей алынды. Бұл SSMS терезесі емес.</p>`));
+    await page.screenshot({path:path.join(folder,filename),clip:{x:0,y:0,width:1280,height:370}});
+    sqlChecks.push({file:filename,query,parameters:{id:movieId},row});
+  }
   try{
     await page.goto(base+'/catalog.html');
     await page.waitForSelector('.catalog-film');
@@ -49,11 +61,13 @@ const shell = (title,body) => `<!doctype html><html lang="kk"><head><meta charse
     fixtureIds.add(created.body.movie_id);
     await httpShot('02-create-201.png','CREATE · жаңа фильмді қосу',created,movie);
     const id=created.body.movie_id;
+    await sqlShot('18-sql-before.png','SQL Server: қосылған фильмнің бастапқы мәндері',id);
     const read=await api('GET',`/api/movies/${id}`);assert.equal(read.status,200);
     await httpShot('03-read-200.png','READ · фильмді ID бойынша оқу',read);
     const changed={...movie,title:'Жаңа көкжиек | Жаңартылды',rating:9.1};
     const updated=await api('PUT',`/api/movies/${id}`,changed);assert.equal(updated.body.rating,9.1);
     await httpShot('04-update-200.png','UPDATE · фильм мәліметтерін өзгерту',updated,changed);
+    await sqlShot('19-sql-after.png','SQL Server: PUT сұранысынан кейінгі мәндер',id);
     const deleted=await api('DELETE',`/api/movies/${id}`);assert.equal(deleted.status,200);fixtureIds.delete(id);
     await httpShot('05-delete-200.png','DELETE · тест фильмін жою',deleted);
     const missing=await api('GET',`/api/movies/${id}`);assert.equal(missing.status,404);
@@ -111,10 +125,11 @@ const shell = (title,body) => `<!doctype html><html lang="kk"><head><meta charse
     const final=await api('GET','/api/movies');assert.equal(final.body.length,initial.body.length);
     fs.writeFileSync(path.join(folder,'capture-manifest.json'),JSON.stringify({capturedAt:new Date().toISOString(),dateLocal:'2026-11-04',baseUrl:base,
       provenance:'01-08: live fetch in a purpose-built HTTP test viewer. 09-15 and 17: actual web application. 16: visual rendering of saved Newman JSON, not Postman UI.',
-      initialMovies:initial.body.length,finalMovies:final.body.length,fixtureCleanup:true,browserErrors:errors,httpCaptures:captures},null,2)+'\n');
-    console.log('Captured 17 screenshots; live CRUD verified; temporary fixtures removed.');
+      initialMovies:initial.body.length,finalMovies:final.body.length,fixtureCleanup:true,browserErrors:errors,httpCaptures:captures,sqlChecks},null,2)+'\n');
+    console.log('Captured 19 screenshots; live CRUD and direct SQL SELECT verified; temporary fixtures removed.');
   }finally{
     for(const id of fixtureIds)await page.request.delete(base+`/api/movies/${id}`);
     await browser.close();
+    await require('../server/db').closePool();
   }
 })().catch(error=>{console.error(error);process.exitCode=1});
