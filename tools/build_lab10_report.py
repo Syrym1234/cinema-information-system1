@@ -1,257 +1,305 @@
-"""Build the Kazakh submission report from code and real verification evidence.
-Requires reportlab and Pillow. Run from any working directory.
+"""Create the standalone illustrated Kazakh Lab 10 report from real evidence.
+Run capture_report_screenshots.cjs first. Requires reportlab, Pillow and pypdf.
 """
 import json
 from html import escape
 from pathlib import Path
+from PIL import Image as PILImage
 from reportlab.lib import colors
-from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, Image, Preformatted, KeepTogether
+from reportlab.pdfgen import canvas
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, Image, Preformatted
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'output/pdf/Cinema_Lab10_Report.pdf'
+SHOT = ROOT / 'docs/lab10/evidence/screenshots'
 OUT.parent.mkdir(parents=True, exist_ok=True)
-FONT = Path('C:/Windows/Fonts')
 for name, filename in [('Arial','arial.ttf'),('Arial-Bold','arialbd.ttf'),('Mono','consola.ttf')]:
-    pdfmetrics.registerFont(TTFont(name,str(FONT/filename)))
+    pdfmetrics.registerFont(TTFont(name,str(Path('C:/Windows/Fonts')/filename)))
 pdfmetrics.registerFontFamily('Arial',normal='Arial',bold='Arial-Bold',italic='Arial',boldItalic='Arial-Bold')
-INK = colors.HexColor('#182d42')
-MUTED = colors.HexColor('#536579')
-GOLD = colors.HexColor('#b78021')
+NAVY = colors.HexColor('#142c43')
+TEAL = colors.HexColor('#166b64')
+GOLD = colors.HexColor('#b48232')
+MUTED = colors.HexColor('#607285')
+PALE = colors.HexColor('#eef4f7')
+W = A4[0]-96
 styles = {
-    'kicker':ParagraphStyle('Kicker',fontName='Arial-Bold',fontSize=10,leading=15,textColor=GOLD,spaceAfter=12),
-    'title':ParagraphStyle('Title',fontName='Arial-Bold',fontSize=31,leading=38,textColor=INK,spaceAfter=21),
-    'h1':ParagraphStyle('Heading',fontName='Arial-Bold',fontSize=22,leading=28,textColor=INK,spaceAfter=19),
-    'h2':ParagraphStyle('Subheading',fontName='Arial-Bold',fontSize=12,leading=17,textColor=INK,spaceBefore=12,spaceAfter=7),
-    'body':ParagraphStyle('Body',fontName='Arial',fontSize=10.2,leading=15.2,textColor=INK,spaceAfter=10),
-    'small':ParagraphStyle('Small',fontName='Arial',fontSize=8.5,leading=12.3,textColor=MUTED,spaceAfter=7),
-    'cell':ParagraphStyle('Cell',fontName='Arial',fontSize=8.7,leading=12.4,textColor=INK),
-    'th':ParagraphStyle('TH',fontName='Arial-Bold',fontSize=8.7,leading=12.4,textColor=colors.white),
-    'code':ParagraphStyle('Code',fontName='Mono',fontSize=8.4,leading=11.8,textColor=INK,leftIndent=11,rightIndent=8,
-                          borderPadding=10,backColor=colors.HexColor('#f0f4f8'),spaceBefore=5,spaceAfter=12),
+    'kicker':ParagraphStyle('Kicker',fontName='Arial-Bold',fontSize=9,leading=13,textColor=GOLD,spaceAfter=11),
+    'title':ParagraphStyle('Title',fontName='Arial-Bold',fontSize=43,leading=50,textColor=NAVY,spaceAfter=13),
+    'h1':ParagraphStyle('Heading',fontName='Arial-Bold',fontSize=23,leading=29,textColor=NAVY,spaceAfter=14),
+    'h2':ParagraphStyle('Subheading',fontName='Arial-Bold',fontSize=11.5,leading=16.5,textColor=TEAL,spaceBefore=12,spaceAfter=7),
+    'body':ParagraphStyle('Body',fontName='Arial',fontSize=10.1,leading=15,textColor=NAVY,spaceAfter=9),
+    'small':ParagraphStyle('Small',fontName='Arial',fontSize=8.6,leading=12.5,textColor=MUTED,spaceAfter=8),
+    'caption':ParagraphStyle('Caption',fontName='Arial',fontSize=8.5,leading=12.5,textColor=MUTED,spaceBefore=7,spaceAfter=14),
+    'cell':ParagraphStyle('Cell',fontName='Arial',fontSize=8.6,leading=12.2,textColor=NAVY),
+    'th':ParagraphStyle('TH',fontName='Arial-Bold',fontSize=8.6,leading=12.2,textColor=colors.white),
+    'metric':ParagraphStyle('Metric',fontName='Arial-Bold',fontSize=21,leading=26,textColor=TEAL),
+    'code':ParagraphStyle('Code',fontName='Mono',fontSize=8.3,leading=11.6,textColor=NAVY,
+       leftIndent=12,rightIndent=10,borderPadding=10,backColor=PALE,spaceBefore=4,spaceAfter=13),
 }
 story, md = [], []
-def sample(text):
-    return (text.replace('/api/movies/25',f'/api/movies/{sample_id}')
-            .replace('"movie_id":25',f'"movie_id":{sample_id}')
-            .replace('25 - сақталған тесттің ID мысалы',f'{sample_id} - сақталған тесттің ID мысалы'))
-def p(text, style='body'):
-    text = sample(text)
-    story.append(Paragraph(escape(text).replace('\n','<br/>'),styles[style])); md.append(text+'\n')
-def h2(text): p(text,'h2')
+figure_number=0
+def p(text,style='body'):
+    story.append(Paragraph(escape(text).replace('\n','<br/>'),styles[style]));md.append(text+'\n')
+def h2(text):
+    p(text,'h2')
 def page(number,title):
-    if story: story.append(PageBreak())
-    p(f'CINÉMA LAB  /  {number:02d}','kicker'); p(title,'h1'); md.append('---\n')
+    story.append(PageBreak());p(f'ЗЕРТХАНАЛЫҚ ЖҰМЫС №10  /  {number:02d}','kicker');p(title,'h1')
+    md.append('---\n')
 def code(text):
-    text = sample(text)
     story.append(Preformatted(text,styles['code']));md.append('```\n'+text+'\n```\n')
-def table(headers, rows, widths, compact=False):
-    data = [[Paragraph(escape(str(x)),styles['th']) for x in headers]]
+def table(headers,rows,widths=None,compact=False):
+    widths=widths or [W/len(headers)]*len(headers)
+    data=[[Paragraph(escape(str(x)),styles['th']) for x in headers]]
     data += [[Paragraph(escape(str(x)),styles['cell']) for x in row] for row in rows]
     t=Table(data,colWidths=widths,repeatRows=1,hAlign='LEFT')
-    t.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),INK),('VALIGN',(0,0),(-1,-1),'TOP'),
-        ('LEFTPADDING',(0,0),(-1,-1),9),('RIGHTPADDING',(0,0),(-1,-1),9),
-        ('TOPPADDING',(0,0),(-1,-1),3.4 if compact else 6),('BOTTOMPADDING',(0,0),(-1,-1),3.4 if compact else 6),
-        ('ROWBACKGROUNDS',(0,1),(-1,-1),[colors.HexColor('#f0f4f8'),colors.white]),
-        ('LINEBELOW',(0,0),(-1,0),0.7,INK),('LINEBELOW',(0,1),(-1,-1),0.35,colors.HexColor('#dbe3eb'))]))
-    story.append(t);story.append(Spacer(1,10))
-    md.append('| '+' | '.join(headers)+' |\n| '+' | '.join('---' for _ in headers)+' |\n'+'\n'.join('| '+' | '.join(map(str,row))+' |' for row in rows)+'\n')
-def img(path,width=None,height=None):
-    from PIL import Image as PILImage
-    full=ROOT/path
-    with PILImage.open(full) as im: w,h=im.size
-    if width is None: width=height*w/h
-    if height is None: height=width*h/w
-    story.append(Image(str(full),width=width,height=height,hAlign='CENTER'));story.append(Spacer(1,9))
-    md.append(f'![{Path(path).stem}]({Path(path).name})\n')
+    t.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),NAVY),('VALIGN',(0,0),(-1,-1),'TOP'),
+       ('LEFTPADDING',(0,0),(-1,-1),9),('RIGHTPADDING',(0,0),(-1,-1),9),
+       ('TOPPADDING',(0,0),(-1,-1),4 if compact else 6),('BOTTOMPADDING',(0,0),(-1,-1),4 if compact else 6),
+       ('ROWBACKGROUNDS',(0,1),(-1,-1),[PALE,colors.white]),('LINEBELOW',(0,1),(-1,-1),.35,colors.HexColor('#dbe4ec'))]))
+    story.extend([t,Spacer(1,9)])
+    md.append('| '+' | '.join(headers)+' |\n| '+' | '.join(['---']*len(headers))+' |\n'+'\n'.join('| '+' | '.join(map(str,row))+' |' for row in rows)+'\n')
+def image_obj(filename,width):
+    with PILImage.open(SHOT/filename) as im:iw,ih=im.size
+    return Image(str(SHOT/filename),width=width,height=width*ih/iw,hAlign='CENTER')
+def figure(filename,caption,width=W):
+    global figure_number
+    figure_number+=1
+    story.append(image_obj(filename,width));p(f'{figure_number}-сурет. {caption}','caption')
+    md.append(f'![{caption}](evidence/screenshots/{filename})\n')
+def metrics():
+    cells=[]
+    for number,label in [('25','HTTP сұранысы'),('94','Assertion'),('0','Сәтсіз assertion')]:
+        cells.append([Paragraph(number,styles['metric']),Paragraph(label,styles['small'])])
+    t=Table([cells],colWidths=[W/3]*3)
+    t.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),PALE),('BOX',(0,0),(-1,-1),.5,colors.HexColor('#dce5eb')),
+       ('TOPPADDING',(0,0),(-1,-1),10),('BOTTOMPADDING',(0,0),(-1,-1),7),('LEFTPADDING',(0,0),(-1,-1),15)]))
+    story.extend([t,Spacer(1,10)])
 def link(label,url):
-    story.append(Paragraph(f'<link href="{escape(url,quote=True)}" color="#285d91">{escape(label)}</link>',styles['small']))
+    story.append(Paragraph(f'<link href="{escape(url,quote=True)}" color="#166b64">{escape(label)}</link>',styles['small']))
     md.append(f'[{label}]({url})\n')
 
 newman=json.loads((ROOT/'docs/lab10/evidence/newman-results.json').read_text(encoding='utf-8-sig'))
-stats=newman['run']['stats']
-assert stats['requests']['total']==25 and stats['assertions']['total']==94
-assert stats['assertions']['failed']==0 and not newman['run']['failures']
-sample_id = json.loads(bytes(newman['run']['executions'][4]['response']['stream']['data']))['movie_id']
-browser=json.loads((ROOT/'docs/lab10/evidence/browser-results.json').read_text())
-assert browser['passed']==11 and browser['failed']==0
+assert newman['run']['stats']['requests']['total']==25
+assert newman['run']['stats']['assertions']['total']==94 and not newman['run']['failures']
+manifest=json.loads((SHOT/'capture-manifest.json').read_text(encoding='utf-8'))
+assert manifest['fixtureCleanup'] and manifest['initialMovies']==manifest['finalMovies']
+assert manifest['browserErrors']==[]
+captures=manifest['httpCaptures']
+live_id=captures[1]['body']['movie_id']
 
-# 1. Cover
+# 1. Standalone cover, without material from other laboratory reports.
 p('ЗЕРТХАНАЛЫҚ ЖҰМЫС №10','kicker')
-story.append(Spacer(1,27))
-p('Ақпараттық жүйе\nкомпоненттерінің\nHTTP REST API арқылы\nөзара әрекеттесуі','title')
-p('Cinema Information System','h2')
-p('Фильмдер каталогына арналған толық CRUD API, SQL Server байланысы және Postman тестілеуі. №9 жұмыстың архитектурасы жобаға қосылды.')
-story.append(Spacer(1,27))
-table(['Жоба','Тапсыру деректері'],[
-    ['Орындаушы','Syrym / GitHub: Syrym1234'],['Пәндік сала','Кинотеатрдың ақпараттық жүйесі'],
-    ['Технологиялар','Node.js · Express · Microsoft SQL Server'],['Нұсқа / күні','1.1.0 / 04.11.2026'],
-    ['Негізгі ресурс','/api/movies'],['Тексеру','25 HTTP сұранысы · 94 assertion · 0 қате']], [160,339])
-story.append(Spacer(1,19))
-p('Дайын нәтиже','h2')
-p('Жұмыс істейтін API және каталогты басқару беті; импортталатын Postman коллекциясы; OpenAPI спецификациясы; нақты тест журналдары; архитектура мен тоғыз бақылау сұрағының жауаптары.')
-link('GitHub репозиторийі','https://github.com/Syrym1234/cinema-information-system1')
+p('HTTP REST API','title')
+p('Кинотеатрдың ақпараттық жүйесі','h1')
+p('Ақпараттық жүйе компоненттерінің өзара әрекеттесуі: фильмдер каталогының CRUD операциялары және Postman тестілеуі.')
+p('Орындаушы: Syrym / Syrym1234   ·   Күні: 04.11.2026','small')
+story.append(Spacer(1,6))
+figure('09-catalog.png','Жобаның нақты жұмыс істейтін каталог интерфейсі.',width=438)
+metrics()
+p('Node.js  +  Express  +  Microsoft SQL Server','small')
 
-# 2. Task alignment
-page(1,'Мақсат және талаптардың орындалуы')
-p('Мақсат: клиент, сервер және деректер қоры арасындағы HTTP REST API алмасуын іске асырып, қосу, оқу, өзгерту және жою операцияларын нақты деректер қорында тексеру.')
-p('Негіз: пайдаланушы ұсынған 10-Lab.pdf нұсқаулығы. Ондағы кітапхана және MySQL - түсіндіруші мысал. Осы жұмыста API әдістері кинотеатрдың Movies ресурсына бейімделді. Бұрынғы CinemaSchoolDB, SQL Server және mssql драйвері сақталды; кітапхана жобасы бөлек жасалмайды.')
-table(['Нұсқаулық талабы','Жобадағы орындалуы'],[
-    ['Node.js + Express сервері','server/index.js: HTTP сервері, JSON middleware, маршруттар'],
-    ['Деректер қорымен байланыс','server/db.js: ConnectionPool, SQL/Windows Authentication'],
-    ['Барлық жазбаларды алу','GET /api/movies -> 200, массив'],
-    ['ID бойынша жазбаны алу','GET /api/movies/:id -> 200 немесе 404'],
-    ['Жаңа жазба қосу','POST /api/movies -> 201 + Location'],
-    ['Жазбаны өзгерту','PUT /api/movies/:id -> 200, толық жаңарту'],
-    ['Жазбаны жою','DELETE /api/movies/:id -> 200; FK байланысына 409'],
-    ['Postman тестілеуі','25 сұраныс, 94 assertion; нақты Newman журналы'],
-    ['Табылмаған ID','GET /api/movies/2147483647 -> 404'],
-    ['Бақылау сұрақтары','Есептің 10-11-беттерінде 9 толық жауап']], [173,326])
-h2('№9 және №10 сабақтастығы')
-p('№9 жұмыстағы интерфейс -> қолданбалы логика -> деректер қоры байланысы №10 жұмыста нақты HTTP сұраныстарымен көрсетілді. DAL қолданбалы деңгейдің құрамында орналасады. Жергілікті сервер HTTP қолданады; HTTPS қосылды деген мәлімдеме жасалмайды.')
+# 2. Objective and requirement coverage.
+page(1,'Мақсат және орындалған міндеттер')
+p('Жұмыстың мақсаты - Node.js және Express арқылы деректер қорымен байланысқан REST API әзірлеу, CRUD операцияларын орындау және HTTP жауаптарын Postman коллекциясымен тексеру.')
+p('Нұсқаулықтағы кітапхана/MySQL мысалы кинотеатрдың Movies ресурсына бейімделді. Қолданыстағы CinemaSchoolDB базасы мен mssql драйвері пайдаланылады. API деректері SQL Server-де тұрақты сақталады.')
+table(['Талап','Орындалуы'],[
+    ['Серверді әзірлеу','Express HTTP сервері, JSON middleware, REST маршруттары'],
+    ['Деректер қорымен байланыс','server/db.js: ConnectionPool және параметрленген SQL'],
+    ['Барлық жазбаны оқу','GET /api/movies -> 200, фильмдер массиві'],
+    ['ID бойынша оқу','GET /api/movies/:id -> 200 немесе 404'],
+    ['Жазба қосу','POST /api/movies -> 201 + Location'],
+    ['Жазбаны өзгерту','PUT /api/movies/:id -> 200'],
+    ['Жазбаны жою','DELETE /api/movies/:id -> 200 немесе 409'],
+    ['Тестілеу','25 сұраныстық Postman коллекциясы / 94 assertion'],
+    ['Қорытынды материал','Скриншоттар, тест журналдары және 9 бақылау сұрағы']], [160,W-160])
+h2('Компоненттер арасындағы дерек алмасу')
+code('Web UI / Postman\n       | HTTP request + JSON\n       v\nExpress -> validation -> mssql -> SQL Server\n       ^                           |\n       +---- HTTP status + JSON <--+')
+p('Клиент SQL Server-ге тікелей қосылмайды. Сервер сұранысты тексеріп, SQL параметрлерін дайындайды; жауап клиентке HTTP статусы және JSON түрінде қайтарылады.')
 
-# 3. Architecture
-page(2,'Үш деңгейлі архитектура')
-img('docs/lab9/architecture-current.png',height=525)
-p('1-сурет. Қазіргі кодқа сәйкес архитектура. Параметрлер серверде тексеріледі; SQL нәтижесі клиентке HTTP статусы және JSON ретінде қайтарылады. DAL бөлек төртінші деңгей емес.','small')
-p('Түпнұсқа №9 диаграммасы docs/lab9/ ішінде сақталған. Ондағы CinemaLabDB, төлем, QR және тағам тапсырысы - кеңейтілген мақсатты модель; осы нұсқаның жұмыс істейтін мүмкіндіктеріне қосып есептелмейді.','small')
-
-# 4. Model and code
-page(3,'Деректер моделі және іске асыру')
-p('Деректер қоры: CinemaSchoolDB. Жеті пәндік кесте: Genres, Movies, Halls, Sessions, Customers, Tickets, MenuItems. Негізгі байланыстар: Genres 1:N Movies; Movies 1:N Sessions; Halls 1:N Sessions; Sessions 1:N Tickets; Customers 1:N Tickets.')
-table(['Movies өрісі','SQL түрі','API тексеруі'],[
+# 3. Implementation and validation.
+page(2,'Деректер моделі және сервер коды')
+p('Негізгі ресурс - Movies. Әр фильм Genres кестесіндегі жанрға тиесілі. Movies -> Sessions байланысы бар фильмді жоюға шектеу қояды. Деректер қоры: CinemaSchoolDB.')
+table(['Өріс','SQL түрі','Қабылданатын мән'],[
     ['movie_id','INT IDENTITY / PK','Сервер жасайды; ID: 1..2147483647'],
-    ['title','NVARCHAR(150)','Бос емес жол; trim; ең көбі 150 таңба'],
-    ['genre_id','INT / FK -> Genres','JSON бүтін саны; базада бар жанр'],
+    ['title','NVARCHAR(150)','Бос емес мәтін; ең көбі 150 таңба'],
+    ['genre_id','INT / FK','Базада бар жанрдың ID мәні'],
     ['duration_min','INT','1..600 бүтін саны'],['age_rating','INT','0, 6, 12, 16, 18 немесе 21'],
     ['release_year','INT','1888..2100 бүтін саны'],['rating','DECIMAL(3,1)','0..10; ең көбі бір ондық таңба'],
-    ['description','NVARCHAR(400)','Бос емес жол; trim; ең көбі 400 таңба']], [110,145,244])
-h2('Кодтың жауапкершіліктері')
-table(['Файл','Міндеті'],[
-    ['server/index.js','Express баптауы, бұрынғы маршруттар, JSON қателері, серверді жабу'],
-    ['server/db.js','ConnectionPool, .env конфигурациясы, қосылымды жабу'],
-    ['server/movies.js','CRUD маршруттары және SQL параметрлері'],
-    ['server/validation.js','ID, өрістер, типтер мен диапазондар'],
-    ['public/catalog.*','Каталог интерфейсі және fetch сұраныстары']], [160,339])
-p('Жою ережесі: фильмге сеанс байланысқан болса, SQL Server FK шектеуі жоюды тоқтатады. API 409 MOVIE_HAS_SESSIONS қайтарады. Бар сеанстар мен билеттер автоматты өшірілмейді.')
+    ['description','NVARCHAR(400)','Бос емес мәтін; ең көбі 400 таңба']], [103,138,W-241])
+h2('Модульдердің міндеті')
+table(['Файл','Қызметі'],[
+    ['server/index.js','Express, JSON middleware, error handler, серверді іске қосу'],
+    ['server/db.js','SQL конфигурациясы, ConnectionPool және қосылымды жабу'],
+    ['server/movies.js','Фильмдер ресурсының GET, POST, PUT, DELETE маршруттары'],
+    ['server/validation.js','ID, мәтін ұзындығы, JSON типтері және диапазондар'],
+    ['public/catalog.*','Форма, каталог, іздеу, өзгерту және жою интерфейсі']], [154,W-154])
+p('SQL сұраныстарына кіріс мәндері .input(...) арқылы беріледі. Белгісіз өрістер, қате типтер және SQL INT шегінен асатын ID мәндері қабылданбайды. Клиентке SQL қатесінің ішкі мәліметтері жіберілмейді.')
 
-# 5. Read create
-page(4,'REST келісімі: оқу және қосу')
-table(['Әдіс','Endpoint','Сәтті жауап'],[
-    ['GET','/api/movies','200 / JSON массив'],['GET','/api/movies/:id','200 / фильм + genre_name'],
-    ['POST','/api/movies','201 / фильм + Location'],['PUT','/api/movies/:id','200 / жаңартылған фильм'],
-    ['DELETE','/api/movies/:id','200 / message + movie_id']], [65,230,204])
-h2('GET - барлық фильм және ID бойынша фильм')
-code('GET http://127.0.0.1:3000/api/movies\nGET http://127.0.0.1:3000/api/movies/25')
-p('Тізім рейтинг кемуі, атау және movie_id бойынша сұрыпталады. ID нәтижеде болмаса, 404 MOVIE_NOT_FOUND қайтарылады. 25 - сақталған тесттің ID мысалы; басқа іске қосуда ID өзгереді.')
-h2('POST - жаңа фильм')
-code('POST /api/movies\nContent-Type: application/json\n\n{\n  "title": "Lab10 | Қазақша фильм",\n  "genre_id": 6,\n  "duration_min": 110,\n  "age_rating": 12,\n  "release_year": 2026,\n  "rating": 8.5,\n  "description": "REST API арқылы қосылған оқу фильмі."\n}')
-p('Жауап: 201 Created; Location: /api/movies/25. JSON ішінде movie_id және сақталған жеті өріс бар. Жанр ID /api/metadata нәтижесінен алынады; мысалдағы 6 мәнін өз базаңыздың мәнімен ауыстырыңыз.')
-p('Қазақша мәтін NVARCHAR параметрімен беріледі. movie_id клиенттен қабылданбайды. POST және PUT белгісіз өрістерді қабылдамайды; мәтіндік санның орнына JSON санын жіберу қажет.','small')
+# 4. Setup + live connectivity screenshot.
+page(3,'Іске қосу және SQL байланысы')
+code('npm ci\nCopy-Item .env.example .env\nnpm start')
+p('Node.js 20+ және SQL Server қажет. Таза базаға sql/01_create_database.sql, кейін sql/02_insert_data.sql файлдарын бір рет орындаңыз. Бар базаға деректерді қайта енгізбеңіз.')
+h2('Тексерілген жергілікті баптау')
+code('DB_AUTH=windows\nDB_SERVER=.\\SQLEXPRESS\nDB_NAME=CinemaSchoolDB\nHOST=127.0.0.1\nPORT=3000')
+p('Windows Authentication үшін msnodesqlv8 және ODBC Driver 17 қолданылады. Атаулы instance кезінде DB_PORT жолын алып тастаңыз. SQL Authentication параметрлері .env.example ішінде берілген.','small')
+figure('01-health.png','GET /api/health: CinemaSchoolDB базасымен байланыс және фильм саны расталды.',width=470)
 
-# 6. Update/delete/errors
-page(5,'REST келісімі: өзгерту, жою және қателер')
-h2('PUT - барлық жазылатын өрісті ауыстыру')
-code('PUT /api/movies/{{movieId}}\nContent-Type: application/json\n\n{\n  "title": "Lab10 | Жаңартылған фильм",\n  "genre_id": 6,\n  "duration_min": 110,\n  "age_rating": 12,\n  "release_year": 2026,\n  "rating": 9.1,\n  "description": "REST API арқылы қосылған оқу фильмі."\n}')
-p('Жауап: 200 OK және жаңартылған объект. Кейінгі GET сұранысы title және rating мәндерінің деректер қорында сақталғанын дәлелдейді. PUT барлық жеті өрісті талап етеді; бұл API-де PATCH іске асырылмаған.')
-h2('DELETE - байланысы жоқ фильмді жою')
-code('DELETE /api/movies/{{movieId}}\n\n200 OK\n{"message":"Фильм сәтті жойылды","movie_id":25}\n\nGET /api/movies/25\n404 Not Found\n{"error":"Фильм табылмады","code":"MOVIE_NOT_FOUND"}')
-table(['Статус','Қай жағдайда'],[
-    ['400','Қате ID / JSON / өрістер / базада жоқ жанр'],['404','Фильм немесе API маршруты табылмады'],
-    ['405','Қолдау жоқ әдіс; Allow header беріледі'],['409','Фильмге сеанстар байланысқан'],
-    ['413 / 415','JSON 16 KB шегінен үлкен / Content-Type қате'],['500 / 503','Ішкі сервер қатесі / деректер қорына қосылу мүмкін емес']], [85,414])
-p('SQL мәндері .input(...) арқылы параметрленеді. INSERT пен UPDATE нәтижесі OUTPUT INSERTED.* арқылы, DELETE нәтижесі OUTPUT DELETED.movie_id арқылы алынады. Бұл бөлек кейінгі SELECT сұранысына тәуелділікті жояды.','small')
+# 5. GET.
+page(4,'READ - фильм туралы ақпаратты оқу')
+p('GET /api/movies фильмдер массивін қайтарады. GET /api/movies/:id нақты фильмді жанр атауымен бірге қайтарады. Оқу операциялары деректерді өзгертпейді.')
+figure('03-read-200.png',f'GET /api/movies/{live_id}: нақты фильмге 200 OK жауабы және JSON объектісі алынды.')
+table(['Сұраныс','Нәтиже'],[
+    ['GET /api/movies','200 OK: рейтинг, атау және ID бойынша сұрыпталған массив'],
+    [f'GET /api/movies/{live_id}','200 OK: movie_id, негізгі өрістер және genre_name'],
+    ['GET /api/movies/2147483647','404 Not Found: MOVIE_NOT_FOUND']], [205,W-205])
+p('Скриншоттардағы сұраныстар нақты жергілікті API-ге fetch арқылы жіберілді. HTTP клиентінің көрінісі есеп үшін жасалған; сұраныс пен жауап деректері capture-manifest.json файлында сақталған.','small')
 
-# 7. Setup/Postman
-page(6,'Іске қосу және Postman нұсқаулығы')
-h2('1. Тәуелділіктер және база')
-code('npm ci\nCopy-Item .env.example .env')
-p('Node.js 20+ қажет. Таза база үшін sql/01_create_database.sql, кейін sql/02_insert_data.sql файлдарын SSMS-та бір рет орындаңыз. Бар деректерге қайта seed жасамаңыз. №10 үшін жаңа кесте немесе миграция қажет емес.')
-h2('2. Осы компьютерде тексерілген Windows Authentication')
-code('DB_AUTH=windows\nDB_SERVER=.\\SQLEXPRESS\nDB_NAME=CinemaSchoolDB\nDB_ENCRYPT=false\nDB_TRUST_CERT=true\nHOST=127.0.0.1\nPORT=3000')
-p('Атаулы instance қолданғанда DB_PORT жолын алып тастаңыз. msnodesqlv8 және ODBC Driver 17 қолданылады. SQL Authentication үшін DB_AUTH=sql, DB_USER, DB_PASSWORD, DB_SERVER және DB_PORT баптаңыз. .env құпия файл ретінде Git-ке қосылмайды.')
-code('npm start\n# Басқа терминалда:\nnpm test\nnpm run test:postman')
-h2('3. Postman desktop-та тексеру')
-p('Import арқылы postman/CinemaLab10.postman_collection.json және Local.postman_environment.json файлдарын импорттаңыз. Cinema Local ортасын таңдаңыз. baseUrl = http://127.0.0.1:3000. Run collection пәрменімен бір итерацияны берілген ретпен орындаңыз.')
-p('Коллекция жанр ID, қорғалған фильм ID және жаңа movieId мәндерін өзі алады. Соңғы қадамдар өз уақытша фильмін жойып, бастапқы фильм санын тексереді. Каталогты қатар өзгертпей тестілеңіз. Тест үзіліп қалса, тек өзінің Lab10 атаулы тест фильмін тазалаңыз.')
-p('CLI дәлелі Newman 6.2.3 арқылы алынды. Ол npx арқылы бөлек іске қосылатын тест құралы; upstream тәуелділік ескертулері болуы мүмкін. Қосымшаның орнатылатын тәуелділіктерінде npm audit нәтижесі - 0 осалдық.','small')
+# 6. POST.
+page(5,'CREATE - жаңа фильмді қосу')
+p('POST /api/movies сұранысының JSON body бөлігінде жеті міндетті өріс беріледі. movie_id деректер қорында автоматты жасалады; жанр ID /api/metadata нәтижесінен алынады.')
+figure('02-create-201.png',f'Жаңа фильм қосылды: 201 Created, movie_id={live_id}; Location жаңа ресурс адресін көрсетеді.')
+h2('Сервердегі сақтау логикасы')
+code('INSERT INTO dbo.Movies\n  (title, genre_id, duration_min, age_rating,\n   release_year, rating, description)\nOUTPUT INSERTED.*\nVALUES (@title, @genre_id, @duration_min, @age_rating,\n        @release_year, @rating, @description)')
+p('NVARCHAR параметрлері қазақша мәтіннің сақталуын қамтамасыз етеді. Сәтті INSERT нәтижесі OUTPUT INSERTED.* арқылы алынып, клиентке 201 статусымен жіберіледі.')
 
-# 8. Actual results
-page(7,'Нақты API тест нәтижелері')
-p('04.11.2026: SQL Express / CinemaSchoolDB; Postman коллекциясы Newman арқылы орындалды. 25 сұраныс, 94 assertion, 0 failure. HTTP қате статустары - әдейі тексерілген күтілетін нәтижелер.')
-rows=[]
-labels=['SQL байланысы','Жанрлар','Барлық фильм','Сеанс / FK тесті','Фильм қосу','ID бойынша оқу','Фильмді өзгерту','Сақталған өзгерісті оқу','Бос міндетті өрістер','Қате рейтинг','Жоқ жанр','SQL injection ID','SQL INT overflow','Жоқ фильм','Жоқ фильмді өзгерту','Байланысқан фильмді жою','Бұзылған JSON','Қате Content-Type','16 KB шегінен артық','Қолдау жоқ PATCH','Жоқ маршрут','Өз тест фильмін жою','Жойылған фильмді оқу','Қайталап жою','Бастапқы сан қалпына келді']
-for i,(execution,label) in enumerate(zip(newman['run']['executions'],labels),1):
-    rows.append([str(i),execution['request']['method'],label,str(execution['response']['code']),'PASS'])
-table(['№','Әдіс','Сценарий','HTTP','Нәтиже'],rows,[29,55,295,54,66],compact=True)
-p('Қосымша дәлел: 11 unit test және 11 браузер тексеруі өтті. Журналдар: docs/lab10/evidence/newman-results.json, newman-console.txt, unit-tests.txt, browser-results.json. Тест фильмдері тазаланды; бастапқы каталогта 24 фильм қалды.','small')
+# 7. PUT.
+page(6,'UPDATE - фильм мәліметтерін өзгерту')
+p(f'PUT /api/movies/{live_id} сұранысы фильмнің барлық жазылатын өрісін ауыстырады. Мысалда атауы жаңартылып, рейтинг 8.5 мәнінен 9.1 мәніне өзгертілді.')
+figure('04-update-200.png','PUT нәтижесі: 200 OK және жаңартылған title, rating өрістері.')
+table(['Ереже','Нәтиже'],[
+    ['Толық PUT','Барлық жеті жазылатын өріс міндетті'],
+    ['Жоқ ID','404 MOVIE_NOT_FOUND'],['Қате JSON мәні','400 VALIDATION_ERROR'],
+    ['Тұрақты сақтау','Postman тізбегіндегі кейінгі GET өзгерісті қайта тексереді']], [155,W-155])
+code('UPDATE dbo.Movies\nSET title=@title, rating=@rating, ...\nOUTPUT INSERTED.*\nWHERE movie_id=@id')
+p('Жауапта SQL Server қайтарған жаңартылған жол пайдаланылады. PUT сұранысын бірдей деректермен қайталау ресурстың соңғы күйін өзгертпейді.','small')
 
-# 9. Browser evidence
-page(8,'Браузердегі жұмыс нәтижесі')
-img('docs/lab10/evidence/catalog-desktop.png',width=499)
-p('2-сурет. Каталогты басқару: desktop 1440 × 1080. Скриншот нақты жергілікті қолданбадан алынды. Форма деректерді API арқылы SQL Server-ге жібереді.','small')
-h2('Тексерілген пайдаланушы әрекеттері')
-p('Жаңа фильмді формада қосу -> нақты SQL жолын оқу -> рейтингті 9.4 мәніне өзгерту -> өзгерісті қайта оқу -> растау терезесімен жою -> жойылған ID үшін 404 алу. Сеансы бар фильмді жою әрекеті тиісті хабарламамен тоқтатылды.')
-p('Мобильді 390 × 844 өлшемінде көлденең тасу жоқ. Бұрынғы фильмдер беті мен сатылым есебі жүктелді. Тексеру кезінде ұстатылмаған JavaScript қатесі тіркелмеді.')
-p('catalog-mobile.png және report-desktop.png қосымша скриншоттары evidence/ бумасында бар. Бұл суреттер Postman терезесінің скриншоты деп көрсетілмейді: олар браузер интерфейсінің нақты дәлелі.','small')
+# 8. DELETE + genuine follow-up 404 data.
+page(7,'DELETE - фильмді жою')
+p('Жою тек сеансы жоқ фильм үшін орындалады. Тексеруде API арқылы жаңа қосылған уақытша фильм қолданылды; бастапқы каталог жазбалары сақталды.')
+figure('05-delete-200.png',f'DELETE /api/movies/{live_id}: тест фильмі жойылды, 200 OK жауабы алынды.')
+h2('Жойылған ресурсқа қайта сұраныс')
+code(f'GET /api/movies/{live_id}\n\n404 Not Found\n'+json.dumps(captures[5]['body'],ensure_ascii=False,indent=2))
+p('Кейінгі GET сұранысы 404 қайтаратыны нақты тексерілді. Қайта орындалған DELETE те 404 береді. Бұл жоюдың соңғы күйін өзгертпейді: ресурс деректер қорында жоқ.')
+p('Тексеру аяқталғанда уақытша жазбалар тазаланып, каталогтағы фильм саны бастапқы 24 мәніне қайтарылды.','small')
 
-# 10. Questions first half
-page(9,'Бақылау сұрақтары: 1-5')
+# 9. Errors and FK integrity.
+page(8,'Қателерді өңдеу және деректер тұтастығы')
+p('HTTP статусы клиентке операцияның нәтижесін нақты түсіндіреді. Мысалы, сеансы бар фильмді жою 409 Conflict жауабымен тоқтатылады.')
+figure('08-conflict-409.png','FOREIGN KEY байланысы сақталды: сеансы бар фильм жойылған жоқ.')
+table(['HTTP','Қате жағдайы','API коды'],[
+    ['400','Қате рейтинг, тип немесе міндетті өріс','VALIDATION_ERROR'],
+    ['400','Қате ID / бұзылған JSON','INVALID_ID / INVALID_JSON'],
+    ['404','Фильм табылмады','MOVIE_NOT_FOUND'],['409','Фильмге сеанс байланысқан','MOVIE_HAS_SESSIONS'],
+    ['413 / 415','Көлемі артық / Content-Type қате','PAYLOAD_TOO_LARGE / UNSUPPORTED_MEDIA_TYPE'],
+    ['500 / 503','Сервер немесе база байланысы','INTERNAL_ERROR / DATABASE_UNAVAILABLE']], [54,219,W-273],compact=True)
+p('rating=10.5 мәніне жіберілген POST 400 статусымен қайтарылды. Осы және басқа нақты жауаптар толық скриншоттар бумасы мен capture-manifest.json ішінде бар.','small')
+
+# 10. Real catalog screenshot.
+page(9,'Каталогты басқару интерфейсі')
+p('Веб-интерфейс бір бетте фильм қосуға, іздеуге, өзгертуге және жоюға мүмкіндік береді. Әр әрекет API сұранысын орындайды.')
+figure('09-catalog.png','Нақты каталог: сол жақта енгізу формасы, оң жақта іздеу және фильмдер тізімі.')
+h2('Пайдаланушыға берілген мүмкіндіктер')
+table(['Әрекет','HTTP сұранысы'],[
+    ['Каталогты ашу','GET /api/movies'],['Жаңа фильм қосу','POST /api/movies'],
+    ['Өзгерту формасын ашу','GET /api/movies/:id'],['Өзгерісті сақтау','PUT /api/movies/:id'],
+    ['Растап жою','DELETE /api/movies/:id']], [230,W-230],compact=True)
+
+# 11. UI edit and actual cropped dialog, captured directly from the browser.
+page(10,'Формада өзгерту және жоюды растау')
+p('Өзгерту батырмасы таңдалған фильм деректерін формаға жүктейді. Жою алдында пайдаланушыға растау терезесі көрсетіледі.')
+figure('11-ui-edit.png','Өзгерту формасы: фильм өрістері жүктелді, рейтинг 9.4 мәніне енгізілді.',width=480)
+figure('17-delete-dialog-detail.png','Жоюды растау терезесі. Сурет браузердегі dialog элементінен тікелей алынды.',width=300)
+
+# 12. Mobile screenshot with readable explanatory text.
+page(11,'Мобильді көрініс және браузер тексеруі')
+p('Интерфейс 390 × 844 өлшемінде тексерілді. Форма бір бағанға орналасады, бетте көлденең тасу анықталған жоқ.')
+mobile=image_obj('14-mobile.png',215)
+right=[]
+for title,text in [
+    ('Бейімделетін форма','Атау, жанр, ұзақтық, жас шектеуі, жыл және рейтинг өрістері экран еніне сай орналасады.'),
+    ('Нақты деректер','Каталог серверден жүктеледі. Жаңа фильм тек SQL Server сақтағаннан кейін тізімде көрсетіледі.'),
+    ('Әрекет нәтижесі','Қосу және өзгерту сәтті аяқталғанда хабарлама шығады. Сеансы бар фильмді жою тоқтатылады.'),
+    ('Тексеру нәтижесі','Форма арқылы қосу, өзгерту, жою және қорғау сценарийлері орындалды. Браузерде ұстатылмаған JavaScript қатесі тіркелмеді.')]:
+    right += [Paragraph(escape(title),styles['h2']),Paragraph(escape(text),styles['body'])]
+t=Table([[mobile,right]],colWidths=[235,W-235]);t.setStyle(TableStyle([('VALIGN',(0,0),(-1,-1),'TOP'),('LEFTPADDING',(0,0),(-1,-1),0),('RIGHTPADDING',(0,0),(-1,-1),9)]));story.append(t)
+figure_number+=1
+p(f'{figure_number}-сурет. Нақты мобильді скриншот: 390 × 844. Оң жақтағы мәтін тексерілген әрекеттерді түсіндіреді.','caption')
+md.append('![Мобильді көрініс](evidence/screenshots/14-mobile.png)\n')
+
+# 13. Postman instructions and saved actual Newman results.
+page(12,'Postman коллекциясы және тест нәтижелері')
+p('Postman ішінде коллекция мен Local environment файлын Import арқылы ашып, Cinema Local ортасын таңдаңыз. Run collection пәрменін бір итерациямен бастапқы ретімен орындаңыз. movieId және genreId айнымалылары автоматты толтырылады.')
+figure('16-newman-summary.png','25 сұраныс пен 94 assertion сәтті өтті. Сурет нақты Newman JSON журналының көрнекі шолуын көрсетеді.',width=470)
+code('npm test\nnpm run test:postman')
+p('Дереккөз: newman-results.json. Бұл шолу Postman қолданбасының терезесі емес. Postman коллекциясы Newman арқылы орындалған. Қосымша 11 unit test және 11 браузер тексеруі өтті.','small')
+
+# 14. Control questions, first half.
+page(13,'Бақылау сұрақтары: 1-5')
 h2('1. API дегеніміз не және не үшін қолданылады?')
-p('API (Application Programming Interface) - бағдарламалардың бір-біріне функция немесе дерек ұсыну келісімі. Кинотеатрда браузер /api/movies ресурсына сұраныс жібереді, сервер SQL деректерін JSON ретінде қайтарады. Клиентке SQL қосылымының құпиясөзі қажет емес.')
+p('API - бағдарламалардың бір-біріне функция немесе дерек ұсыну келісімі. Кинотеатрда браузер /api/movies ресурсына сұраныс жібереді, сервер SQL нәтижесін JSON ретінде қайтарады. Клиентке SQL қосылымының құпиясөзі қажет емес.')
 h2('2. REST API архитектурасының негізгі ерекшеліктері қандай?')
-p('Ресурстар URI арқылы анықталады, әрекеттер HTTP әдістерімен беріледі, клиент пен сервер бөлінеді. Stateless қағидасы бойынша әр сұраныс оны өңдеуге қажетті мәліметті өзі қамтиды. Жауапта HTTP статусы және ресурс көрінісі болады. REST үшін GET қауіпсіз, PUT пен DELETE мағыналық жағынан idempotent: қайталау ресурстың соңғы күйін өзгертпейді; жауап статусы өзгеруі мүмкін.')
+p('Ресурстар URI арқылы анықталады, әрекеттер HTTP әдістерімен беріледі, клиент пен сервер бөлінеді. Stateless қағидасы бойынша әр сұраныс өңдеуге қажетті мәліметті өзі қамтиды. Жауапта HTTP статусы және ресурс көрінісі болады. GET қауіпсіз, PUT пен DELETE мағыналық жағынан idempotent: қайталау ресурстың соңғы күйін өзгертпейді, бірақ жауап статусы өзгеруі мүмкін.')
 h2('3. HTTP протоколы API жұмысына қалай қатысады?')
-p('HTTP сұраныс әдісін, URL-ін, header мен body құрылымын және жауап статусын анықтайды. Мысалы, POST + Content-Type: application/json фильм деректерін жібереді, сервер 201 Created қайтарады. 400 кіріс қатесін, 404 жоқ ресурсты, 409 деректер байланысының қайшылығын көрсетеді. HTTPS HTTP хабарларын TLS арқылы шифрлайды; осы жергілікті оқу нұсқасы HTTP қолданады.')
+p('HTTP әдісті, URL-ді, header мен body құрылымын және жауап статусын анықтайды. POST + Content-Type: application/json фильм деректерін жібереді, сервер 201 Created қайтарады. 400 кіріс қатесін, 404 жоқ ресурсты, 409 деректер байланысының қайшылығын көрсетеді. Осы жергілікті оқу нұсқасы HTTP қолданады.')
 h2('4. CRUD операцияларының мағынасы қандай?')
-p('Create - жаңа жазба құру; Read - жазбаларды оқу; Update - жазбаны жаңарту; Delete - жазбаны жою. Бұл жобада сәйкестік: POST -> INSERT, GET -> SELECT, PUT -> UPDATE, DELETE -> DELETE. Операциялар браузердегі массивпен ғана шектелмей, SQL Server кестесінде орындалады.')
+p('Create - жазба құру; Read - оқу; Update - жаңарту; Delete - жою. Бұл жобада сәйкестік: POST -> INSERT, GET -> SELECT, PUT -> UPDATE, DELETE -> DELETE. Операциялар SQL Server кестесінде орындалады.')
 h2('5. GET және POST әдістерінің айырмашылығы қандай?')
-p('GET ресурсты оқиды және сервердің пәндік күйін өзгертпеуі тиіс; фильтрлер query параметрлерімен берілуі мүмкін. POST жаңа ресурс құрады, оның деректері body ішінде жіберіледі. POST-ты қайталау бірнеше жаңа жазба құруы мүмкін. Осы API-де GET 200, сәтті POST 201 және жаңа ресурсқа Location header қайтарады.')
+p('GET ресурсты оқиды және сервердің пәндік күйін өзгертпеуі тиіс. POST жаңа ресурс құрады, оның деректері body ішінде беріледі. POST-ты қайталау бірнеше жаңа жазба құруы мүмкін. Осы API-де GET 200, сәтті POST 201 және жаңа ресурсқа Location header қайтарады.')
 
-# 11. Questions and limits
-page(10,'Бақылау сұрақтары: 6-9')
-h2('6. PUT және DELETE не үшін қолданылады?')
-p('PUT көрсетілген URI-дегі ресурстың жазылатын деректерін толық ауыстырады; осы жобада жеті өріс міндетті. DELETE ресурсты жояды. Біздің API-де жоқ ID 404, ал сеансқа байланысқан фильм 409 қайтарады. Бір фильмді қайталап жою бастапқы жоюдан кейін 404 береді, бірақ соңғы күйі өзгермейді: ресурс жоқ.')
-h2('7. JSON қандай рөл атқарады?')
-p('JSON - тілден тәуелсіз мәтіндік дерек форматы. Объект, массив, жол, сан, boolean және null мәндерін қолдайды. Express JSON body-ді JavaScript объектісіне айналдырады; res.json(...) жауап сериализациясын орындайды. JSON санын жолға алмастыру дұрыс емес: мысалы rating: 8.5 қабылданады, ал rating: "8.5" қабылданбайды.')
-h2('8. Node.js пен Express қызметі қандай?')
-p('Node.js JavaScript-ті серверде орындайды және асинхронды енгізу/шығаруды басқарады. Express HTTP маршруттарды, middleware тізбегін, сұраныс пен жауап объектілерін ұсынады. mssql SQL Server қосылымын басқарады. Express 4 асинхронды қателері Promise.catch(next) арқылы орталық error middleware-ге жіберіледі.')
+# 15. Remaining questions, conclusion and sources.
+page(14,'Бақылау сұрақтары: 6-9 және қорытынды')
+h2('6. PUT және DELETE қандай мақсатта қолданылады?')
+p('PUT көрсетілген URI-дегі ресурстың жазылатын деректерін толық ауыстырады. DELETE ресурсты жояды. Бұл API-де жоқ ID 404, ал сеансқа байланысқан фильм 409 қайтарады. Қайта жоюдың жауабы 404 болғанымен, соңғы күй өзгермейді: ресурс жоқ.')
+h2('7. JSON форматының рөлі қандай?')
+p('JSON - тілден тәуелсіз мәтіндік дерек форматы. Объект, массив, жол, сан, boolean және null мәндерін қолдайды. Express JSON body-ді объектіге айналдырып, res.json(...) арқылы жауап береді. Сан мен жол бөлек тип: rating: 8.5 қабылданады, rating: "8.5" қабылданбайды.')
+h2('8. Node.js және Express қызметі қандай?')
+p('Node.js JavaScript-ті серверде орындайды және асинхронды енгізу/шығаруды басқарады. Express маршруттар мен middleware тізбегін ұсынады. mssql деректер қорымен байланысады. Express 4 асинхронды қателері Promise.catch(next) арқылы орталық error handler-ге жіберіледі.')
 h2('9. Postman арқылы API қалай тестіленеді?')
-p('HTTP әдісін, URL, header және қажет body мәнін таңдап Send орындалады. Post-response script ішінде pm.test және pm.expect арқылы статус пен JSON тексеріледі. Коллекция Runner арқылы ретімен орындалып, жаңа ID айнымалыға сақталады. Осы жұмыста GET -> POST -> GET -> PUT -> GET -> DELETE -> GET 404 тізбегі және қате сценарийлер тексерілген.')
-h2('Қолданылу шекарасы және дереккөздер')
-p('Бұл жергілікті оқу жүйесі. Аккаунттар, рөлдер, нақты төлем, QR және HTTPS конфигурациясы ауқымға кірмейді. №8 SQL файлы кеңейтілген CinemaLabDB схемасына арналған; осы CinemaSchoolDB орнату тізіміне кірмейді.','small')
+p('Әдіс, URL, header және қажет body таңдалып, Send орындалады. pm.test пен pm.expect статус пен JSON-ды тексереді. Runner коллекцияны ретімен орындайды; жаңа ID айнымалыға сақталады. Жұмыста толық CRUD тізбегі және қате сценарийлер тексерілген.')
+h2('Қорытынды')
+p('Фильмдерге арналған толық CRUD API әзірленді және SQL Server-мен байланыстырылды. Нақты HTTP жауаптары, интерфейс әрекеттері және қате жағдайлар скриншоттармен расталды. Уақытша тест жазбалары тазаланды. Жоба жергілікті оқу ортасына арналған.')
 link('Express 4: Error Handling','https://expressjs.com/en/4x/guide/error-handling/')
 link('Microsoft Learn: OUTPUT clause','https://learn.microsoft.com/en-us/sql/t-sql/queries/output-clause-transact-sql')
 link('Postman: test scripts','https://learning.postman.com/docs/tests-and-scripts/write-scripts/test-scripts/')
-link('Postman: Collection Runner','https://learning.postman.com/docs/tests-and-scripts/running-collections/intro-to-collection-runs')
-p('Бастапқы материалдар: пайдаланушы берген 10-Lab.pdf (6 бет) және CinemaLab9_ExampleStyle_FINAL.png; жобаның SQL схемасы мен сервер коды.','small')
+link('Жобаның GitHub репозиторийі','https://github.com/Syrym1234/cinema-information-system1')
+p('Негіз: 10-Lab.pdf нұсқаулығы, жоба коды, SQL схемасы, нақты HTTP және Newman журналдары.','small')
 
-# 12. User's original Lab 9 diagram
-page(11,'Қосымша: №9 жұмыстың түпнұсқасы')
-img('docs/lab9/CinemaLab9_ExampleStyle_FINAL.png',height=593)
-p('3-сурет. Пайдаланушы ұсынған сурет өзгертілмеген. Суреттегі кеңейтілген модульдер мен CinemaLabDB - мақсатты архитектура. Нақты жеті кестелік CinemaSchoolDB нұсқасы есептің 3-бетіндегі диаграммада көрсетілді. Толық өлшемді PNG docs/lab9/ ішінде берілген.','small')
-
-def decorate(c, doc):
+def decorate(c,doc):
     width,height=A4
-    c.saveState()
-    c.setFillColor(INK); c.rect(0,height-11,width,11,fill=1,stroke=0)
-    c.setStrokeColor(colors.HexColor('#dbe3eb'));c.line(48,43,width-48,43)
-    c.setFont('Arial',8);c.setFillColor(MUTED)
-    c.drawString(48,28,'CINÉMA LAB · №9-10 · 04.11.2026')
-    c.drawRightString(width-48,28,f'{doc.page} / 12')
+    c.saveState();c.setFillColor(NAVY);c.rect(0,height-9,width,9,fill=1,stroke=0)
+    c.setFillColor(GOLD);c.rect(48,height-9,92,9,fill=1,stroke=0)
+    if doc.page>1:
+        c.setFont('Arial-Bold',7.4);c.setFillColor(MUTED)
+        c.drawRightString(width-48,height-28,'CINÉMA / HTTP REST API')
+    c.setStrokeColor(colors.HexColor('#dbe4ec'));c.line(48,43,width-48,43)
+    c.setFont('Arial',8);c.setFillColor(MUTED);c.drawString(48,28,'CINÉMA LAB · Зертханалық жұмыс №10 · 04.11.2026')
     c.restoreState()
+class NumberedCanvas(canvas.Canvas):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs);self.states=[]
+    def showPage(self):
+        self.states.append(dict(self.__dict__));self._startPage()
+    def save(self):
+        total=len(self.states)
+        for state in self.states:
+            self.__dict__.update(state)
+            self.setFont('Arial-Bold',8);self.setFillColor(TEAL)
+            self.drawRightString(A4[0]-48,28,f'{self._pageNumber:02d} / {total:02d}')
+            super().showPage()
+        super().save()
 
 doc=SimpleDocTemplate(str(OUT),pagesize=A4,rightMargin=48,leftMargin=48,topMargin=45,bottomMargin=57,
-    title='Cinema Lab 10 - HTTP REST API',author='Syrym / Syrym1234',subject='Кинотеатр REST API зертханалық жұмысы')
-doc.build(story,onFirstPage=decorate,onLaterPages=decorate)
-# Report source has stable relative image links from its own directory.
-markdown='\n'.join(md)
-for filename, rel in [('architecture-current.png','../lab9/architecture-current.png'),
-    ('catalog-desktop.png','evidence/catalog-desktop.png'),('CinemaLab9_ExampleStyle_FINAL.png','../lab9/CinemaLab9_ExampleStyle_FINAL.png')]:
-    markdown=markdown.replace(f']({filename})',f']({rel})')
-(ROOT/'docs/lab10/REPORT.md').write_text(markdown,encoding='utf-8')
-print(OUT)
+    title='Cinema Lab 10 - HTTP REST API - Illustrated Report',author='Syrym / Syrym1234',
+    subject='Кинотеатр REST API: скриншоттармен толықтырылған зертханалық есеп')
+doc.build(story,onFirstPage=decorate,onLaterPages=decorate,canvasmaker=NumberedCanvas)
+(ROOT/'docs/lab10/REPORT.md').write_text('\n'.join(md),encoding='utf-8')
+from pypdf import PdfReader
+pages=PdfReader(OUT).pages
+assert len(pages)==15, f'Unexpected overflow: {len(pages)} pages'
+text='\n'.join(page.extract_text() for page in pages)
+assert all(value not in text for value in ['№9','№ 9','Lab 9','lab9','CinemaLab9'])
+print(f'{OUT}\n15 pages; standalone Lab 10; illustrated evidence verified.')

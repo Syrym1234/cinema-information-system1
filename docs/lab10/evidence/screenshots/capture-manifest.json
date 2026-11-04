@@ -1,0 +1,186 @@
+{
+  "capturedAt": "2026-11-04T17:27:05.123Z",
+  "dateLocal": "2026-11-04",
+  "baseUrl": "http://127.0.0.1:3000",
+  "provenance": "01-08: live fetch in a purpose-built HTTP test viewer. 09-15 and 17: actual web application. 16: visual rendering of saved Newman JSON, not Postman UI.",
+  "initialMovies": 24,
+  "finalMovies": 24,
+  "fixtureCleanup": true,
+  "browserErrors": [],
+  "httpCaptures": [
+    {
+      "file": "01-health.png",
+      "title": "Сервердің деректер қорына қосылуы",
+      "requestBody": null,
+      "method": "GET",
+      "url": "/api/health",
+      "status": 200,
+      "statusText": "OK",
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "elapsedMs": 6,
+      "body": {
+        "db_name": "CinemaSchoolDB",
+        "movies": 24
+      }
+    },
+    {
+      "file": "02-create-201.png",
+      "title": "CREATE · жаңа фильмді қосу",
+      "requestBody": {
+        "title": "Жаңа көкжиек | Lab 10",
+        "genre_id": 6,
+        "duration_min": 110,
+        "age_rating": 12,
+        "release_year": 2026,
+        "rating": 8.5,
+        "description": "Кинотеатр каталогына REST API арқылы қосылған оқу фильмі."
+      },
+      "method": "POST",
+      "url": "/api/movies",
+      "status": 201,
+      "statusText": "Created",
+      "location": "/api/movies/34",
+      "contentType": "application/json; charset=utf-8",
+      "elapsedMs": 4,
+      "body": {
+        "movie_id": 34,
+        "title": "Жаңа көкжиек | Lab 10",
+        "genre_id": 6,
+        "duration_min": 110,
+        "age_rating": 12,
+        "release_year": 2026,
+        "rating": 8.5,
+        "description": "Кинотеатр каталогына REST API арқылы қосылған оқу фильмі."
+      }
+    },
+    {
+      "file": "03-read-200.png",
+      "title": "READ · фильмді ID бойынша оқу",
+      "requestBody": null,
+      "method": "GET",
+      "url": "/api/movies/34",
+      "status": 200,
+      "statusText": "OK",
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "elapsedMs": 7,
+      "body": {
+        "movie_id": 34,
+        "title": "Жаңа көкжиек | Lab 10",
+        "genre_id": 6,
+        "duration_min": 110,
+        "age_rating": 12,
+        "release_year": 2026,
+        "rating": 8.5,
+        "description": "Кинотеатр каталогына REST API арқылы қосылған оқу фильмі.",
+        "genre_name": "Анимация"
+      }
+    },
+    {
+      "file": "04-update-200.png",
+      "title": "UPDATE · фильм мәліметтерін өзгерту",
+      "requestBody": {
+        "title": "Жаңа көкжиек | Жаңартылды",
+        "genre_id": 6,
+        "duration_min": 110,
+        "age_rating": 12,
+        "release_year": 2026,
+        "rating": 9.1,
+        "description": "Кинотеатр каталогына REST API арқылы қосылған оқу фильмі."
+      },
+      "method": "PUT",
+      "url": "/api/movies/34",
+      "status": 200,
+      "statusText": "OK",
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "elapsedMs": 6,
+      "body": {
+        "movie_id": 34,
+        "title": "Жаңа көкжиек | Жаңартылды",
+        "genre_id": 6,
+        "duration_min": 110,
+        "age_rating": 12,
+        "release_year": 2026,
+        "rating": 9.1,
+        "description": "Кинотеатр каталогына REST API арқылы қосылған оқу фильмі."
+      }
+    },
+    {
+      "file": "05-delete-200.png",
+      "title": "DELETE · тест фильмін жою",
+      "requestBody": null,
+      "method": "DELETE",
+      "url": "/api/movies/34",
+      "status": 200,
+      "statusText": "OK",
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "elapsedMs": 6,
+      "body": {
+        "message": "Фильм сәтті жойылды",
+        "movie_id": 34
+      }
+    },
+    {
+      "file": "06-not-found-404.png",
+      "title": "Жойылған фильм: 404 Not Found",
+      "requestBody": null,
+      "method": "GET",
+      "url": "/api/movies/34",
+      "status": 404,
+      "statusText": "Not Found",
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "elapsedMs": 4,
+      "body": {
+        "error": "Фильм табылмады",
+        "code": "MOVIE_NOT_FOUND"
+      }
+    },
+    {
+      "file": "07-validation-400.png",
+      "title": "Валидация: қате рейтинг қабылданбайды",
+      "requestBody": {
+        "title": "Жаңа көкжиек | Lab 10",
+        "genre_id": 6,
+        "duration_min": 110,
+        "age_rating": 12,
+        "release_year": 2026,
+        "rating": 10.5,
+        "description": "Кинотеатр каталогына REST API арқылы қосылған оқу фильмі."
+      },
+      "method": "POST",
+      "url": "/api/movies",
+      "status": 400,
+      "statusText": "Bad Request",
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "elapsedMs": 2,
+      "body": {
+        "error": "Фильм деректері қате",
+        "code": "VALIDATION_ERROR",
+        "details": [
+          "rating: 0..10, ең көбі бір ондық таңба"
+        ]
+      }
+    },
+    {
+      "file": "08-conflict-409.png",
+      "title": "Деректер тұтастығы: сеансы бар фильм",
+      "requestBody": null,
+      "method": "DELETE",
+      "url": "/api/movies/4",
+      "status": 409,
+      "statusText": "Conflict",
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "elapsedMs": 4,
+      "body": {
+        "error": "Фильмге сеанстар байланысқан. Фильмді жоюға болмайды",
+        "code": "MOVIE_HAS_SESSIONS"
+      }
+    }
+  ]
+}
