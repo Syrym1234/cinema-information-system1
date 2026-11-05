@@ -1,0 +1,11 @@
+{
+  "movie_id": 6,
+  "title": "Уақыт қақпасы",
+  "genre_id": 3,
+  "duration_min": 134,
+  "age_rating": 12,
+  "release_year": 2026,
+  "rating": 9.1,
+  "description": "Ғалымдар уақыт ағынының жұмбақ заңдылығын зерттейді.",
+  "genre_name": "Фантастика"
+}

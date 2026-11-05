@@ -5,6 +5,7 @@
 - [№9: архитектура және берілген түпнұсқа диаграмма](docs/lab9/README.md).
 - [№10: REST API, іске қосу, Postman және қорғау нұсқаулығы](docs/lab10/README.md).
 - [Дайын PDF есеп](output/pdf/Cinema_Lab10_Report.pdf).
+- [Word есебі](output/docx/Cinema_Lab10_Report.docx) · [алты нақты Postman скриншоты](docs/lab10/evidence/postman-web/README.md) · [қорғауда көрсету реті](docs/lab10/POSTMAN_DEMO.md).
 - [Postman коллекциясы](postman/CinemaLab10.postman_collection.json) · [OpenAPI](docs/lab10/openapi.json).
 
 №10 жұмыста **Movies** ресурсына GET / POST / PUT / DELETE толық CRUD қосылды.

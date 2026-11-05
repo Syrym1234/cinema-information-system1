@@ -1,0 +1,16 @@
+{
+  "query": "SELECT * FROM dbo.Movies WHERE movie_id=@id",
+  "id": 39,
+  "rows": [
+    {
+      "movie_id": 39,
+      "title": "Lab10 | Жаңартылған фильм",
+      "genre_id": 3,
+      "duration_min": 110,
+      "age_rating": 12,
+      "release_year": 2026,
+      "rating": 9.1,
+      "description": "REST API арқылы қосылған уақытша оқу фильмі."
+    }
+  ]
+}

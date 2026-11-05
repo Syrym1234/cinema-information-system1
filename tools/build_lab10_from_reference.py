@@ -6,6 +6,7 @@ import argparse
 import copy
 import hashlib
 import json
+from io import BytesIO
 from pathlib import Path
 from zipfile import ZipFile
 from lxml import etree
@@ -14,20 +15,43 @@ from PIL import Image
 ROOT=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser()
 parser.add_argument('--reference',required=True,type=Path)
+parser.add_argument('--postman-evidence','--desktop-evidence',dest='desktop_evidence',type=Path,
+                    help='Completed real Postman evidence manifest; refuses partial evidence.')
 args=parser.parse_args()
+if not args.desktop_evidence:
+    verified=ROOT/'docs/lab10/evidence/postman-web/capture-manifest.json'
+    if verified.is_file():args.desktop_evidence=verified
 reference=args.reference.resolve()
 expected_hash='fc4b4d66aabcb24b9d60731340c64923a510de7acd7177c8baf4f7278ff5cd08'
 assert hashlib.sha256(reference.read_bytes()).hexdigest()==expected_hash,'Reference changed; redistill it first.'
 out=ROOT/'output/docx/Cinema_Lab10_Report.docx'
 out.parent.mkdir(parents=True,exist_ok=True)
 shots=ROOT/'docs/lab10/evidence/screenshots'
-live=json.loads((shots/'capture-manifest.json').read_text(encoding='utf8'))
-assert live['fixtureCleanup'] and live['initialMovies']==live['finalMovies']==24
-assert len(live['sqlChecks'])==2
-before,after=live['sqlChecks']
-assert before['row']['rating']==8.5 and after['row']['rating']==9.1
-mid=before['row']['movie_id']
-assert after['row']['movie_id']==mid
+desktop=None
+if args.desktop_evidence:
+    evidence_path=args.desktop_evidence.resolve()
+    desktop=json.loads(evidence_path.read_text(encoding='utf8'))
+    assert desktop['client'] in ('Postman Desktop','Postman Web')
+    assert desktop['complete'] and desktop['fixtureCleanup']
+    assert [r['method'] for r in desktop['requests']]==['GET','GET','POST','PUT','DELETE','GET']
+    assert [r['status'] for r in desktop['requests']]==[200,200,201,200,200,404]
+    assert len(desktop['screenshots'])==6
+    shots=evidence_path.parent
+    assert all((shots/name).is_file() for name in desktop['screenshots'])
+    for name,expected in desktop.get('sha256',{}).items():
+        assert hashlib.sha256((shots/name).read_bytes()).hexdigest()==expected,name
+    mid=desktop['movieId']
+    read_mid=desktop['existingMovieId']
+    client=desktop['client']
+else:
+    live=json.loads((shots/'capture-manifest.json').read_text(encoding='utf8'))
+    assert live['fixtureCleanup'] and live['initialMovies']==live['finalMovies']==24
+    assert len(live['sqlChecks'])==2
+    before,after=live['sqlChecks']
+    assert before['row']['rating']==8.5 and after['row']['rating']==9.1
+    mid=before['row']['movie_id']
+    read_mid=mid
+    assert after['row']['movie_id']==mid
 z=ZipFile(reference)
 parts={i.filename:z.read(i.filename) for i in z.infolist()}
 ns={'w':'http://schemas.openxmlformats.org/wordprocessingml/2006/main',
@@ -99,6 +123,18 @@ replacements={
 54:'7. Қорытынды',
 55:'Cinema Information System жобасында фильмдерге арналған толық REST API әзірленіп, CinemaSchoolDB деректер қорымен байланыстырылды. Қосу, оқу, жаңарту, жою және жойылған фильмді іздеу орындалды. SQL SELECT нәтижелері деректердің сақталуын растады. Postman коллекциясының 25 сұранысы мен 94 assertion сәтті өтті. Осылайша клиент, API сервері және SQL Server арасындағы әрекеттесу тәжірибеде көрсетілді.',
 56:'Жұмыс жергілікті оқу ортасында тексерілді. Уақытша тест фильмдері тазаланып, бастапқы каталогтағы 24 фильм сақталды.'}
+if desktop:
+    replacements.update({
+        9:f'Visual Studio Code бағдарламалық кодты жазу үшін қолданылды. Node.js және Express API серверін іске қосады. mssql және msnodesqlv8 SQL Server-ге Windows Authentication арқылы қосылады. Негізгі алты HTTP сұранысы {client} клиентінде Send батырмасы арқылы орындалды. '+('Жергілікті API-ге Postman Desktop Agent 0.5.2 арқылы қосылды. ' if client=='Postman Web' else '')+'Қосымша автоматты тексеру Newman арқылы жүргізілді.',
+        20:f'4.4. {client} арқылы тексеру',
+        21:f'{client} клиентінде GET арқылы фильмдер тізімі және ID={read_mid} фильмі оқылды. POST жаңа тест фильмін құрды: ID={mid}, рейтинг 8.5. PUT рейтингі 9.1 мәніне жаңартты. DELETE тест фильмін жойды. Сол ID бойынша кейінгі GET 404 Not Found қайтарды. Төменде Postman терезесінен алынған нақты скриншоттар берілген.',
+        24:'1-сурет. Postman GET барлық фильмдер 200 OK.',
+        26:'2-сурет. Postman GET фильмді ID бойынша оқу 200 OK.',
+        28:f'3-сурет. Postman POST жаңа фильм 201 Created ID={mid}.',
+        30:'4-сурет. Postman PUT жаңартылған рейтинг 9.1 200 OK.',
+        32:'5-сурет. Postman DELETE тест фильмі жойылды 200 OK.',
+        34:f'6-сурет. Postman GET жойылған ID={mid} үшін 404 Not Found.',
+        55:f'Cinema Information System жобасындағы REST API SQL Server деректер қорымен байланыстырылды. {client} клиентінде фильмдер тізімін және жеке фильмді оқу, жаңа фильм қосу, жаңарту, жою және жойылған фильмді іздеу орындалды. 200, 201 және 404 жауаптары нақты бағдарламада тексерілді. Қосымша Postman коллекциясының 25 сұранысы мен 94 assertion Newman арқылы сәтті өтті. Клиент, Express сервері және SQL Server арасындағы әрекеттесу тәжірибеде көрсетілді.'})
 for i,value in replacements.items():text(paras[i],value)
 
 # Keep heading/answer and image/caption pairs together. Preserve the source rhythm.
@@ -112,9 +148,36 @@ for i in [24,26,28,30,32,34]:
         etree.SubElement(pr,tag('w:i'))
 for i in [22,27,31,35,46]:prop(paras[i],'pageBreakBefore')
 
+# Real browser screenshots are taller than the sample's landscape images.
+# Give each capture its own page so the method, JSON and HTTP status remain
+# readable, and introduce the result in the same heading style as the reference.
+if desktop:
+    for i in [27,31]:
+        item=paras[i].find('w:pPr/w:pageBreakBefore',ns)
+        if item is not None:item.getparent().remove(item)
+    figure_notes=[
+        ('5.1. Барлық фильмдерді оқу',
+         'GET http://127.0.0.1:3000/api/movies сұранысы 200 кодымен JSON массивін қайтарды. Каталогта 24 фильм бар. baseUrl айнымалысы жергілікті сервердің осы адресін сақтайды.'),
+        ('5.2. Фильмді ID бойынша оқу',
+         f'GET /api/movies/{read_mid} сұранысы 200 кодымен бір фильмді қайтарды. existingMovieId айнымалысы бірінші GET жауабындағы фильмнің ID мәнін сақтайды.'),
+        ('5.3. Жаңа фильм қосу',
+         f'POST /api/movies сұранысының Body бөлімінде raw және JSON таңдалды. Жаңа фильмге сервер ID={mid} тағайындады; жауап коды 201, бастапқы рейтинг 8.5. movieId айнымалысы осы ID мәнін сақтайды.'),
+        ('5.4. Фильмді жаңарту',
+         f'PUT /api/movies/{mid} сұранысы жеті жазылатын өрісті жіберді. Фильм атауы жаңартылып, рейтингі 9.1 болды. Жауап коды 200; SQL SELECT сол мәннің деректер қорында сақталғанын растады.'),
+        ('5.5. Тест фильмін жою',
+         f'DELETE /api/movies/{mid} сұранысы осы жұмыс барысында құрылған уақытша фильмді жойды. Сервер 200 кодын және «Фильм сәтті жойылды» хабарламасын қайтарды.'),
+        ('5.6. Жойылған фильмді іздеу',
+         f'GET /api/movies/{mid} сұранысы 404 және MOVIE_NOT_FOUND кодын қайтарды. Бұл тексеруде 404 күтілетін нәтиже: жойылған ресурс қайта оқылмайды. SQL тексеруі ID={mid} жазбасының жоқ екенін растады.')]
+    for position,(heading,note) in zip([23,25,27,29,31,33],figure_notes):
+        h=copy.deepcopy(paras[18]);text(h,heading);prop(h,'keepNext')
+        if position!=23:prop(h,'pageBreakBefore')
+        intro=copy.deepcopy(paras[19]);text(intro,note);prop(intro,'keepNext')
+        body.insert(body.index(paras[position]),h)
+        body.insert(body.index(paras[position]),intro)
+
 # Preserve the same six-record table while updating every resource and result.
 rows=[['Әдіс','Endpoint','Нәтиже'],['GET','/api/movies','200 OK фильмдер тізімі'],
-      ['GET',f'/api/movies/{mid}','200 OK ID бойынша фильм'],
+      ['GET',f'/api/movies/{read_mid}','200 OK ID бойынша фильм'],
       ['POST','/api/movies',f'201 Created ID={mid}'],
       ['PUT',f'/api/movies/{mid}','200 OK рейтинг 9.1'],
       ['DELETE',f'/api/movies/{mid}','200 OK фильм жойылды'],
@@ -125,6 +188,7 @@ for tr,values in zip(table.findall('w:tr',ns),rows):
 
 # Replace original images, maintaining the real relationship IDs.
 image_files=['02-create-201.png','18-sql-before.png','04-update-200.png','19-sql-after.png','05-delete-200.png','06-not-found-404.png']
+if desktop:image_files=desktop['screenshots']
 rels=etree.fromstring(parts['word/_rels/document.xml.rels'])
 relmap={r.get('Id'):r.get('Target') for r in rels}
 drawings=doc.findall('.//wp:inline',ns)
@@ -133,8 +197,12 @@ changed_media=[]
 for drawing,filename in zip(drawings,image_files):
     blip=drawing.find('.//a:blip',ns)
     target='word/'+relmap[blip.get(tag('r:embed'))]
-    parts[target]=(shots/filename).read_bytes();changed_media.append(target)
-    with Image.open(shots/filename) as image:w,h=image.size
+    with Image.open(shots/filename) as image:
+        w,h=image.size
+        # The reference relationships point to PNG parts. Convert the real
+        # screenshot format without resizing or altering its displayed content.
+        png=BytesIO();image.save(png,format='PNG');parts[target]=png.getvalue()
+    changed_media.append(target)
     cx=5486400;cy=round(cx*h/w)
     for ext in drawing.findall('wp:extent',ns)+drawing.findall('.//a:xfrm/a:ext',ns):
         ext.set('cx',str(cx));ext.set('cy',str(cy))
@@ -182,7 +250,8 @@ for element in body:
         if value:markdown.append(prefix+value+'\n')
         for drawing in element.findall('.//wp:inline',ns):
             filename=drawing.find('wp:docPr',ns).get('descr')
-            markdown.append(f'![Практикалық нәтиже](evidence/screenshots/{filename})\n')
+            image_folder=shots.name
+            markdown.append(f'![Практикалық нәтиже](evidence/{image_folder}/{filename})\n')
     elif element.tag==tag('w:tbl'):
         values=[[''.join(tc.itertext()) for tc in row.findall('w:tc',ns)] for row in element.findall('w:tr',ns)]
         markdown.append('| '+' | '.join(values[0])+' |\n| --- | --- | --- |\n'+'\n'.join('| '+' | '.join(row)+' |' for row in values[1:])+'\n')

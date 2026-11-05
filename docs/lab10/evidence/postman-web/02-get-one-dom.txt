@@ -1,0 +1,72 @@
+- searchbox "search": GET
+- button "Open dropdown":
+- combobox:
+  - generic: "{{baseUrl}}"
+  - generic: /api/movies/
+  - generic: "{{existingMovieId}}"
+- button "Send":
+  - generic: Send
+- button "Send options":
+- button "Params":
+  - generic: Params
+- button "Cookies":
+  - generic: Cookies
+- tabpanel:
+  - generic: Query Params
+  - generic: Key
+  - generic: Value
+  - generic: Description
+  - button "Bulk Edit":
+    - generic: Bulk Edit
+  - button "View more actions":
+  - generic: Key
+  - generic: Value
+  - generic: Description
+- button "Body":
+  - generic: Body
+- button "History":
+  - img "History":
+- generic: "200"
+- 'button "Response time: 77 ms"':
+- 'button "Response size: 498 B"':
+- button "Network connection info.":
+- button "Load test":
+- button:
+- button:
+- tabpanel:
+  - button "JSON":
+    - generic: JSON
+  - button "Preview":
+    - generic: Preview
+  - button "Visualize":
+    - generic: Visualize
+  - button "Toggle visualization options":
+  - button "Toggle line wrapping" [pressed]:
+  - button "Toggle response filter":
+  - button "Search in response":
+  - button "Copy response":
+  - button "Copy response link":
+  - tabpanel:
+    - code:
+      - textbox "Editor content" [active]: "{ \"movie_id\": 6, \"title\": \"Уақыт қақпасы\", \"genre_id\": 3, \"duration_min\": 134, \"age_rating\": 12, \"release_year\": 2026, \"rating\": 9.1, \"description\": \"Ғалымдар уақыт ағынының жұмбақ заңдылығын зерттейді.\", \"genre_name\": \"Фантастика\" }"
+      - generic: 
+      - generic: "1"
+      - generic: "2"
+      - generic: "3"
+      - generic: "4"
+      - generic: "5"
+      - generic: "6"
+      - generic: "7"
+      - generic: "8"
+      - generic: "9"
+      - generic: "{"
+      - generic: "\"movie_id\": 6,"
+      - generic: "\"title\": \"Уақыт қақпасы\","
+      - generic: "\"genre_id\": 3,"
+      - generic: "\"duration_min\": 134,"
+      - generic: "\"age_rating\": 12,"
+      - generic: "\"release_year\": 2026,"
+      - generic: "\"rating\": 9.1,"
+      - generic: "\"description\": \"Ғалымдар уақыт ағынының жұмбақ"
+      - generic: заңдылығын зерттейді.",
+- text:      

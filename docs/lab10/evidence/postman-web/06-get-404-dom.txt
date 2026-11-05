@@ -1,0 +1,76 @@
+- searchbox "search": GET
+- button "Open dropdown":
+- combobox:
+  - generic: "{{baseUrl}}"
+  - generic: /api/movies/
+  - generic: "{{movieId}}"
+- button "Send":
+  - generic: Send
+- button "Send options":
+- button "Params":
+  - generic: Params
+- button "Cookies":
+  - generic: Cookies
+- tabpanel:
+  - generic: Query Params
+  - generic: Key
+  - generic: Value
+  - generic: Description
+  - button "Bulk Edit":
+    - generic: Bulk Edit
+  - button "View more actions":
+  - generic: Key
+  - generic: Value
+  - generic: Description
+- button "Body":
+  - generic: Body
+- button "History":
+  - img "History":
+- generic: "404"
+- 'button "Response time: 28 ms"':
+- 'button "Response size: 287 B"':
+- button "Network connection info.":
+- button "Load test":
+- button:
+- button:
+- tabpanel:
+  - generic: Diagnose
+  - generic: Decline
+  - generic: Think Harder
+  - generic: Open
+  - generic: Diagnose
+  - generic: Decline
+  - generic: Think Harder
+  - generic: Diagnose
+  - generic: Decline
+  - button "Adjust request or test expectations"
+  - button "Diagnose":
+    - generic: Diagnose
+  - button "Decline":
+    - generic: Decline
+  - button "More actions":
+  - button "Suggestion settings":
+  - button "JSON":
+    - generic: JSON
+  - button "Preview":
+    - generic: Preview
+  - button "Debug with AI":
+    - generic: Debug with AI
+  - button "Toggle visualization options":
+  - button "Toggle line wrapping" [pressed]:
+  - button "Toggle response filter":
+  - button "Search in response":
+  - button "Copy response":
+  - button "Copy response link":
+  - tabpanel:
+    - code:
+      - textbox "Editor content"
+      - generic: 
+      - generic: "1"
+      - generic: "2"
+      - generic: "3"
+      - generic: "4"
+      - generic: "{"
+      - generic: "\"error\": \"Фильм табылмады\","
+      - generic: "\"code\": \"MOVIE_NOT_FOUND\""
+      - generic: "}"

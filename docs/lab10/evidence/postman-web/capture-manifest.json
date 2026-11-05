@@ -1,0 +1,68 @@
+{
+  "client": "Postman Web",
+  "agent": "Postman Desktop Agent 0.5.2",
+  "completedAtUtc": "2026-11-05T03:32:45.416755+00:00",
+  "dateLocal": "2026-11-05",
+  "baseUrl": "http://127.0.0.1:3000",
+  "complete": true,
+  "fixtureCleanup": true,
+  "initialMovies": 24,
+  "finalMovies": 24,
+  "existingMovieId": 6,
+  "movieId": 39,
+  "provenance": "Screenshots captured from the official Postman Web interface after Send; requests routed through the official local Desktop Agent. Response JSON read from the Postman response editor or Copy response. SQL files are independent direct SQL Server checks. No recreated Postman UI.",
+  "screenshots": [
+    "01-get-all.jpg",
+    "02-get-one.jpg",
+    "03-post.jpg",
+    "04-put.jpg",
+    "05-delete.jpg",
+    "06-get-404.jpg"
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/movies",
+      "status": 200,
+      "response": "01-get-all.json"
+    },
+    {
+      "method": "GET",
+      "path": "/api/movies/6",
+      "status": 200,
+      "response": "02-get-one.json"
+    },
+    {
+      "method": "POST",
+      "path": "/api/movies",
+      "status": 201,
+      "response": "03-post.json"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/movies/39",
+      "status": 200,
+      "response": "04-put.json"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/movies/39",
+      "status": 200,
+      "response": "05-delete.json"
+    },
+    {
+      "method": "GET",
+      "path": "/api/movies/39",
+      "status": 404,
+      "response": "06-get-404.json"
+    }
+  ],
+  "sha256": {
+    "01-get-all.jpg": "03c27570dc9ded2fdb82a3a4ba916b7dde783d6103c4c3d9e77a7ca9e5e164fa",
+    "02-get-one.jpg": "a9a9ee1069ac53e1478b2fe7a6f7b1c0be067c0046667cced2512a4980fdb59f",
+    "03-post.jpg": "1dd247dd393bbca79a49bda0de3fc081ab7c78f8a7fcd59464637fd91ca41137",
+    "04-put.jpg": "6aa8d16e2fa4d0fc4e79babbffa3ffcbace88ad130fbc2b78ae6d661090eba64",
+    "05-delete.jpg": "8609d6131581cb661cb89cf3998825b4fd7f4ac5ff59a6ed46f7fdd45f40a554",
+    "06-get-404.jpg": "492f4d9470c3eeab0cd0d5379130abaa54c8160d7616884dbb4fe8046c06bce8"
+  }
+}

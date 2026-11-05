@@ -1,6 +1,6 @@
 # №9 және №10 зертханалық жұмыстар
 
-**Ең алдымен:** [Үлгіге сай 7 беттік №10 PDF есепті](output/pdf/Cinema_Lab10_Report.pdf) немесе [Word нұсқасын](output/docx/Cinema_Lab10_Report.docx) ашыңыз. Орындаған: Бақтыбек Сырым Абайұлы, ИС 24-02.
+**Ең алдымен:** [Нақты Postman скриншоттары бар 10 беттік №10 PDF есепті](output/pdf/Cinema_Lab10_Report.pdf) немесе [Word нұсқасын](output/docx/Cinema_Lab10_Report.docx) ашыңыз. Орындаған: Бақтыбек Сырым Абайұлы, ИС 24-02.
 
 ## Пакет құрамы
 
@@ -8,8 +8,10 @@
 - `docs/lab10/README.md` - орнату, API, Postman және қорғау қадамдары.
 - `docs/lab10/REPORT.md` - есептің мәтіндік нұсқасы.
 - `output/pdf/Cinema_Lab10_Report.pdf` - тапсыруға дайын қазақша есеп.
-- `postman/` - 25 сұраныстық коллекция және жергілікті environment.
-- `docs/lab10/evidence/` - нақты HTTP/браузер тесттері мен скриншоттар.
+- `postman/CinemaLab10_Demo.postman_collection.json` - талаптағы 6 сұранысты ретімен көрсету.
+- `postman/CinemaLab10.postman_collection.json` - 25 сұраныстық толық тексеру; `Local.postman_environment.json` - жергілікті environment.
+- `docs/lab10/evidence/postman-web/` - есептегі 6 нақты Postman скриншоты, JSON жауаптары және SQL тексеруі.
+- `docs/lab10/POSTMAN_DEMO.md` - қорғауда не ашу және қалай түсіндіру керегі.
 - `server/`, `public/` - жұмыс істейтін REST API және веб-интерфейс.
 - `sql/` - бұрынғы зертханалардың SQL файлдары. Осы нұсқаға `01_create_database.sql` және `02_insert_data.sql` қолданылады.
 

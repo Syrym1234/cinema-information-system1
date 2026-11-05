@@ -1,0 +1,91 @@
+- searchbox "search": PUT
+- button "Open dropdown":
+- combobox:
+  - generic: "{{baseUrl}}"
+  - generic: /api/movies/
+  - generic: "{{movieId}}"
+- button "Send":
+  - generic: Send
+- button "Send options":
+- button "Body":
+  - generic: Body
+- button "Cookies":
+  - generic: Cookies
+- tabpanel:
+  - button "button":
+    - button "button":
+      - generic: raw
+  - button "JSON":
+    - button "JSON":
+      - generic: JSON
+  - button "Schema":
+    - generic: Schema
+  - button "button": Beautify
+  - code:
+    - textbox "Editor content"
+    - generic: 
+    - generic: "1"
+    - generic: "2"
+    - generic: "3"
+    - generic: "4"
+    - generic: "5"
+    - generic: "6"
+    - generic: "7"
+    - generic: "8"
+    - generic: "{"
+    - generic: "\"title\": \"Lab10 | Жаңартылған фильм\","
+    - generic: "\"genre_id\": {{genreId}},"
+    - generic: "\"duration_min\": 110,"
+    - generic: "\"age_rating\": 12,"
+    - generic: "\"release_year\": 2026,"
+    - generic: "\"rating\": 9.1,"
+    - generic: "\"description\": \"REST API арқылы қосылған уақытша оқу"
+    - generic: фильмі."
+  - generic: Schema
+- button "Body":
+  - generic: Body
+- button "History":
+  - img "History":
+- generic: "200"
+- 'button "Response time: 182 ms"':
+- 'button "Response size: 454 B"':
+- button "Network connection info.":
+- button "Load test":
+- button:
+- button:
+- tabpanel:
+  - button "JSON":
+    - generic: JSON
+  - button "Preview":
+    - generic: Preview
+  - button "Visualize":
+    - generic: Visualize
+  - button "Toggle visualization options":
+  - button "Toggle line wrapping" [pressed]:
+  - button "Toggle response filter":
+  - button "Search in response":
+  - button "Copy response" [active]:
+  - button "Copy response link":
+  - tabpanel:
+    - code:
+      - textbox "Editor content"
+      - generic: 
+      - generic: "1"
+      - generic: "2"
+      - generic: "3"
+      - generic: "4"
+      - generic: "5"
+      - generic: "6"
+      - generic: "7"
+      - generic: "8"
+      - generic: "9"
+      - generic: "{"
+      - generic: "\"movie_id\": 39,"
+      - generic: "\"title\": \"Lab10 | Жаңартылған фильм\","
+      - generic: "\"genre_id\": 3,"
+      - generic: "\"duration_min\": 110,"
+      - generic: "\"age_rating\": 12,"
+      - generic: "\"release_year\": 2026,"
+      - generic: "\"rating\": 9.1,"
+      - generic: "\"description\": \"REST API арқылы қосылған уақытша оқу"
+      - generic: фильмі."

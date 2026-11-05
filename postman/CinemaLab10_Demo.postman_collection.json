@@ -1,0 +1,190 @@
+{
+  "info": {
+    "name": "Cinema Lab 10 | Апайға көрсету | 6 сұраныс",
+    "_postman_id": "b54af093-7392-4e74-a123-aab1ec1e83b0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "10-Lab талабындағы алты тексеру. Алдымен серверді іске қосыңыз. Сұраныстарды 01–06 ретімен орындаңыз. POST құрған уақытша фильм ғана жаңартылады және жойылады."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:3000"
+    },
+    {
+      "key": "genreId",
+      "value": ""
+    },
+    {
+      "key": "existingMovieId",
+      "value": ""
+    },
+    {
+      "key": "movieId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "01 GET барлық фильмдер",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/movies"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"JSON response\", () => pm.response.to.be.json);",
+              "pm.test(\"Movie array\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+              "pm.collectionVariables.set(\"initialCount\", pm.response.json().length);",
+              "const rows = pm.response.json();",
+              "pm.test(\"Seed movie available\", () => pm.expect(rows.length).to.be.above(0));",
+              "pm.collectionVariables.set(\"existingMovieId\", rows[0].movie_id);",
+              "pm.collectionVariables.set(\"genreId\", rows[0].genre_id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 GET ID бойынша фильм",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/movies/{{existingMovieId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Read by ID\", () => pm.expect(pm.response.json().movie_id).to.eql(Number(pm.collectionVariables.get(\"existingMovieId\"))));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 POST жаңа фильм қосу",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/movies",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Lab10 | Қазақша фильм\",\n  \"genre_id\": {{genreId}},\n  \"duration_min\": 110,\n  \"age_rating\": 12,\n  \"release_year\": 2026,\n  \"rating\": 8.5,\n  \"description\": \"REST API арқылы қосылған уақытша оқу фильмі.\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+              "pm.test(\"JSON response\", () => pm.response.to.be.json);",
+              "const movie = pm.response.json(); pm.collectionVariables.set(\"movieId\", movie.movie_id);",
+              "pm.test(\"Generated ID\", () => pm.expect(movie.movie_id).to.be.a(\"number\").above(0));",
+              "pm.test(\"Location\", () => pm.expect(pm.response.headers.get(\"Location\")).to.eql(\"/api/movies/\" + movie.movie_id));",
+              "pm.test(\"Kazakh text round trip\", () => pm.expect(movie.title).to.eql(\"Lab10 | Қазақша фильм\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 PUT фильмді жаңарту",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/movies/{{movieId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Lab10 | Жаңартылған фильм\",\n  \"genre_id\": {{genreId}},\n  \"duration_min\": 110,\n  \"age_rating\": 12,\n  \"release_year\": 2026,\n  \"rating\": 9.1,\n  \"description\": \"REST API арқылы қосылған уақытша оқу фильмі.\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"JSON response\", () => pm.response.to.be.json);",
+              "pm.test(\"Updated rating\", () => pm.expect(pm.response.json().rating).to.eql(9.1));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 DELETE тест фильмін жою",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/api/movies/{{movieId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"JSON response\", () => pm.response.to.be.json);",
+              "pm.test(\"Deleted own fixture\", () => pm.expect(pm.response.json().movie_id).to.eql(Number(pm.collectionVariables.get(\"movieId\"))));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 GET жойылған фильм үшін 404",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/movies/{{movieId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));",
+              "pm.test(\"JSON response\", () => pm.response.to.be.json);",
+              "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"MOVIE_NOT_FOUND\"));",
+              "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
