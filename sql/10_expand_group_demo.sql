@@ -18,7 +18,7 @@ INSERT INTO @Groups VALUES
     (4, 'DEMO-GROUP-4', 131, 43, 'keep'),
     (5, 'DEMO-GROUP-5', 168, 30, 'keep'),
     (6, 'DEMO-GROUP-6', 167, 26, 'keep'),
-    (7, 'DEMO-TEAM-20261105-01', 329, 34, 'plain'),
+    (7, 'DEMO-TEAM-20261105-01', 329, 1, 'plain'),
     (8, 'DEMO-TEAM-20261105-02', 334, 3, 'plain'),
     (9, 'DEMO-TEAM-20261105-03', 339, 7, 'plain'),
     (10, 'DEMO-TEAM-20261105-04', 330, 12, 'plain'),

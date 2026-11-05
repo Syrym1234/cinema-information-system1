@@ -41,26 +41,26 @@ const stripGo = sql => sql.replace(/^\s*GO\s*$/gmi, '');
   const expected=new Map();
   const memberList=(group,exclude) => [...group.members.keys()].filter(id=>id!==exclude)
     .sort((a,b)=>a-b).map(id=>`${id} — ${customers.get(id).full_name}`).join('; ');
-  for (const group of groups.values()) if(group.qualifies) {
-    for (const [id,count] of group.members) expected.set(`${group.g.group_id}:${id}`,{group,id,count});
-  }
+  const qualifying=[...groups.values()].filter(g=>g.qualifies).sort((a,b)=>
+    a.session.start_at-b.session.start_at || a.g.group_id-b.g.group_id);
+  for (const group of qualifying.slice(0,6)) expected.set(group.g.group_id,group);
   assert.equal(result.length,expected.size,'Filtered row count');
   const seen=new Set();
   for(const row of result) {
-    const key=`${row['Топтық тапсырыс ID']}:${row['Клиент ID']}`;
-    assert(!seen.has(key),'One row per customer and group'); seen.add(key);
-    const exp=expected.get(key); assert(exp,`Unexpected filtered row ${key}`);
-    const {group,id,count}=exp;
-    assert.equal(row['Клиенттің аты-жөні'],customers.get(id).full_name);
+    const key=row['Топтық тапсырыс ID'];
+    assert(!seen.has(key),'One row per group'); seen.add(key);
+    const group=expected.get(key); assert(group,`Unexpected filtered group ${key}`);
+    assert.equal(row['Ұйымдастырушы ID'],group.g.organizer_customer_id);
     assert.equal(row['Топ ұйымдастырушысы'],customers.get(group.g.organizer_customer_id).full_name);
-    assert.equal(row['Бірге брондағандар'],memberList(group,id)||'Басқа клиент тіркелмеген');
-    assert.equal(row['Клиент брондаған орын саны'],count);
+    assert.equal(row['Бірге брондағандар'],memberList(group,group.g.organizer_customer_id)||'Басқа клиент тіркелмеген');
     assert.equal(row['Адам саны'],group.seats.length);
     assert.equal(row['Тапсырыс берген клиент саны'],group.members.size);
     assert.equal(row['Фильм'],movies.get(group.session.movie_id).title);
     assert.equal(row['Сеанс бағасы'],group.session.base_price);
     assert(Math.abs(row['Барлық сеанстың орташа бағасы']-average)<0.01);
   }
+  assert.equal(new Set(result.map(r=>r['Ұйымдастырушы ID'])).size,result.length,'Different organizers in compact result');
+  assert.equal(new Set(data.GroupBookings.map(g=>g.organizer_customer_id)).size,groups.size,'Different organizers in all demo groups');
   const all=(await pool.request().query(stripGo(fs.readFileSync('sql/11_all_group_bookings.sql','utf8')))).recordset;
   assert.equal(all.length,groups.size);
   for(const row of all) {
@@ -77,12 +77,12 @@ const stripGo = sql => sql.replace(/^\s*GO\s*$/gmi, '');
       AND r.reservation_status IN ('held','paid') AND fo.order_status<>'cancelled' AND foi.quantity>0
   )\nORDER BY s.start_at`);
   const strictResult=(await pool.request().query(stripGo(strict))).recordset;
-  assert.equal(strictResult.length,[...expected.values()].filter(e=>e.group.food.length>0).length);
+  assert.equal(strictResult.length,qualifying.filter(g=>g.food.length>0).slice(0,6).length);
   const popcornControl=[...groups.values()].find(g=>g.g.invite_code==='DEMO-TEAM-20261105-13');
   const cheapControl=[...groups.values()].find(g=>g.g.invite_code==='DEMO-TEAM-20261105-14');
   assert(popcornControl.popcorn && !popcornControl.qualifies);
   assert(cheapControl.session.base_price<=average && !cheapControl.qualifies);
-  const example=result.find(row=>row['Топтық тапсырыс ID']===1 && row['Клиент ID']===34);
+  const example=result.find(row=>row['Топтық тапсырыс ID']===1 && row['Ұйымдастырушы ID']===34);
   if (example) assert.equal(example['Бірге брондағандар'],
     '1 — Дарханбай Қуаныш; 2 — Данияров Ерасыл; 3 — Меделханов Бағыжан; 4 — Заманбек Аманжол');
   const summary={verified_at:new Date().toISOString(),database:'CinemaLabDB',
@@ -90,7 +90,10 @@ const stripGo = sql => sql.replace(/^\s*GO\s*$/gmi, '');
     total_group_seats:[...groups.values()].reduce((n,g)=>n+g.seats.length,0),
     total_valid_reserved_seats:data.ReservationSeats.filter(rs=>data.Reservations.some(r=>r.reservation_id===rs.reservation_id && valid(r))).length,
     qualifying_groups:[...groups.values()].filter(g=>g.qualifies).length,
-    qualifying_customer_rows:result.length,qualifying_group_seats:[...groups.values()].filter(g=>g.qualifies).reduce((n,g)=>n+g.seats.length,0),
+    displayed_groups:result.length,display_limit:6,
+    qualifying_customer_pairs:qualifying.reduce((n,g)=>n+g.members.size,0),
+    qualifying_group_seats:qualifying.reduce((n,g)=>n+g.seats.length,0),
+    all_organizers_distinct:true,
     food_order_required_rows:strictResult.length,popcorn_group_excluded:true,cheap_group_excluded:true,
     independent_counts_and_companions_match:true,example};
   fs.mkdirSync('docs/group-booking-evidence',{recursive:true});

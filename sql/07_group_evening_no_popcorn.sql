@@ -1,14 +1,14 @@
 /*
   Тапсырма: кешкі сеансқа жасалған, бағасы барлық сеанстардың
   орташа бағасынан жоғары және тағам тапсырыстарында попкорн жоқ
-  топтық броньдарды, фильмді, клиенттің ID-і мен аты-жөнін шығару.
+  топтық броньдарды, фильмді және қатысушылардың ID-і мен аты-жөнін шығару.
 
   Нақты база: CinemaLabDB (CinemaSchoolDB емес).
   Кешкі уақыт: 18:00 және одан кейін.
   held / paid броньдары ескеріледі; cancelled / expired ескерілмейді.
   Бір брондалған орын бір көрермен деп есептеледі.
-  Бір жол = бір топтағы бір клиент; оның бірнеше броні біріктіріледі.
-  «Бірге брондағандар» осы топтағы басқа брондаушы клиенттерді көрсетеді.
+  Бір жол = бір топ. Уақыт бойынша алғашқы 6 сәйкес топ көрсетіледі.
+  «Бірге брондағандар» ұйымдастырушымен бірге брондаған клиенттерді көрсетеді.
   Әр орынға отырған адамның жеке ID-і сақталмайды; орын саны бөлек беріледі.
   Тағам тапсырысы мүлде жоқ топтар да попкорнсыз деп есептеледі.
   Тек SELECT орындалады; деректер өзгертілмейді.
@@ -16,10 +16,9 @@
 USE CinemaLabDB;
 GO
 
-SELECT
+SELECT TOP (6)
     gb.group_id AS [Топтық тапсырыс ID],
-    c.customer_id AS [Клиент ID],
-    c.full_name AS [Клиенттің аты-жөні],
+    organizer.customer_id AS [Ұйымдастырушы ID],
     organizer.full_name AS [Топ ұйымдастырушысы],
     COALESCE((
         SELECT STRING_AGG(
@@ -32,7 +31,7 @@ SELECT
             WHERE r2.group_id = gb.group_id
               AND r2.session_id = gb.session_id
               AND r2.reservation_status IN ('held', 'paid')
-              AND r2.customer_id <> c.customer_id
+              AND r2.customer_id <> organizer.customer_id
               AND EXISTS (
                   SELECT 1 FROM dbo.ReservationSeats AS rs2
                   WHERE rs2.reservation_id = r2.reservation_id
@@ -46,9 +45,7 @@ SELECT
     CAST((SELECT AVG(s2.base_price)
           FROM dbo.Sessions AS s2) AS DECIMAL(10, 2)) AS [Барлық сеанстың орташа бағасы],
 
-    p.seat_count AS [Клиент брондаған орын саны],
-
-    -- Бүкіл топтың орын саны әр клиенттің жолында қайталанады.
+    -- Бір топ бір рет көрсетілетіндіктен, жалпы орын саны қайталанбайды.
     (SELECT COUNT(*)
      FROM dbo.ReservationSeats AS rs
      INNER JOIN dbo.Reservations AS r
@@ -72,24 +69,22 @@ FROM dbo.GroupBookings AS gb
 INNER JOIN dbo.Customers AS organizer ON organizer.customer_id = gb.organizer_customer_id
 INNER JOIN dbo.Sessions AS s ON s.session_id = gb.session_id
 INNER JOIN dbo.Movies AS m ON m.movie_id = s.movie_id
-INNER JOIN (
-    -- Бір клиенттің осы топтағы барлық жарамды броньдарының орындары.
-    SELECT r.group_id, r.session_id, r.customer_id, COUNT(*) AS seat_count
-    FROM dbo.Reservations AS r
-    INNER JOIN dbo.ReservationSeats AS rs
-        ON rs.reservation_id = r.reservation_id
-       AND rs.session_id = r.session_id
-    WHERE r.reservation_status IN ('held', 'paid')
-    GROUP BY r.group_id, r.session_id, r.customer_id
-) AS p ON p.group_id = gb.group_id AND p.session_id = gb.session_id
-INNER JOIN dbo.Customers AS c ON c.customer_id = p.customer_id
-
 WHERE CAST(s.start_at AS TIME) >= CAST('18:00:00' AS TIME)
 
   -- Бір мән қайтаратын ішкі сұраныс: барлық сеанстың орташа бағасы.
   AND s.base_price > (
       SELECT AVG(s2.base_price)
       FROM dbo.Sessions AS s2
+  )
+
+  -- Топта кемінде бір жарамды брондалған орын бар.
+  AND EXISTS (
+      SELECT 1
+      FROM dbo.Reservations AS r
+      INNER JOIN dbo.ReservationSeats AS rs ON rs.reservation_id = r.reservation_id
+      WHERE r.group_id = gb.group_id AND r.session_id = gb.session_id
+        AND rs.session_id = gb.session_id
+        AND r.reservation_status IN ('held', 'paid')
   )
 
   -- Топтағы кез келген броньның тағам тапсырысында попкорн болса,
@@ -113,7 +108,7 @@ WHERE CAST(s.start_at AS TIME) >= CAST('18:00:00' AS TIME)
              OR LOWER(mi.item_name) LIKE N'%popcorn%')
   )
 
-ORDER BY s.start_at, gb.group_id, c.customer_id;
+ORDER BY s.start_at, gb.group_id;
 GO
 
 /*
