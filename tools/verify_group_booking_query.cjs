@@ -44,7 +44,8 @@ const stripGo = sql => sql.replace(/^\s*GO\s*$/gmi, '');
   const paymentSql=fs.readFileSync('sql/15_group_payment_details.sql','utf8');
   const foodSql=fs.readFileSync('sql/16_group_food_orders.sql','utf8');
   const matchingOrdersSql=fs.readFileSync('sql/18_matching_food_orders.sql','utf8');
-  assert(!/\b(COALESCE|ISNULL|STRING_AGG|CONCAT|APPLY|ROW_NUMBER)\s*\(/i.test(main+detail+allSql+paymentSql+foodSql+matchingOrdersSql),
+  const selectedPaymentsSql=fs.readFileSync('sql/19_selected_group_payments.sql','utf8');
+  assert(!/\b(COALESCE|ISNULL|STRING_AGG|CONCAT|APPLY|ROW_NUMBER)\s*\(/i.test(main+detail+allSql+paymentSql+foodSql+matchingOrdersSql+selectedPaymentsSql),
     'Student queries must use the requested basic SQL approach');
   const result=(await pool.request().query(stripGo(main))).recordset;
   const expected=new Map();
@@ -154,6 +155,21 @@ const stripGo = sql => sql.replace(/^\s*GO\s*$/gmi, '');
     }
   }
   assert.deepEqual(matchingOrders,expectedOrders,'Only actual orders for the matching six groups');
+  const selectedPayments=(await pool.request().query(stripGo(selectedPaymentsSql))).recordset;
+  const expectedSelectedPayments=[];
+  for(const group of qualifying.slice(0,6)){
+    for(const r of group.paidReservations.filter(r=>r.reservation_status==='paid').sort((a,b)=>a.customer_id-b.customer_id)){
+      const payment=data.Payments.find(p=>p.reservation_id===r.reservation_id&&p.payment_status==='demo_paid');
+      const seats=group.seats.filter(rs=>rs.reservation_id===r.reservation_id);
+      const amount=seats.reduce((n,rs)=>n+rs.seat_price,0);
+      assert.equal(payment.amount,amount);
+      expectedSelectedPayments.push({'Топ ID':group.g.group_id,'Клиент ID':r.customer_id,
+        'Төлеген клиент':customers.get(r.customer_id).full_name,'Фильм':movies.get(group.session.movie_id).title,
+        'Сеанс':group.session.start_at,'Брондаған орын саны':seats.length,'Броньдағы билеттер құны':amount,
+        'Төлеген сомасы':payment.amount,'Төлем ID':payment.payment_id,'Төлем мәртебесі':payment.payment_status,'Төлем уақыты':payment.paid_at});
+    }
+  }
+  assert.deepEqual(selectedPayments,expectedSelectedPayments,'Payments belong to the same selected six groups');
   const strict=main.replace('\nGROUP BY gb.group_id',`\nAND EXISTS (
     SELECT 1 FROM dbo.Reservations r JOIN dbo.FoodOrders fo ON fo.reservation_id=r.reservation_id
     JOIN dbo.FoodOrderItems foi ON foi.food_order_id=fo.food_order_id
@@ -194,6 +210,8 @@ const stripGo = sql => sql.replace(/^\s*GO\s*$/gmi, '');
     group_ticket_payments:expectedPaid.reduce((n,r)=>n+r['Төлеген сомасы'],0),
     matching_food_orders:new Set(matchingOrders.map(r=>r['Тапсырыс ID'])).size,
     matching_food_order_lines:matchingOrders.length,matching_order_scope_verified:true,
+    selected_payment_rows:selectedPayments.length,selected_payment_group_ids:[...new Set(selectedPayments.map(r=>r['Топ ID']))],
+    selected_payment_scope_verified:true,
     food_order_required_rows:strictResult.length,popcorn_group_excluded:true,cheap_group_excluded:true,
     independent_counts_and_companions_match:true,example};
   fs.mkdirSync('docs/group-booking-evidence',{recursive:true});

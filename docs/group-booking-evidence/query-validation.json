@@ -1,5 +1,5 @@
 {
-  "verified_at": "2026-11-05T10:39:21.358Z",
+  "verified_at": "2026-11-05T10:48:32.341Z",
   "database": "CinemaLabDB",
   "total_groups": 20,
   "group_booking_customer_rows": 75,
@@ -26,6 +26,16 @@
   "matching_food_orders": 6,
   "matching_food_order_lines": 12,
   "matching_order_scope_verified": true,
+  "selected_payment_rows": 24,
+  "selected_payment_group_ids": [
+    1,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "selected_payment_scope_verified": true,
   "food_order_required_rows": 6,
   "popcorn_group_excluded": true,
   "cheap_group_excluded": true,
