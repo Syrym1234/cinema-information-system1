@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node server/index.js",
     "test": "node --test tests/*.test.js",
+    "test:tables": "npx --yes newman@6.2.3 run postman/CinemaLab10_AllTables.postman_collection.json -e postman/Local.postman_environment.json --reporters cli,json --reporter-json-export docs/lab10/evidence/newman-tables-results.json",
     "test:postman": "npx --yes newman@6.2.3 run postman/CinemaLab10.postman_collection.json -e postman/Local.postman_environment.json --reporters cli,json --reporter-json-export docs/lab10/evidence/newman-results.json"
   },
   "engines": {

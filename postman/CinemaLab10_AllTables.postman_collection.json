@@ -1,0 +1,593 @@
+{
+  "info": {
+    "name": "Cinema Lab 10 | Барлық 7 кесте",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Жеті кестенің толық жолдары, ID бойынша оқу, сүзу, сұрыптау және қате сұраныстар. Тек оқу тексерулері; деректер өзгермейді."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:3000"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 Барлық жеті кесте",
+      "item": [
+        {
+          "name": "00 Барлық кестелер және жолдар саны",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "const rows=pm.response.json();pm.test('Seven tables',()=>pm.expect(rows.length).to.eql(7));",
+                  "pm.collectionVariables.set('tableCounts',JSON.stringify(Object.fromEntries(rows.map(r=>[r.table,r.row_count]))));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Genres | барлық жолдар",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Genres"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "const rows=pm.response.json();",
+                  "pm.test('Full table row count',()=>pm.expect(rows.length).to.eql(JSON.parse(pm.collectionVariables.get('tableCounts'))['Genres']));",
+                  "pm.test('All table columns',()=>rows.forEach(row=>pm.expect(Object.keys(row).sort()).to.eql([\"genre_id\",\"genre_name\"])));",
+                  "pm.collectionVariables.set('genre_id',rows.length ? rows[0].genre_id : 1);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Genres | ID бойынша",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Genres/{{genre_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "pm.test('Read expected ID',()=>pm.expect(pm.response.json().genre_id).to.eql(Number(pm.collectionVariables.get('genre_id'))));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Movies | барлық жолдар",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Movies"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "const rows=pm.response.json();",
+                  "pm.test('Full table row count',()=>pm.expect(rows.length).to.eql(JSON.parse(pm.collectionVariables.get('tableCounts'))['Movies']));",
+                  "pm.test('All table columns',()=>rows.forEach(row=>pm.expect(Object.keys(row).sort()).to.eql([\"age_rating\",\"description\",\"duration_min\",\"genre_id\",\"movie_id\",\"rating\",\"release_year\",\"title\"])));",
+                  "pm.collectionVariables.set('movie_id',rows.length ? rows[0].movie_id : 1);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Movies | ID бойынша",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Movies/{{movie_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "pm.test('Read expected ID',()=>pm.expect(pm.response.json().movie_id).to.eql(Number(pm.collectionVariables.get('movie_id'))));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Halls | барлық жолдар",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Halls"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "const rows=pm.response.json();",
+                  "pm.test('Full table row count',()=>pm.expect(rows.length).to.eql(JSON.parse(pm.collectionVariables.get('tableCounts'))['Halls']));",
+                  "pm.test('All table columns',()=>rows.forEach(row=>pm.expect(Object.keys(row).sort()).to.eql([\"capacity\",\"hall_id\",\"hall_name\"])));",
+                  "pm.collectionVariables.set('hall_id',rows.length ? rows[0].hall_id : 1);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Halls | ID бойынша",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Halls/{{hall_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "pm.test('Read expected ID',()=>pm.expect(pm.response.json().hall_id).to.eql(Number(pm.collectionVariables.get('hall_id'))));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sessions | барлық жолдар",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Sessions"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "const rows=pm.response.json();",
+                  "pm.test('Full table row count',()=>pm.expect(rows.length).to.eql(JSON.parse(pm.collectionVariables.get('tableCounts'))['Sessions']));",
+                  "pm.test('All table columns',()=>rows.forEach(row=>pm.expect(Object.keys(row).sort()).to.eql([\"hall_id\",\"movie_id\",\"price\",\"session_id\",\"start_at\",\"status\"])));",
+                  "pm.collectionVariables.set('session_id',rows.length ? rows[0].session_id : 1);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sessions | ID бойынша",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Sessions/{{session_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "pm.test('Read expected ID',()=>pm.expect(pm.response.json().session_id).to.eql(Number(pm.collectionVariables.get('session_id'))));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Customers | барлық жолдар",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Customers"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "const rows=pm.response.json();",
+                  "pm.test('Full table row count',()=>pm.expect(rows.length).to.eql(JSON.parse(pm.collectionVariables.get('tableCounts'))['Customers']));",
+                  "pm.test('All table columns',()=>rows.forEach(row=>pm.expect(Object.keys(row).sort()).to.eql([\"customer_id\",\"email\",\"full_name\"])));",
+                  "pm.collectionVariables.set('customer_id',rows.length ? rows[0].customer_id : 1);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Customers | ID бойынша",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Customers/{{customer_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "pm.test('Read expected ID',()=>pm.expect(pm.response.json().customer_id).to.eql(Number(pm.collectionVariables.get('customer_id'))));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tickets | барлық жолдар",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Tickets"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "const rows=pm.response.json();",
+                  "pm.test('Full table row count',()=>pm.expect(rows.length).to.eql(JSON.parse(pm.collectionVariables.get('tableCounts'))['Tickets']));",
+                  "pm.test('All table columns',()=>rows.forEach(row=>pm.expect(Object.keys(row).sort()).to.eql([\"customer_id\",\"price\",\"purchased_at\",\"seat_number\",\"session_id\",\"ticket_id\"])));",
+                  "pm.collectionVariables.set('ticket_id',rows.length ? rows[0].ticket_id : 1);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tickets | ID бойынша",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Tickets/{{ticket_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "pm.test('Read expected ID',()=>pm.expect(pm.response.json().ticket_id).to.eql(Number(pm.collectionVariables.get('ticket_id'))));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "MenuItems | барлық жолдар",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/MenuItems"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "const rows=pm.response.json();",
+                  "pm.test('Full table row count',()=>pm.expect(rows.length).to.eql(JSON.parse(pm.collectionVariables.get('tableCounts'))['MenuItems']));",
+                  "pm.test('All table columns',()=>rows.forEach(row=>pm.expect(Object.keys(row).sort()).to.eql([\"category\",\"item_name\",\"menu_item_id\",\"price\"])));",
+                  "pm.collectionVariables.set('menu_item_id',rows.length ? rows[0].menu_item_id : 1);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "MenuItems | ID бойынша",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/MenuItems/{{menu_item_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "pm.test('Read expected ID',()=>pm.expect(pm.response.json().menu_item_id).to.eql(Number(pm.collectionVariables.get('menu_item_id'))));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 Сүзу және қате сұраныстар",
+      "item": [
+        {
+          "name": "Фильмдер | рейтинг >= 8, кему реті",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Movies?min_rating=8&sort=rating&order=desc"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "const rows=pm.response.json();pm.test('Rating filter and order',()=>{pm.expect(rows.length).to.be.above(0);rows.forEach((r,i)=>{pm.expect(r.rating).to.be.at.least(8);if(i)pm.expect(rows[i-1].rating).to.be.at.least(r.rating);});});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Фильмдер | жанр бойынша",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Movies?genre_id={{genre_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "pm.test('Genre filter',()=>pm.response.json().forEach(r=>pm.expect(r.genre_id).to.eql(Number(pm.collectionVariables.get('genre_id')))));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Фильмдер | атауынан іздеу",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Movies?search=%D0%A3%D0%B0%D2%9B%D1%8B%D1%82"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "const rows=pm.response.json();pm.test('Kazakh search',()=>{pm.expect(rows.length).to.be.above(0);rows.forEach(r=>pm.expect(r.title+' '+r.description).to.include('Уақыт'));});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Сеанстар | фильм бойынша",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Sessions?movie_id={{movie_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "pm.test('Movie filter',()=>pm.response.json().forEach(r=>pm.expect(r.movie_id).to.eql(Number(pm.collectionVariables.get('movie_id')))));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Мәзір | баға бойынша, 3 жол",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/MenuItems?min_price=1&sort=price&order=desc&limit=3"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "const rows=pm.response.json();pm.test('Price, limit and order',()=>{pm.expect(rows.length).to.be.at.most(3);rows.forEach((r,i)=>{pm.expect(r.price).to.be.at.least(1);if(i)pm.expect(rows[i-1].price).to.be.at.least(r.price);});});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Белгісіз кесте",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/sys.tables"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', () => pm.response.to.have.status(404));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "pm.test('Code',()=>pm.expect(pm.response.json().code).to.eql('TABLE_NOT_FOUND'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "SQL өрнегі бар sort қабылданбайды",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Movies?sort=rating%20DESC%3B%20DROP%20TABLE%20Movies"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "pm.test('Code',()=>pm.expect(pm.response.json().code).to.eql('INVALID_QUERY'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Қате ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Movies/0"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "pm.test('Code',()=>pm.expect(pm.response.json().code).to.eql('INVALID_ID'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Жоқ ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Movies/2147483647"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', () => pm.response.to.have.status(404));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "pm.test('Code',()=>pm.expect(pm.response.json().code).to.eql('ROW_NOT_FOUND'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Қате параметр",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Movies?unknown=x"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "pm.test('Code',()=>pm.expect(pm.response.json().code).to.eql('INVALID_QUERY'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Кестені қарау маршрутына POST",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/tables/Movies"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 405', () => pm.response.to.have.status(405));",
+                  "pm.test('JSON response', () => pm.response.to.be.json);",
+                  "pm.test('Code',()=>pm.expect(pm.response.json().code).to.eql('METHOD_NOT_ALLOWED'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

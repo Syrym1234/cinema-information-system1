@@ -92,8 +92,8 @@ replacements={
 8:'2. Қолданылған құралдар',
 9:'Visual Studio Code бағдарламалық кодты жазу үшін қолданылды. Node.js v24.20.0 және Express серверді іске қосады; mssql, msnodesqlv8 және ODBC Driver 17 Windows Authentication арқылы SQL Server-ге қосылады. Postman коллекциясы Newman 6.2.3 арқылы орындалды. Скриншоттар браузерлік HTTP клиентінен және SQL Server SELECT нәтижелерінен алынды.',
 10:'3. Жүйе және дерекқор құрылымы',
-11:'SQL Server instance: .\\SQLEXPRESS. Деректер қоры: CinemaSchoolDB. Movies кестесінің өрістері: movie_id (INT, PK), title (NVARCHAR), genre_id (INT, FK), duration_min, age_rating, release_year (INT), rating (DECIMAL) және description (NVARCHAR). Movies кестесі Genres және Sessions кестелерімен байланысқан.',
-12:'Жоба құрылымы: server/db.js деректер қорына қосылуды басқарады; server/movies.js CRUD маршруттарын өңдейді; server/validation.js кіріс деректерін тексереді; server/index.js Express серверін іске қосады; public/catalog.html және public/catalog.js каталог интерфейсін ұсынады.',
+11:'SQL Server instance: .\\SQLEXPRESS. Деректер қоры: CinemaSchoolDB. Жеті кесте бар: Genres, Movies, Halls, Sessions, Customers, Tickets және MenuItems. GET /api/tables олардың атауын, бағандарын және жолдар санын береді. GET /api/tables/Movies сияқты адрестер барлық жолды, ал /api/tables/Movies/1 жеке жазбаны оқиды.',
+12:'Жоба құрылымы: server/db.js базаға қосылады; server/movies.js фильмдердің CRUD маршруттарын өңдейді; server/tables.js жеті кестені оқиды; server/table-query.js іздеу мен сүзуді тексереді. server/index.js серверді, public/catalog.html және public/catalog.js каталог интерфейсін іске қосады. SQL мәндері параметрленеді; кесте және баған атаулары бекітілген тізімнен алынады.',
 13:'4. Орындалу барысы',
 14:'4.1. Node.js ортасын дайындау',
 15:'Жобаның түбірінде npm ci командасымен тәуелділіктер орнатылды. .env.example негізінде .env файлы бапталды. Сервер npm start арқылы http://127.0.0.1:3000 мекенжайында іске қосылды.',
@@ -134,7 +134,7 @@ if desktop:
         30:'4-сурет. Postman PUT жаңартылған рейтинг 9.1 200 OK.',
         32:'5-сурет. Postman DELETE тест фильмі жойылды 200 OK.',
         34:f'6-сурет. Postman GET жойылған ID={mid} үшін 404 Not Found.',
-        55:f'Cinema Information System жобасындағы REST API SQL Server деректер қорымен байланыстырылды. {client} клиентінде фильмдер тізімін және жеке фильмді оқу, жаңа фильм қосу, жаңарту, жою және жойылған фильмді іздеу орындалды. 200, 201 және 404 жауаптары нақты бағдарламада тексерілді. Қосымша Postman коллекциясының 25 сұранысы мен 94 assertion Newman арқылы сәтті өтті. Клиент, Express сервері және SQL Server арасындағы әрекеттесу тәжірибеде көрсетілді.'})
+        55:f'Cinema Information System жобасындағы REST API SQL Server деректер қорымен байланыстырылды. {client} клиентінде фильмдерді оқу, қосу, жаңарту, жою және жойылған фильмді іздеу орындалды. Негізгі коллекцияның 25 сұранысы мен 94 assertion сәтті өтті. Жеті кестені толық оқу үшін қосымша 26 Postman сұранысы мен 85 assertion тексерілді. Әр кестенің барлық жолы және бағаны SQL Server нәтижесімен салыстырылды. Клиент, Express сервері және SQL Server арасындағы әрекеттесу тәжірибеде көрсетілді.'})
 for i,value in replacements.items():text(paras[i],value)
 
 # Keep heading/answer and image/caption pairs together. Preserve the source rhythm.

@@ -20,9 +20,9 @@ Visual Studio Code бағдарламалық кодты жазу үшін қо�
 
 ## 3. Жүйе және дерекқор құрылымы
 
-SQL Server instance: .\SQLEXPRESS. Деректер қоры: CinemaSchoolDB. Movies кестесінің өрістері: movie_id (INT, PK), title (NVARCHAR), genre_id (INT, FK), duration_min, age_rating, release_year (INT), rating (DECIMAL) және description (NVARCHAR). Movies кестесі Genres және Sessions кестелерімен байланысқан.
+SQL Server instance: .\SQLEXPRESS. Деректер қоры: CinemaSchoolDB. Жеті кесте бар: Genres, Movies, Halls, Sessions, Customers, Tickets және MenuItems. GET /api/tables олардың атауын, бағандарын және жолдар санын береді. GET /api/tables/Movies сияқты адрестер барлық жолды, ал /api/tables/Movies/1 жеке жазбаны оқиды.
 
-Жоба құрылымы: server/db.js деректер қорына қосылуды басқарады; server/movies.js CRUD маршруттарын өңдейді; server/validation.js кіріс деректерін тексереді; server/index.js Express серверін іске қосады; public/catalog.html және public/catalog.js каталог интерфейсін ұсынады.
+Жоба құрылымы: server/db.js базаға қосылады; server/movies.js фильмдердің CRUD маршруттарын өңдейді; server/tables.js жеті кестені оқиды; server/table-query.js іздеу мен сүзуді тексереді. server/index.js серверді, public/catalog.html және public/catalog.js каталог интерфейсін іске қосады. SQL мәндері параметрленеді; кесте және баған атаулары бекітілген тізімнен алынады.
 
 ## 4. Орындалу барысы
 
@@ -141,6 +141,6 @@ Postman-да әдіс пен URL таңдалады. POST және PUT үшін 
 
 ## 7. Қорытынды
 
-Cinema Information System жобасындағы REST API SQL Server деректер қорымен байланыстырылды. Postman Web клиентінде фильмдер тізімін және жеке фильмді оқу, жаңа фильм қосу, жаңарту, жою және жойылған фильмді іздеу орындалды. 200, 201 және 404 жауаптары нақты бағдарламада тексерілді. Қосымша Postman коллекциясының 25 сұранысы мен 94 assertion Newman арқылы сәтті өтті. Клиент, Express сервері және SQL Server арасындағы әрекеттесу тәжірибеде көрсетілді.
+Cinema Information System жобасындағы REST API SQL Server деректер қорымен байланыстырылды. Postman Web клиентінде фильмдерді оқу, қосу, жаңарту, жою және жойылған фильмді іздеу орындалды. Негізгі коллекцияның 25 сұранысы мен 94 assertion сәтті өтті. Жеті кестені толық оқу үшін қосымша 26 Postman сұранысы мен 85 assertion тексерілді. Әр кестенің барлық жолы және бағаны SQL Server нәтижесімен салыстырылды. Клиент, Express сервері және SQL Server арасындағы әрекеттесу тәжірибеде көрсетілді.
 
 Жұмыс жергілікті оқу ортасында тексерілді. Уақытша тест фильмдері тазаланып, бастапқы каталогтағы 24 фильм сақталды.

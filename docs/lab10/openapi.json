@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Cinema Lab 10 REST API",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "Educational local CRUD API using Node.js, Express and Microsoft SQL Server. Existing cinema domain retained from Labs 6–9. No authentication: bind to loopback for this lab. Request body limit: 16 KB."
   },
   "servers": [
@@ -29,6 +29,16 @@
               }
             }
           },
+          "405": {
+            "description": "Method not allowed (Allow header)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal server error",
             "content": {
@@ -41,16 +51,6 @@
           },
           "503": {
             "description": "Database unavailable",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "405": {
-            "description": "Method not allowed (Allow header)",
             "content": {
               "application/json": {
                 "schema": {
@@ -112,6 +112,16 @@
               }
             }
           },
+          "405": {
+            "description": "Method not allowed (Allow header)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
           "413": {
             "description": "Payload exceeds 16 KB",
             "content": {
@@ -144,16 +154,6 @@
           },
           "503": {
             "description": "Database unavailable",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "405": {
-            "description": "Method not allowed (Allow header)",
             "content": {
               "application/json": {
                 "schema": {
@@ -220,6 +220,16 @@
               }
             }
           },
+          "405": {
+            "description": "Method not allowed (Allow header)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal server error",
             "content": {
@@ -232,16 +242,6 @@
           },
           "503": {
             "description": "Database unavailable",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "405": {
-            "description": "Method not allowed (Allow header)",
             "content": {
               "application/json": {
                 "schema": {
@@ -305,6 +305,16 @@
               }
             }
           },
+          "405": {
+            "description": "Method not allowed (Allow header)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
           "413": {
             "description": "Payload exceeds 16 KB",
             "content": {
@@ -337,16 +347,6 @@
           },
           "503": {
             "description": "Database unavailable",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "405": {
-            "description": "Method not allowed (Allow header)",
             "content": {
               "application/json": {
                 "schema": {
@@ -403,6 +403,16 @@
               }
             }
           },
+          "405": {
+            "description": "Method not allowed (Allow header)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
           "409": {
             "description": "Movie has sessions",
             "content": {
@@ -425,16 +435,6 @@
           },
           "503": {
             "description": "Database unavailable",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "405": {
-            "description": "Method not allowed (Allow header)",
             "content": {
               "application/json": {
                 "schema": {
@@ -573,6 +573,416 @@
           },
           "503": {
             "description": "Database unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tables": {
+      "get": {
+        "summary": "List all seven tables, columns and exact row counts",
+        "operationId": "listTables",
+        "responses": {
+          "200": {
+            "description": "Table catalog",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TableInfo"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Invalid query, ID, or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Invalid query, ID, or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tables/{name}": {
+      "get": {
+        "summary": "Read every row and every column in one table",
+        "operationId": "readTable",
+        "description": "Read-only. No default row limit. Search, sorting, supported foreign keys and rating/price ranges are parameterized. Unknown query parameters return 400.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Genres",
+                "Movies",
+                "Halls",
+                "Sessions",
+                "Customers",
+                "Tickets",
+                "MenuItems"
+              ]
+            },
+            "description": "Case-insensitive whitelist of the seven CinemaSchoolDB tables."
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "description": "Literal text search in text columns. Unsupported for Tickets."
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "An actual column in this table; defaults to its primary key."
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            },
+            "description": "Sort direction."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000
+            },
+            "description": "Optional; omitting it returns every row."
+          },
+          {
+            "name": "genre_id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2147483647
+            },
+            "description": "Exact foreign-key filter, only when that foreign key exists in this table."
+          },
+          {
+            "name": "movie_id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2147483647
+            },
+            "description": "Exact foreign-key filter, only when that foreign key exists in this table."
+          },
+          {
+            "name": "hall_id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2147483647
+            },
+            "description": "Exact foreign-key filter, only when that foreign key exists in this table."
+          },
+          {
+            "name": "session_id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2147483647
+            },
+            "description": "Exact foreign-key filter, only when that foreign key exists in this table."
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2147483647
+            },
+            "description": "Exact foreign-key filter, only when that foreign key exists in this table."
+          },
+          {
+            "name": "min_rating",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 10,
+              "multipleOf": 0.1
+            },
+            "description": "Movies only."
+          },
+          {
+            "name": "max_rating",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 10,
+              "multipleOf": 0.1
+            },
+            "description": "Movies only."
+          },
+          {
+            "name": "min_price",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 99999999.99,
+              "multipleOf": 0.01
+            },
+            "description": "Tables with a price column only."
+          },
+          {
+            "name": "max_price",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 99999999.99,
+              "multipleOf": 0.01
+            },
+            "description": "Tables with a price column only."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full table or filtered rows",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/TableGenres"
+                      },
+                      {
+                        "$ref": "#/components/schemas/TableMovies"
+                      },
+                      {
+                        "$ref": "#/components/schemas/TableHalls"
+                      },
+                      {
+                        "$ref": "#/components/schemas/TableSessions"
+                      },
+                      {
+                        "$ref": "#/components/schemas/TableCustomers"
+                      },
+                      {
+                        "$ref": "#/components/schemas/TableTickets"
+                      },
+                      {
+                        "$ref": "#/components/schemas/TableMenuItems"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query, ID, or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Invalid query, ID, or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Invalid query, ID, or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Invalid query, ID, or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Invalid query, ID, or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tables/{name}/{id}": {
+      "get": {
+        "summary": "Read one table row by primary key",
+        "operationId": "readTableRow",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Genres",
+                "Movies",
+                "Halls",
+                "Sessions",
+                "Customers",
+                "Tickets",
+                "MenuItems"
+              ]
+            },
+            "description": "Case-insensitive whitelist of the seven CinemaSchoolDB tables."
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2147483647
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One row",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/TableGenres"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TableMovies"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TableHalls"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TableSessions"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TableCustomers"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TableTickets"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TableMenuItems"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query, ID, or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Invalid query, ID, or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Invalid query, ID, or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Invalid query, ID, or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Invalid query, ID, or unavailable resource",
             "content": {
               "application/json": {
                 "schema": {
@@ -745,6 +1155,232 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "TableGenres": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "genre_id",
+          "genre_name"
+        ],
+        "properties": {
+          "genre_id": {
+            "type": "integer"
+          },
+          "genre_name": {
+            "type": "string"
+          }
+        }
+      },
+      "TableMovies": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "movie_id",
+          "title",
+          "genre_id",
+          "duration_min",
+          "age_rating",
+          "release_year",
+          "rating",
+          "description"
+        ],
+        "properties": {
+          "movie_id": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "genre_id": {
+            "type": "integer"
+          },
+          "duration_min": {
+            "type": "integer"
+          },
+          "age_rating": {
+            "type": "integer"
+          },
+          "release_year": {
+            "type": "integer"
+          },
+          "rating": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "TableHalls": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "hall_id",
+          "hall_name",
+          "capacity"
+        ],
+        "properties": {
+          "hall_id": {
+            "type": "integer"
+          },
+          "hall_name": {
+            "type": "string"
+          },
+          "capacity": {
+            "type": "integer"
+          }
+        }
+      },
+      "TableSessions": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "session_id",
+          "movie_id",
+          "hall_id",
+          "start_at",
+          "price",
+          "status"
+        ],
+        "properties": {
+          "session_id": {
+            "type": "integer"
+          },
+          "movie_id": {
+            "type": "integer"
+          },
+          "hall_id": {
+            "type": "integer"
+          },
+          "start_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "price": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "TableCustomers": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "customer_id",
+          "full_name",
+          "email"
+        ],
+        "properties": {
+          "customer_id": {
+            "type": "integer"
+          },
+          "full_name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "TableTickets": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ticket_id",
+          "session_id",
+          "customer_id",
+          "seat_number",
+          "price",
+          "purchased_at"
+        ],
+        "properties": {
+          "ticket_id": {
+            "type": "integer"
+          },
+          "session_id": {
+            "type": "integer"
+          },
+          "customer_id": {
+            "type": "integer"
+          },
+          "seat_number": {
+            "type": "integer"
+          },
+          "price": {
+            "type": "number"
+          },
+          "purchased_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TableMenuItems": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "menu_item_id",
+          "item_name",
+          "category",
+          "price"
+        ],
+        "properties": {
+          "menu_item_id": {
+            "type": "integer"
+          },
+          "item_name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          }
+        }
+      },
+      "TableInfo": {
+        "type": "object",
+        "required": [
+          "table",
+          "primary_key",
+          "columns",
+          "row_count",
+          "endpoint"
+        ],
+        "properties": {
+          "table": {
+            "type": "string",
+            "enum": [
+              "Genres",
+              "Movies",
+              "Halls",
+              "Sessions",
+              "Customers",
+              "Tickets",
+              "MenuItems"
+            ]
+          },
+          "primary_key": {
+            "type": "string"
+          },
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "row_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "endpoint": {
+            "type": "string"
           }
         }
       }

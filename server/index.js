@@ -7,6 +7,7 @@ const {chooseSort} = require('./filters');
 const app = express();
 app.disable('x-powered-by');
 app.use(express.json({ limit: '16kb' }));
+app.use('/api/tables', require('./tables'));
 app.use('/api/movies', require('./movies'));
 app.get('/api/openapi.json', (_req, res) => res.sendFile(path.join(__dirname, '..', 'docs', 'lab10', 'openapi.json')));
 app.use(express.static(path.join(__dirname, '..', 'public')));

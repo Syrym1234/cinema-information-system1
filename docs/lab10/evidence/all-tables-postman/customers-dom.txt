@@ -1,0 +1,73 @@
+- searchbox "search": GET
+- button "Open dropdown":
+- combobox:
+  - generic: "{{baseUrl}}"
+  - generic: /api/tables/Customers
+- button "Send":
+  - generic: Send
+- button "Send options":
+- button "Params":
+  - generic: Params
+- button "Cookies":
+  - generic: Cookies
+- tabpanel:
+  - generic: Query Params
+  - generic: Key
+  - generic: Value
+  - generic: Description
+  - button "Bulk Edit":
+    - generic: Bulk Edit
+  - button "View more actions":
+  - generic: Key
+  - generic: Value
+  - generic: Description
+- button "Body":
+  - generic: Body
+- button "History":
+  - img "History":
+- generic: "200"
+- 'button "Response time: 43 ms"':
+- 'button "Response size: 5.17 KB"':
+- button "Network connection info.":
+- button "Load test":
+- button:
+- button:
+- tabpanel:
+  - button "JSON":
+    - generic: JSON
+  - button "Preview":
+    - generic: Preview
+  - button "Visualize":
+    - generic: Visualize
+  - button "Toggle visualization options":
+  - button "Toggle line wrapping" [pressed]:
+  - button "Toggle response filter":
+  - button "Search in response":
+  - button "Copy response":
+  - button "Copy response link":
+  - tabpanel:
+    - code:
+      - textbox "Editor content"
+      - generic: 
+      - generic: "1"
+      - generic: 
+      - generic: "2"
+      - generic: "3"
+      - generic: "4"
+      - generic: "5"
+      - generic: "6"
+      - generic: 
+      - generic: "7"
+      - generic: "8"
+      - generic: "9"
+      - generic: "10"
+      - generic: "["
+      - generic: "{"
+      - generic: "\"customer_id\": 1,"
+      - generic: "\"full_name\": \"Көрермен 1\","
+      - generic: "\"email\": \"viewer1@example.test\""
+      - generic: "},"
+      - generic: "{"
+      - generic: "\"customer_id\": 2,"
+      - generic: "\"full_name\": \"Көрермен 2\","
+      - generic: "\"email\": \"viewer2@example.test\""

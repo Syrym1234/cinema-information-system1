@@ -1,0 +1,56 @@
+{
+  "checkedAt": "2026-11-05T04:06:13.344Z",
+  "baseUrl": "http://127.0.0.1:3000",
+  "passed": true,
+  "results": [
+    {
+      "table": "Genres",
+      "rows": 9,
+      "allColumnsMatchSqlSchema": true,
+      "allRowsMatchSql": true,
+      "readByIdMatchesSql": true
+    },
+    {
+      "table": "Movies",
+      "rows": 24,
+      "allColumnsMatchSqlSchema": true,
+      "allRowsMatchSql": true,
+      "readByIdMatchesSql": true
+    },
+    {
+      "table": "Halls",
+      "rows": 4,
+      "allColumnsMatchSqlSchema": true,
+      "allRowsMatchSql": true,
+      "readByIdMatchesSql": true
+    },
+    {
+      "table": "Sessions",
+      "rows": 560,
+      "allColumnsMatchSqlSchema": true,
+      "allRowsMatchSql": true,
+      "readByIdMatchesSql": true
+    },
+    {
+      "table": "Customers",
+      "rows": 60,
+      "allColumnsMatchSqlSchema": true,
+      "allRowsMatchSql": true,
+      "readByIdMatchesSql": true
+    },
+    {
+      "table": "Tickets",
+      "rows": 180,
+      "allColumnsMatchSqlSchema": true,
+      "allRowsMatchSql": true,
+      "readByIdMatchesSql": true
+    },
+    {
+      "table": "MenuItems",
+      "rows": 12,
+      "allColumnsMatchSqlSchema": true,
+      "allRowsMatchSql": true,
+      "readByIdMatchesSql": true
+    }
+  ]
+}

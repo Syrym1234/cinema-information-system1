@@ -5,7 +5,7 @@
     },
     "item": [
       {
-        "id": "f0785e3c-82ff-4967-bdac-6753760a959b",
+        "id": "4ac850a2-b9ba-4601-a012-110d6400f844",
         "name": "01 | SQL Server health",
         "request": {
           "url": {
@@ -26,20 +26,20 @@
           {
             "listen": "test",
             "script": {
-              "id": "58c2e9b1-efc6-48d4-8781-c75ea02cca60",
+              "id": "a52f7df7-97c6-4a78-a1a0-2f9a9ec883be",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
                 "pm.test(\"JSON response\", () => pm.response.to.be.json);",
                 "pm.test(\"Real database\", () => pm.expect(pm.response.json().db_name).to.eql(\"CinemaSchoolDB\"));"
               ],
-              "_lastExecutionId": "e6b82834-01ea-4bd5-8a8b-97b8d7e450b0"
+              "_lastExecutionId": "c3bddb26-e311-4f7b-9aea-ad4de371e452"
             }
           }
         ]
       },
       {
-        "id": "8d62acf6-b138-4681-aec0-a1acdcabcc0e",
+        "id": "b127bb26-257e-4f9d-ad79-f5e65b1fee2d",
         "name": "02 | Genres for the test movie",
         "request": {
           "url": {
@@ -60,7 +60,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "7b502ca5-f081-4cb8-a0c5-e84fba34de9d",
+              "id": "991a55df-77ad-485c-bac2-fe941c97a8de",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
@@ -68,13 +68,13 @@
                 "pm.test(\"Genres available\", () => pm.expect(pm.response.json().genres.length).to.be.above(0));",
                 "pm.collectionVariables.set(\"genreId\", pm.response.json().genres[0].genre_id);"
               ],
-              "_lastExecutionId": "2b9bdcb6-fcc5-4980-a204-3c955374a990"
+              "_lastExecutionId": "12715f1a-9c01-48c4-9c61-136ff43d792d"
             }
           }
         ]
       },
       {
-        "id": "2e036448-c5ee-4400-808e-cc54774ca3fa",
+        "id": "09aa1953-74ba-4721-879f-ed6929bc20c8",
         "name": "03 | READ all movies",
         "request": {
           "url": {
@@ -95,7 +95,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "e38cd69a-ba2b-43f2-97c7-c11e428bdfd6",
+              "id": "b8f0bab2-ff44-40cb-9759-9ed061908ce0",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
@@ -103,13 +103,13 @@
                 "pm.test(\"Movie array\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
                 "pm.collectionVariables.set(\"initialCount\", pm.response.json().length);"
               ],
-              "_lastExecutionId": "d716881a-7d99-4c22-8bda-bf6d97cb0b4b"
+              "_lastExecutionId": "62e8c28d-50fa-4dc1-b5dd-a4d32c316b54"
             }
           }
         ]
       },
       {
-        "id": "a32a1591-0700-48b8-b121-eb1e3bc6ff1b",
+        "id": "800956c3-8547-4d4b-b1a1-8db5eedc81ff",
         "name": "04 | Existing session for FK protection",
         "request": {
           "url": {
@@ -130,7 +130,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "a72fb5e1-bce3-412c-b02e-28bcad453b2a",
+              "id": "c9f4eb4c-2de6-41dd-8191-5846f78e7a62",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
@@ -138,13 +138,13 @@
                 "pm.test(\"Seed sessions available\", () => pm.expect(pm.response.json().length).to.be.above(0));",
                 "pm.collectionVariables.set(\"protectedMovieId\", pm.response.json()[0].movie_id);"
               ],
-              "_lastExecutionId": "a2d76706-b446-44f9-8d82-0785b1c615e4"
+              "_lastExecutionId": "4c7d7ded-5aaa-4255-b5b7-122c2c86d806"
             }
           }
         ]
       },
       {
-        "id": "9e220384-22b9-47e3-ae09-30f0fa841ab9",
+        "id": "06a8b7f9-bdde-43ca-87b7-fd5b76b68693",
         "name": "05 | CREATE movie",
         "request": {
           "url": {
@@ -180,7 +180,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "93e2c375-172e-441b-b3d6-eb8ffdf84db7",
+              "id": "7ebc203b-52da-4b0f-9e54-06fde3b426a6",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
@@ -190,13 +190,13 @@
                 "pm.test(\"Location\", () => pm.expect(pm.response.headers.get(\"Location\")).to.eql(\"/api/movies/\" + movie.movie_id));",
                 "pm.test(\"Kazakh text round trip\", () => pm.expect(movie.title).to.eql(\"Lab10 | Қазақша фильм\"));"
               ],
-              "_lastExecutionId": "f9334bbd-a513-40cc-b22d-ebd53a18a693"
+              "_lastExecutionId": "6c91e36c-90f8-45b2-965a-2d2762e1e8a4"
             }
           }
         ]
       },
       {
-        "id": "722744ac-d402-4fe9-9b52-f9ab4671c046",
+        "id": "45cc41e5-8992-41c1-a373-e52af241ccf9",
         "name": "06 | READ created movie by ID",
         "request": {
           "url": {
@@ -218,7 +218,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "dbc348d9-d544-4c56-b7a2-b3bec9f947a6",
+              "id": "88250d0d-2322-4329-9ff4-3c25afeea84d",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
@@ -226,13 +226,13 @@
                 "pm.test(\"Saved in database\", () => pm.expect(pm.response.json().movie_id).to.eql(Number(pm.collectionVariables.get(\"movieId\"))));",
                 "pm.test(\"Genre joined\", () => pm.expect(pm.response.json().genre_name).to.be.a(\"string\"));"
               ],
-              "_lastExecutionId": "4ce69ecc-b0ee-4d26-9c60-3769b8643fff"
+              "_lastExecutionId": "a8daba16-c753-424b-88a1-3918ca8cdfeb"
             }
           }
         ]
       },
       {
-        "id": "b6ec5d87-6e74-4b21-a8c0-de14d797b483",
+        "id": "3102d49d-704a-47e5-874b-122822c1203e",
         "name": "07 | UPDATE full movie",
         "request": {
           "url": {
@@ -269,20 +269,20 @@
           {
             "listen": "test",
             "script": {
-              "id": "ad05975e-8da9-462a-97f2-fded3af628c9",
+              "id": "a5baa7cc-78a8-4856-b2c8-6c1ca3b11a42",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
                 "pm.test(\"JSON response\", () => pm.response.to.be.json);",
                 "pm.test(\"Updated rating\", () => pm.expect(pm.response.json().rating).to.eql(9.1));"
               ],
-              "_lastExecutionId": "33d2ce8a-56ac-4c46-904d-8dd21df9290e"
+              "_lastExecutionId": "c565531d-5eee-4857-804f-a8941d11f3b8"
             }
           }
         ]
       },
       {
-        "id": "06ee07ef-ead7-4f4a-abec-fcf932253d75",
+        "id": "8f2bcc82-8ef8-48a7-98d2-d7aaa56f8c29",
         "name": "08 | READ verifies persistence",
         "request": {
           "url": {
@@ -304,7 +304,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "6579683b-a3ee-41ca-af30-a7e5a0c3991d",
+              "id": "cb48ba0c-c8a8-45f2-92df-dce197694e9e",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
@@ -312,13 +312,13 @@
                 "pm.test(\"Persisted title\", () => pm.expect(pm.response.json().title).to.eql(\"Lab10 | Жаңартылған фильм\"));",
                 "pm.test(\"Persisted rating\", () => pm.expect(pm.response.json().rating).to.eql(9.1));"
               ],
-              "_lastExecutionId": "d89f9c4b-f275-42d2-bd95-eb90eb91cbea"
+              "_lastExecutionId": "9bac304a-38a2-47de-8abe-e4657e9754d3"
             }
           }
         ]
       },
       {
-        "id": "4df2b368-5fe1-4436-a76d-def8932021cb",
+        "id": "883c788f-7a24-4ed1-98b8-d85bf50dfa36",
         "name": "09 | Reject missing fields",
         "request": {
           "url": {
@@ -354,7 +354,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "fa9162a8-27ef-4f54-b6b0-a7a8c9643e1e",
+              "id": "fc8a5d31-0b30-43a5-8394-ed00f9617c0d",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));",
@@ -362,13 +362,13 @@
                 "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"VALIDATION_ERROR\"));",
                 "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
               ],
-              "_lastExecutionId": "6a4ee0f3-f6a9-4683-9fb7-be3d248c619e"
+              "_lastExecutionId": "d3194529-c1c8-447a-ab2e-a3bf3dfbf3fa"
             }
           }
         ]
       },
       {
-        "id": "a4443039-1943-4882-a818-007275cfd200",
+        "id": "1f985658-d840-4313-859d-af5cd1e5adc4",
         "name": "10 | Reject invalid rating",
         "request": {
           "url": {
@@ -405,7 +405,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "8e80146d-1e0c-49c1-b428-784fb5edc9be",
+              "id": "9ac40846-6b3c-4bd5-a9f0-4a50e24e2a76",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));",
@@ -413,13 +413,13 @@
                 "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"VALIDATION_ERROR\"));",
                 "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
               ],
-              "_lastExecutionId": "92df124e-a2a8-4878-ad11-6e3a793df913"
+              "_lastExecutionId": "e7af0e4a-f157-4630-9c87-395030de2561"
             }
           }
         ]
       },
       {
-        "id": "4821e97c-5d1f-461e-98cb-d032696ead39",
+        "id": "d3bfb76c-8b2d-4ccb-825f-46065d0c538d",
         "name": "11 | Reject nonexistent genre",
         "request": {
           "url": {
@@ -455,7 +455,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "e64f2fc1-487e-4b79-a62d-c561f50ff468",
+              "id": "d53389bb-4117-4239-a93e-fc98df93b9a1",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));",
@@ -463,13 +463,13 @@
                 "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"GENRE_NOT_FOUND\"));",
                 "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
               ],
-              "_lastExecutionId": "363304b6-92b7-4f14-8d58-806a2ef5c1b1"
+              "_lastExecutionId": "03acdf13-5b3d-4afb-a4bd-4d42517e0d20"
             }
           }
         ]
       },
       {
-        "id": "7b5380ee-14c8-4441-9251-6c455023f888",
+        "id": "6cd00a5f-1839-4bab-a1ba-559b0ba7840d",
         "name": "12 | Reject SQL injection in ID",
         "request": {
           "url": {
@@ -491,7 +491,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "ac8a6d19-9bd5-4839-845b-d3571820adfd",
+              "id": "03106328-211e-4bca-afd1-7524df8b46a0",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));",
@@ -499,13 +499,13 @@
                 "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"INVALID_ID\"));",
                 "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
               ],
-              "_lastExecutionId": "bc55012c-1843-449a-b5c4-a56d77131486"
+              "_lastExecutionId": "e1f89966-762b-4c24-9fe2-0c83ff074142"
             }
           }
         ]
       },
       {
-        "id": "dbc48979-38cb-4d20-82b1-d41f363347bb",
+        "id": "a95a9112-5ac8-4ef6-a6d3-fde48884d665",
         "name": "13 | Reject SQL INT overflow",
         "request": {
           "url": {
@@ -527,7 +527,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "3ae5955d-09da-4627-be2b-302793804181",
+              "id": "32206531-6e50-49df-9246-66e092c79901",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));",
@@ -535,13 +535,13 @@
                 "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"INVALID_ID\"));",
                 "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
               ],
-              "_lastExecutionId": "8a959735-0450-44f3-baca-301d03814c5b"
+              "_lastExecutionId": "cda0ac06-395d-4bea-87cd-ea782d590039"
             }
           }
         ]
       },
       {
-        "id": "ece0d789-ffe9-48f3-9bb6-ee7ba3e446b2",
+        "id": "be5e96e6-43cc-4216-876a-45323dbb76e0",
         "name": "14 | Missing movie returns 404",
         "request": {
           "url": {
@@ -563,7 +563,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "23f3ec4b-48e6-4b7f-a152-75a8b582adff",
+              "id": "def879ca-7750-4874-83a5-e4c06f56d5b2",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));",
@@ -571,13 +571,13 @@
                 "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"MOVIE_NOT_FOUND\"));",
                 "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
               ],
-              "_lastExecutionId": "b068d4c0-50ab-4a9e-b21a-8119a80c774b"
+              "_lastExecutionId": "5a460320-634c-4e30-8e0c-d29ca9652278"
             }
           }
         ]
       },
       {
-        "id": "61963b41-9c6f-4a30-92f2-9d52976c2ad0",
+        "id": "8d4860d4-e248-4905-8853-6d946b8021e0",
         "name": "15 | Update missing movie returns 404",
         "request": {
           "url": {
@@ -614,7 +614,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "1643cd36-b992-444a-9b38-a017f1a3ba51",
+              "id": "f48fc912-f4a2-403b-baa4-a9b4f6fc8b3c",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));",
@@ -622,13 +622,13 @@
                 "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"MOVIE_NOT_FOUND\"));",
                 "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
               ],
-              "_lastExecutionId": "ee7cb71c-6a50-492a-9354-212c8973de13"
+              "_lastExecutionId": "25a5646d-e96e-4831-95b8-e76b77a81eff"
             }
           }
         ]
       },
       {
-        "id": "e07bbef9-ff6a-48a3-a381-382d7424d3a4",
+        "id": "b02cec6b-3984-4bf9-816b-79b53adde632",
         "name": "16 | Protect movie with sessions",
         "request": {
           "url": {
@@ -650,7 +650,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "1140c93d-69da-4d5c-b8c8-38aedf6a733c",
+              "id": "6bd30922-0b20-477d-8ddc-6a19ed1a047e",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 409\", () => pm.response.to.have.status(409));",
@@ -658,13 +658,13 @@
                 "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"MOVIE_HAS_SESSIONS\"));",
                 "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
               ],
-              "_lastExecutionId": "99151ced-5d3e-4286-9c1f-7061f3970d2f"
+              "_lastExecutionId": "955f2d49-508c-44dd-aae4-08d18be9cebf"
             }
           }
         ]
       },
       {
-        "id": "8051c89e-c147-4812-a6dc-06f5dac9c048",
+        "id": "b6dbac1c-27b0-4ede-9b81-5b3044d7d525",
         "name": "17 | Reject malformed JSON",
         "request": {
           "url": {
@@ -700,7 +700,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "18da810d-9d53-47e1-9dd6-678280e54c80",
+              "id": "e920625c-30e0-4aa8-b6bb-32858c12dc21",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));",
@@ -708,13 +708,13 @@
                 "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"INVALID_JSON\"));",
                 "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
               ],
-              "_lastExecutionId": "d8e74eaf-9f6f-43f8-87c2-d63279d3c4b5"
+              "_lastExecutionId": "17f6e361-5a46-4148-9b21-62fe74bfad6b"
             }
           }
         ]
       },
       {
-        "id": "b6f50544-1828-4d8b-ba6a-6252afc0f45a",
+        "id": "8b3f8b96-2309-44c9-8a08-9229a43f34fc",
         "name": "18 | Reject wrong Content-Type",
         "request": {
           "url": {
@@ -750,7 +750,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "6dc8444c-15f6-45d2-bf8c-a5cfa756de58",
+              "id": "c56fb71d-aac9-4eae-976b-015208b729f7",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 415\", () => pm.response.to.have.status(415));",
@@ -758,13 +758,13 @@
                 "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"UNSUPPORTED_MEDIA_TYPE\"));",
                 "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
               ],
-              "_lastExecutionId": "7c3fc940-8da8-4399-9c21-11c575cfc111"
+              "_lastExecutionId": "00b1d28b-efde-4d21-8e03-2fbff693d9d0"
             }
           }
         ]
       },
       {
-        "id": "89f0a232-61c0-4d96-bdcf-417d996ac8f2",
+        "id": "5618bf63-5f9e-4941-9ae1-51ca65380df1",
         "name": "19 | Reject oversized JSON",
         "request": {
           "url": {
@@ -800,7 +800,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "4442e076-8e43-43de-ba42-6cf39cda4d6d",
+              "id": "2b3de7c7-ffa3-490d-a6e1-829ef894016b",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 413\", () => pm.response.to.have.status(413));",
@@ -808,13 +808,13 @@
                 "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"PAYLOAD_TOO_LARGE\"));",
                 "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
               ],
-              "_lastExecutionId": "a1d7a85b-34bb-46ad-ad66-abb5c301bdba"
+              "_lastExecutionId": "84d2d42a-b102-460d-9041-1622c4c16a8e"
             }
           }
         ]
       },
       {
-        "id": "b15420a2-1d34-4904-98fc-9e8c0863fd0f",
+        "id": "b1888b4d-02af-4d0a-9218-15b0dccc4de6",
         "name": "20 | Unsupported method",
         "request": {
           "url": {
@@ -836,7 +836,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "abcb3ca7-12dd-423d-a37d-42692f79971c",
+              "id": "496f986a-d278-4fe8-88f3-e6775c17d581",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 405\", () => pm.response.to.have.status(405));",
@@ -844,13 +844,13 @@
                 "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"METHOD_NOT_ALLOWED\"));",
                 "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
               ],
-              "_lastExecutionId": "d822208e-304d-4556-bdd2-c7b15b71d33f"
+              "_lastExecutionId": "7d9c164f-35ba-4894-8e07-aaa23447fad8"
             }
           }
         ]
       },
       {
-        "id": "cfcefe5b-70d2-4be9-be6e-442598785d98",
+        "id": "5ce8377c-8a2c-4d50-a3c7-96eadaf1be6b",
         "name": "21 | Unknown API route",
         "request": {
           "url": {
@@ -871,7 +871,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "eee614bb-b97f-44c7-bf3f-fec5a98adaa5",
+              "id": "7bcf15f9-ca46-4ba8-a43d-f4ab236efd20",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));",
@@ -879,13 +879,13 @@
                 "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"ROUTE_NOT_FOUND\"));",
                 "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
               ],
-              "_lastExecutionId": "e6104d8c-f344-4929-a4f4-d5e5679d3532"
+              "_lastExecutionId": "7fb701dd-f175-42ac-9f42-8eab47767335"
             }
           }
         ]
       },
       {
-        "id": "986ce948-907a-493a-980b-fe22ccc733d4",
+        "id": "593051b5-94d8-4ba9-926b-fcbac36eec9e",
         "name": "22 | DELETE created test movie",
         "request": {
           "url": {
@@ -907,20 +907,20 @@
           {
             "listen": "test",
             "script": {
-              "id": "434bfff1-9e29-4285-be06-d126d8ed9b4a",
+              "id": "7390eaca-e44f-4b3f-8a29-edd4da94177f",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
                 "pm.test(\"JSON response\", () => pm.response.to.be.json);",
                 "pm.test(\"Deleted own fixture\", () => pm.expect(pm.response.json().movie_id).to.eql(Number(pm.collectionVariables.get(\"movieId\"))));"
               ],
-              "_lastExecutionId": "ac3a0ff9-015a-43a4-8f32-1287a1be6efa"
+              "_lastExecutionId": "79d6e719-0a58-474d-970d-d1a84d6596f9"
             }
           }
         ]
       },
       {
-        "id": "cf1246d9-f4d5-45ad-89dc-eacbabcfd0ec",
+        "id": "c59a6342-7f1b-4a85-8e97-dc2785c556ea",
         "name": "23 | READ after delete",
         "request": {
           "url": {
@@ -942,7 +942,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "8f691280-bf1d-424b-b979-949e33d62de6",
+              "id": "4395dd34-da7f-4fa3-a903-0fc9510e1c1b",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));",
@@ -950,13 +950,13 @@
                 "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"MOVIE_NOT_FOUND\"));",
                 "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
               ],
-              "_lastExecutionId": "55010090-7b31-4da0-9594-ec21aaecca14"
+              "_lastExecutionId": "324af595-74b5-4666-860c-3b31ba1fca00"
             }
           }
         ]
       },
       {
-        "id": "06b7b792-c712-4686-8f55-20528831aa74",
+        "id": "eb375620-8913-4895-8b6f-b75e2c802366",
         "name": "24 | DELETE again returns 404",
         "request": {
           "url": {
@@ -978,7 +978,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "302b1e0e-8682-44b3-bcd2-ebeace73dadd",
+              "id": "4ae59f7d-f5ad-4382-ba51-a84dd264fc09",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));",
@@ -986,13 +986,13 @@
                 "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"MOVIE_NOT_FOUND\"));",
                 "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
               ],
-              "_lastExecutionId": "abffade3-74a7-4042-b748-33975135834c"
+              "_lastExecutionId": "299ed887-f472-442f-928f-1edf52787838"
             }
           }
         ]
       },
       {
-        "id": "02a6ca27-3168-4519-974b-8d281cc6253e",
+        "id": "aef1cba5-854a-484e-9acd-54405e87ff75",
         "name": "25 | Original catalog count restored",
         "request": {
           "url": {
@@ -1013,14 +1013,14 @@
           {
             "listen": "test",
             "script": {
-              "id": "0e8559c5-89aa-48f1-a055-52f2f559a3cc",
+              "id": "946c2244-7ec3-47a3-95c9-658bfb612e75",
               "type": "text/javascript",
               "exec": [
                 "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
                 "pm.test(\"JSON response\", () => pm.response.to.be.json);",
                 "pm.test(\"No leftover test movie\", () => pm.expect(pm.response.json().length).to.eql(Number(pm.collectionVariables.get(\"initialCount\"))));"
               ],
-              "_lastExecutionId": "d167f5e8-5764-48cf-bf8c-0d1c2ae3fa34"
+              "_lastExecutionId": "6583d60d-17b5-417c-abb7-dcd3e83fe4ea"
             }
           }
         ]
@@ -1079,7 +1079,7 @@
     ]
   },
   "globals": {
-    "id": "3e552366-eb47-427d-9ace-d7bbb78ce924",
+    "id": "f48ef0ae-49ad-4b0e-a26f-fff2d86f2d30",
     "values": []
   },
   "run": {
@@ -1131,10 +1131,10 @@
       }
     },
     "timings": {
-      "responseAverage": 9.760000000000002,
+      "responseAverage": 12.12,
       "responseMin": 1,
-      "responseMax": 70,
-      "responseSd": 15.036701766012383,
+      "responseMax": 153,
+      "responseSd": 29.275682741825175,
       "dnsAverage": 0,
       "dnsMin": 0,
       "dnsMax": 0,
@@ -1143,8 +1143,8 @@
       "firstByteMin": 0,
       "firstByteMax": 0,
       "firstByteSd": 0,
-      "started": 1793812202349,
-      "completed": 1793812204766
+      "started": 1793851671338,
+      "completed": 1793851673752
     },
     "executions": [
       {
@@ -1157,11 +1157,11 @@
           "eof": false,
           "bof": true,
           "cr": false,
-          "ref": "291f86ad-735d-43fa-81fe-c10fc5639191",
-          "httpRequestId": "7bba1481-422a-4e12-883a-1a6649e9bb7f"
+          "ref": "c7cee520-046b-4cfb-9d42-ccaadc089bf1",
+          "httpRequestId": "c7115745-6fc0-4036-a3b6-04bb7335a24d"
         },
         "item": {
-          "id": "f0785e3c-82ff-4967-bdac-6753760a959b",
+          "id": "4ac850a2-b9ba-4601-a012-110d6400f844",
           "name": "01 | SQL Server health",
           "request": {
             "url": {
@@ -1182,14 +1182,14 @@
             {
               "listen": "test",
               "script": {
-                "id": "58c2e9b1-efc6-48d4-8781-c75ea02cca60",
+                "id": "a52f7df7-97c6-4a78-a1a0-2f9a9ec883be",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
                   "pm.test(\"JSON response\", () => pm.response.to.be.json);",
                   "pm.test(\"Real database\", () => pm.expect(pm.response.json().db_name).to.eql(\"CinemaSchoolDB\"));"
                 ],
-                "_lastExecutionId": "e6b82834-01ea-4bd5-8a8b-97b8d7e450b0"
+                "_lastExecutionId": "c3bddb26-e311-4f7b-9aea-ad4de371e452"
               }
             }
           ]
@@ -1229,7 +1229,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "a8553ad3-a92d-4855-9f74-1930de95d743",
+              "value": "124e923e-3dee-456b-a165-30ecd9c2ced0",
               "system": true
             },
             {
@@ -1251,7 +1251,7 @@
           "method": "GET"
         },
         "response": {
-          "id": "8a865a4b-291e-4ef7-85af-93db77487605",
+          "id": "cd1d9445-4f62-476f-a876-204217a96913",
           "status": "OK",
           "code": 200,
           "header": [
@@ -1269,7 +1269,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:02 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:51 GMT"
             },
             {
               "key": "Connection",
@@ -1326,10 +1326,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 70,
+          "responseTime": 27,
           "responseSize": 40
         },
-        "id": "f0785e3c-82ff-4967-bdac-6753760a959b",
+        "id": "4ac850a2-b9ba-4601-a012-110d6400f844",
         "assertions": [
           {
             "assertion": "HTTP 200",
@@ -1347,15 +1347,15 @@
       },
       {
         "cursor": {
-          "ref": "83d8b7ea-a919-407c-b40f-6dac99453114",
+          "ref": "cef76967-d8c5-4cf5-a681-2394d9ac2baa",
           "length": 25,
           "cycles": 1,
           "position": 1,
           "iteration": 0,
-          "httpRequestId": "53ad2cf4-d8fe-4c36-a875-1252344a8d0d"
+          "httpRequestId": "85c425e7-4d75-44b1-bcc5-b013a0388e6a"
         },
         "item": {
-          "id": "8d62acf6-b138-4681-aec0-a1acdcabcc0e",
+          "id": "b127bb26-257e-4f9d-ad79-f5e65b1fee2d",
           "name": "02 | Genres for the test movie",
           "request": {
             "url": {
@@ -1376,7 +1376,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "7b502ca5-f081-4cb8-a0c5-e84fba34de9d",
+                "id": "991a55df-77ad-485c-bac2-fe941c97a8de",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
@@ -1384,7 +1384,7 @@
                   "pm.test(\"Genres available\", () => pm.expect(pm.response.json().genres.length).to.be.above(0));",
                   "pm.collectionVariables.set(\"genreId\", pm.response.json().genres[0].genre_id);"
                 ],
-                "_lastExecutionId": "2b9bdcb6-fcc5-4980-a204-3c955374a990"
+                "_lastExecutionId": "12715f1a-9c01-48c4-9c61-136ff43d792d"
               }
             }
           ]
@@ -1424,7 +1424,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "af2d36a0-96f6-47ab-8e77-c45508019556",
+              "value": "3e0ef425-014d-47ea-8e9e-c0169a143b0f",
               "system": true
             },
             {
@@ -1446,7 +1446,7 @@
           "method": "GET"
         },
         "response": {
-          "id": "4e470977-977d-4f61-9682-eafd7dd05118",
+          "id": "1f22539e-0cec-4a69-96b5-71eb0ac27bc5",
           "status": "OK",
           "code": 200,
           "header": [
@@ -1464,7 +1464,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:02 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:51 GMT"
             },
             {
               "key": "Connection",
@@ -2104,10 +2104,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 14,
+          "responseTime": 9,
           "responseSize": 623
         },
-        "id": "8d62acf6-b138-4681-aec0-a1acdcabcc0e",
+        "id": "b127bb26-257e-4f9d-ad79-f5e65b1fee2d",
         "assertions": [
           {
             "assertion": "HTTP 200",
@@ -2125,15 +2125,15 @@
       },
       {
         "cursor": {
-          "ref": "bbc39f16-485c-4d68-887b-f12d236673c0",
+          "ref": "e3454a36-ee71-4aaf-8b81-f9fccba0b919",
           "length": 25,
           "cycles": 1,
           "position": 2,
           "iteration": 0,
-          "httpRequestId": "28aef252-5e5d-460d-8440-3b45c782a379"
+          "httpRequestId": "924ef547-2e59-4826-9a58-11877ed5e368"
         },
         "item": {
-          "id": "2e036448-c5ee-4400-808e-cc54774ca3fa",
+          "id": "09aa1953-74ba-4721-879f-ed6929bc20c8",
           "name": "03 | READ all movies",
           "request": {
             "url": {
@@ -2154,7 +2154,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "e38cd69a-ba2b-43f2-97c7-c11e428bdfd6",
+                "id": "b8f0bab2-ff44-40cb-9759-9ed061908ce0",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
@@ -2162,7 +2162,7 @@
                   "pm.test(\"Movie array\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
                   "pm.collectionVariables.set(\"initialCount\", pm.response.json().length);"
                 ],
-                "_lastExecutionId": "d716881a-7d99-4c22-8bda-bf6d97cb0b4b"
+                "_lastExecutionId": "62e8c28d-50fa-4dc1-b5dd-a4d32c316b54"
               }
             }
           ]
@@ -2202,7 +2202,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "4e0aef30-5399-44d3-9296-68a15ace726c",
+              "value": "add5cac0-0338-45f2-ac33-865d706fa780",
               "system": true
             },
             {
@@ -2224,7 +2224,7 @@
           "method": "GET"
         },
         "response": {
-          "id": "ce4a7a1f-ae95-4c12-9d5b-45d9ece61846",
+          "id": "9ce6abdc-d32c-49f8-955a-f4d14886bad7",
           "status": "OK",
           "code": 200,
           "header": [
@@ -2242,7 +2242,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:02 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:51 GMT"
             },
             {
               "key": "Connection",
@@ -8737,10 +8737,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 34,
+          "responseTime": 8,
           "responseSize": 6478
         },
-        "id": "2e036448-c5ee-4400-808e-cc54774ca3fa",
+        "id": "09aa1953-74ba-4721-879f-ed6929bc20c8",
         "assertions": [
           {
             "assertion": "HTTP 200",
@@ -8758,15 +8758,15 @@
       },
       {
         "cursor": {
-          "ref": "377fa4fb-a3ad-467d-830a-5f55dfbcee39",
+          "ref": "3ccd8e79-6ff7-420c-97c6-23b6896e1517",
           "length": 25,
           "cycles": 1,
           "position": 3,
           "iteration": 0,
-          "httpRequestId": "9934d147-df42-48b4-a80a-80f5670d6b79"
+          "httpRequestId": "50585d21-8bc1-4d4b-971c-c0c15323e82e"
         },
         "item": {
-          "id": "a32a1591-0700-48b8-b121-eb1e3bc6ff1b",
+          "id": "800956c3-8547-4d4b-b1a1-8db5eedc81ff",
           "name": "04 | Existing session for FK protection",
           "request": {
             "url": {
@@ -8787,7 +8787,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "a72fb5e1-bce3-412c-b02e-28bcad453b2a",
+                "id": "c9f4eb4c-2de6-41dd-8191-5846f78e7a62",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
@@ -8795,7 +8795,7 @@
                   "pm.test(\"Seed sessions available\", () => pm.expect(pm.response.json().length).to.be.above(0));",
                   "pm.collectionVariables.set(\"protectedMovieId\", pm.response.json()[0].movie_id);"
                 ],
-                "_lastExecutionId": "a2d76706-b446-44f9-8d82-0785b1c615e4"
+                "_lastExecutionId": "4c7d7ded-5aaa-4255-b5b7-122c2c86d806"
               }
             }
           ]
@@ -8835,7 +8835,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "77d92a58-b11b-4a39-b4a5-f0dd73cb17a9",
+              "value": "fcb8abc7-172a-41f6-8af6-15d0b6788e66",
               "system": true
             },
             {
@@ -8857,7 +8857,7 @@
           "method": "GET"
         },
         "response": {
-          "id": "ca414b03-812c-4e12-91f4-ca900f64e3a7",
+          "id": "35164208-1bc3-49b8-aaa3-2ab358b2099e",
           "status": "OK",
           "code": 200,
           "header": [
@@ -8875,7 +8875,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:02 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:51 GMT"
             },
             {
               "key": "Connection",
@@ -63746,10 +63746,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 20,
+          "responseTime": 18,
           "responseSize": 54854
         },
-        "id": "a32a1591-0700-48b8-b121-eb1e3bc6ff1b",
+        "id": "800956c3-8547-4d4b-b1a1-8db5eedc81ff",
         "assertions": [
           {
             "assertion": "HTTP 200",
@@ -63767,15 +63767,15 @@
       },
       {
         "cursor": {
-          "ref": "855a7b82-eaa5-4da8-acd4-020d7198434c",
+          "ref": "c33ae101-5c20-4a8b-8935-2389699cd640",
           "length": 25,
           "cycles": 1,
           "position": 4,
           "iteration": 0,
-          "httpRequestId": "10a619f8-d95b-4c0b-808e-c26cd9149403"
+          "httpRequestId": "26f1ad19-9603-4f25-bae6-f42533a7ea3f"
         },
         "item": {
-          "id": "9e220384-22b9-47e3-ae09-30f0fa841ab9",
+          "id": "06a8b7f9-bdde-43ca-87b7-fd5b76b68693",
           "name": "05 | CREATE movie",
           "request": {
             "url": {
@@ -63811,7 +63811,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "93e2c375-172e-441b-b3d6-eb8ffdf84db7",
+                "id": "7ebc203b-52da-4b0f-9e54-06fde3b426a6",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
@@ -63821,7 +63821,7 @@
                   "pm.test(\"Location\", () => pm.expect(pm.response.headers.get(\"Location\")).to.eql(\"/api/movies/\" + movie.movie_id));",
                   "pm.test(\"Kazakh text round trip\", () => pm.expect(movie.title).to.eql(\"Lab10 | Қазақша фильм\"));"
                 ],
-                "_lastExecutionId": "f9334bbd-a513-40cc-b22d-ebd53a18a693"
+                "_lastExecutionId": "6c91e36c-90f8-45b2-965a-2d2762e1e8a4"
               }
             }
           ]
@@ -63865,7 +63865,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "715647a1-5aeb-4aa1-9123-bb67386f6849",
+              "value": "122b6f40-48cd-4d89-9b73-b910b5080c9c",
               "system": true
             },
             {
@@ -63901,13 +63901,13 @@
           }
         },
         "response": {
-          "id": "a6782145-b39d-446d-9473-24a4f8a6f173",
+          "id": "f40e0574-af56-45bc-996d-351672daa71d",
           "status": "Created",
           "code": 201,
           "header": [
             {
               "key": "Location",
-              "value": "/api/movies/28"
+              "value": "/api/movies/40"
             },
             {
               "key": "Content-Type",
@@ -63919,11 +63919,11 @@
             },
             {
               "key": "ETag",
-              "value": "W/\"e7-Zd/4jG+EL7sKwcgE1gq+xzf+7X0\""
+              "value": "W/\"e7-Qrxp5VJAiSESywzjHE6Tzkp0QLg\""
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:02 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:51 GMT"
             },
             {
               "key": "Connection",
@@ -63949,8 +63949,8 @@
               100,
               34,
               58,
-              50,
-              56,
+              52,
+              48,
               44,
               34,
               116,
@@ -64171,10 +64171,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 7,
+          "responseTime": 153,
           "responseSize": 231
         },
-        "id": "9e220384-22b9-47e3-ae09-30f0fa841ab9",
+        "id": "06a8b7f9-bdde-43ca-87b7-fd5b76b68693",
         "assertions": [
           {
             "assertion": "HTTP 201",
@@ -64200,15 +64200,15 @@
       },
       {
         "cursor": {
-          "ref": "1c3e8728-e555-4445-888b-07d133c47a00",
+          "ref": "28544a52-ccf8-451a-a60f-b3b89bfb0ce6",
           "length": 25,
           "cycles": 1,
           "position": 5,
           "iteration": 0,
-          "httpRequestId": "df2d7637-ff6f-4a53-892d-a8bac900a5f0"
+          "httpRequestId": "ff045918-2790-487e-83a5-86790bc41aac"
         },
         "item": {
-          "id": "722744ac-d402-4fe9-9b52-f9ab4671c046",
+          "id": "45cc41e5-8992-41c1-a373-e52af241ccf9",
           "name": "06 | READ created movie by ID",
           "request": {
             "url": {
@@ -64230,7 +64230,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "dbc348d9-d544-4c56-b7a2-b3bec9f947a6",
+                "id": "88250d0d-2322-4329-9ff4-3c25afeea84d",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
@@ -64238,7 +64238,7 @@
                   "pm.test(\"Saved in database\", () => pm.expect(pm.response.json().movie_id).to.eql(Number(pm.collectionVariables.get(\"movieId\"))));",
                   "pm.test(\"Genre joined\", () => pm.expect(pm.response.json().genre_name).to.be.a(\"string\"));"
                 ],
-                "_lastExecutionId": "4ce69ecc-b0ee-4d26-9c60-3769b8643fff"
+                "_lastExecutionId": "a8daba16-c753-424b-88a1-3918ca8cdfeb"
               }
             }
           ]
@@ -64250,7 +64250,7 @@
             "path": [
               "api",
               "movies",
-              "28"
+              "40"
             ],
             "host": [
               "127",
@@ -64279,7 +64279,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "665c032f-a260-41bf-9a89-e68a1428bb1b",
+              "value": "25a0cbeb-ef29-4d19-9390-a17e3b823c12",
               "system": true
             },
             {
@@ -64301,7 +64301,7 @@
           "method": "GET"
         },
         "response": {
-          "id": "d7a18fc7-f604-4d58-ae8a-3586e49dc17a",
+          "id": "3ef5a456-897a-4311-90f1-bb94a943c70b",
           "status": "OK",
           "code": 200,
           "header": [
@@ -64315,11 +64315,11 @@
             },
             {
               "key": "ETag",
-              "value": "W/\"107-pQ3oJlI/RY3weOrg66+Y16CoR6c\""
+              "value": "W/\"107-j6fB/284M2+RoF2azI/Cy+vg5jM\""
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:02 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:52 GMT"
             },
             {
               "key": "Connection",
@@ -64345,8 +64345,8 @@
               100,
               34,
               58,
-              50,
-              56,
+              52,
+              48,
               44,
               34,
               116,
@@ -64599,10 +64599,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 5,
+          "responseTime": 8,
           "responseSize": 263
         },
-        "id": "722744ac-d402-4fe9-9b52-f9ab4671c046",
+        "id": "45cc41e5-8992-41c1-a373-e52af241ccf9",
         "assertions": [
           {
             "assertion": "HTTP 200",
@@ -64624,15 +64624,15 @@
       },
       {
         "cursor": {
-          "ref": "6c791da7-1fc6-4227-bb8d-bd6f4a2ce0d4",
+          "ref": "1cf1f408-2682-4209-8e39-99ab798c9336",
           "length": 25,
           "cycles": 1,
           "position": 6,
           "iteration": 0,
-          "httpRequestId": "4442d7bc-e7ba-4ec1-9801-9eef5998bde4"
+          "httpRequestId": "eeb20245-0377-49cc-a74a-c9ca6651ed2c"
         },
         "item": {
-          "id": "b6ec5d87-6e74-4b21-a8c0-de14d797b483",
+          "id": "3102d49d-704a-47e5-874b-122822c1203e",
           "name": "07 | UPDATE full movie",
           "request": {
             "url": {
@@ -64669,14 +64669,14 @@
             {
               "listen": "test",
               "script": {
-                "id": "ad05975e-8da9-462a-97f2-fded3af628c9",
+                "id": "a5baa7cc-78a8-4856-b2c8-6c1ca3b11a42",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
                   "pm.test(\"JSON response\", () => pm.response.to.be.json);",
                   "pm.test(\"Updated rating\", () => pm.expect(pm.response.json().rating).to.eql(9.1));"
                 ],
-                "_lastExecutionId": "33d2ce8a-56ac-4c46-904d-8dd21df9290e"
+                "_lastExecutionId": "c565531d-5eee-4857-804f-a8941d11f3b8"
               }
             }
           ]
@@ -64688,7 +64688,7 @@
             "path": [
               "api",
               "movies",
-              "28"
+              "40"
             ],
             "host": [
               "127",
@@ -64721,7 +64721,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "bacdb317-fd2a-46fe-b45a-02d133df1b39",
+              "value": "75cb348f-91a6-4f90-9ee9-f5cfafd35ed3",
               "system": true
             },
             {
@@ -64757,7 +64757,7 @@
           }
         },
         "response": {
-          "id": "0e476f1b-abe1-4d6b-8535-01d3748a035f",
+          "id": "e93be881-da0c-4cb2-bde6-a3148be37fdc",
           "status": "OK",
           "code": 200,
           "header": [
@@ -64771,11 +64771,11 @@
             },
             {
               "key": "ETag",
-              "value": "W/\"ef-ZeBKkklKC6kLmmMxut6cgJ4hiEc\""
+              "value": "W/\"ef-JyqIg/EsAf8saBMDA03ZwDBOPGw\""
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:03 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:52 GMT"
             },
             {
               "key": "Connection",
@@ -64801,8 +64801,8 @@
               100,
               34,
               58,
-              50,
-              56,
+              52,
+              48,
               44,
               34,
               116,
@@ -65031,10 +65031,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 32,
+          "responseTime": 8,
           "responseSize": 239
         },
-        "id": "b6ec5d87-6e74-4b21-a8c0-de14d797b483",
+        "id": "3102d49d-704a-47e5-874b-122822c1203e",
         "assertions": [
           {
             "assertion": "HTTP 200",
@@ -65052,15 +65052,15 @@
       },
       {
         "cursor": {
-          "ref": "83c64a46-6d9f-4e3d-826c-ad7868e208c2",
+          "ref": "9b7639b7-1afb-4f8f-bf96-c9430ebc9d29",
           "length": 25,
           "cycles": 1,
           "position": 7,
           "iteration": 0,
-          "httpRequestId": "665a2dc2-b734-4efe-8ef3-d7540970bfce"
+          "httpRequestId": "ea7bb455-1d82-41d7-9efc-df982b2e9b9c"
         },
         "item": {
-          "id": "06ee07ef-ead7-4f4a-abec-fcf932253d75",
+          "id": "8f2bcc82-8ef8-48a7-98d2-d7aaa56f8c29",
           "name": "08 | READ verifies persistence",
           "request": {
             "url": {
@@ -65082,7 +65082,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "6579683b-a3ee-41ca-af30-a7e5a0c3991d",
+                "id": "cb48ba0c-c8a8-45f2-92df-dce197694e9e",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
@@ -65090,7 +65090,7 @@
                   "pm.test(\"Persisted title\", () => pm.expect(pm.response.json().title).to.eql(\"Lab10 | Жаңартылған фильм\"));",
                   "pm.test(\"Persisted rating\", () => pm.expect(pm.response.json().rating).to.eql(9.1));"
                 ],
-                "_lastExecutionId": "d89f9c4b-f275-42d2-bd95-eb90eb91cbea"
+                "_lastExecutionId": "9bac304a-38a2-47de-8abe-e4657e9754d3"
               }
             }
           ]
@@ -65102,7 +65102,7 @@
             "path": [
               "api",
               "movies",
-              "28"
+              "40"
             ],
             "host": [
               "127",
@@ -65131,7 +65131,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "c28b58d0-b03c-4705-a45f-94db6964de15",
+              "value": "b1ad39ee-f68d-40e5-a479-6278a88d5a9c",
               "system": true
             },
             {
@@ -65153,7 +65153,7 @@
           "method": "GET"
         },
         "response": {
-          "id": "9e023c88-6bec-4a26-bf66-6bd6d4da548f",
+          "id": "8caf85fa-0abc-45e8-a5aa-184fd59a1728",
           "status": "OK",
           "code": 200,
           "header": [
@@ -65167,11 +65167,11 @@
             },
             {
               "key": "ETag",
-              "value": "W/\"10f-TxpQNrICxM43H5FPyqdAfCPS4QE\""
+              "value": "W/\"10f-BwDyBRA1Sab8/am6r0zuYKTFoLI\""
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:03 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:52 GMT"
             },
             {
               "key": "Connection",
@@ -65197,8 +65197,8 @@
               100,
               34,
               58,
-              50,
-              56,
+              52,
+              48,
               44,
               34,
               116,
@@ -65459,10 +65459,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 5,
+          "responseTime": 4,
           "responseSize": 271
         },
-        "id": "06ee07ef-ead7-4f4a-abec-fcf932253d75",
+        "id": "8f2bcc82-8ef8-48a7-98d2-d7aaa56f8c29",
         "assertions": [
           {
             "assertion": "HTTP 200",
@@ -65484,15 +65484,15 @@
       },
       {
         "cursor": {
-          "ref": "6c5c0013-ca4f-4d08-9df5-201ad78ee839",
+          "ref": "e69ee59e-8d6d-4883-baeb-513d945faf97",
           "length": 25,
           "cycles": 1,
           "position": 8,
           "iteration": 0,
-          "httpRequestId": "c15994d2-8e97-4bf3-a6f2-0c9f100e8554"
+          "httpRequestId": "812b8630-c1e2-4965-8607-2a6f43739162"
         },
         "item": {
-          "id": "4df2b368-5fe1-4436-a76d-def8932021cb",
+          "id": "883c788f-7a24-4ed1-98b8-d85bf50dfa36",
           "name": "09 | Reject missing fields",
           "request": {
             "url": {
@@ -65528,7 +65528,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "fa9162a8-27ef-4f54-b6b0-a7a8c9643e1e",
+                "id": "fc8a5d31-0b30-43a5-8394-ed00f9617c0d",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));",
@@ -65536,7 +65536,7 @@
                   "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"VALIDATION_ERROR\"));",
                   "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
                 ],
-                "_lastExecutionId": "6a4ee0f3-f6a9-4683-9fb7-be3d248c619e"
+                "_lastExecutionId": "d3194529-c1c8-447a-ab2e-a3bf3dfbf3fa"
               }
             }
           ]
@@ -65580,7 +65580,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "039c99d8-e306-4336-b544-f95b84b3190e",
+              "value": "0b37a423-e140-4a36-b987-eea23b5796ac",
               "system": true
             },
             {
@@ -65616,7 +65616,7 @@
           }
         },
         "response": {
-          "id": "08cf8e01-e492-4fd5-8d95-c6d14675dab6",
+          "id": "4ec10868-e514-4418-b011-6d49486598c2",
           "status": "Bad Request",
           "code": 400,
           "header": [
@@ -65634,7 +65634,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:03 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:52 GMT"
             },
             {
               "key": "Connection",
@@ -66153,10 +66153,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 2,
+          "responseTime": 3,
           "responseSize": 502
         },
-        "id": "4df2b368-5fe1-4436-a76d-def8932021cb",
+        "id": "883c788f-7a24-4ed1-98b8-d85bf50dfa36",
         "assertions": [
           {
             "assertion": "HTTP 400",
@@ -66178,15 +66178,15 @@
       },
       {
         "cursor": {
-          "ref": "ff6dde87-3cdd-45bd-b295-0eb1b099a283",
+          "ref": "97f7f0f5-0a4b-4787-92bf-39a922f186e9",
           "length": 25,
           "cycles": 1,
           "position": 9,
           "iteration": 0,
-          "httpRequestId": "92f0f110-524d-46e7-87c7-d512a1ab94e9"
+          "httpRequestId": "ac83f9f9-8645-482d-8d6e-3bcf2b322858"
         },
         "item": {
-          "id": "a4443039-1943-4882-a818-007275cfd200",
+          "id": "1f985658-d840-4313-859d-af5cd1e5adc4",
           "name": "10 | Reject invalid rating",
           "request": {
             "url": {
@@ -66223,7 +66223,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "8e80146d-1e0c-49c1-b428-784fb5edc9be",
+                "id": "9ac40846-6b3c-4bd5-a9f0-4a50e24e2a76",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));",
@@ -66231,7 +66231,7 @@
                   "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"VALIDATION_ERROR\"));",
                   "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
                 ],
-                "_lastExecutionId": "92df124e-a2a8-4878-ad11-6e3a793df913"
+                "_lastExecutionId": "e7af0e4a-f157-4630-9c87-395030de2561"
               }
             }
           ]
@@ -66243,7 +66243,7 @@
             "path": [
               "api",
               "movies",
-              "28"
+              "40"
             ],
             "host": [
               "127",
@@ -66276,7 +66276,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "245b6520-7d2d-4dd1-8318-9d0955310650",
+              "value": "d9f97090-a059-4890-8872-2a56aa295e45",
               "system": true
             },
             {
@@ -66312,7 +66312,7 @@
           }
         },
         "response": {
-          "id": "a5e83fb4-3c44-4cae-be22-447de4c67830",
+          "id": "24c56290-72db-4511-b3b9-2afe2c2bd685",
           "status": "Bad Request",
           "code": 400,
           "header": [
@@ -66330,7 +66330,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:03 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:52 GMT"
             },
             {
               "key": "Connection",
@@ -66498,7 +66498,7 @@
           "responseTime": 3,
           "responseSize": 148
         },
-        "id": "a4443039-1943-4882-a818-007275cfd200",
+        "id": "1f985658-d840-4313-859d-af5cd1e5adc4",
         "assertions": [
           {
             "assertion": "HTTP 400",
@@ -66520,15 +66520,15 @@
       },
       {
         "cursor": {
-          "ref": "4c2967d9-f584-4b56-b9cb-5b5ef1ab013b",
+          "ref": "3145b581-ea00-4b47-a5d6-a08ead0bf216",
           "length": 25,
           "cycles": 1,
           "position": 10,
           "iteration": 0,
-          "httpRequestId": "97421dd6-798e-49f3-a5db-58509b3651ed"
+          "httpRequestId": "2bc3cfe9-5808-42c8-8aff-c4984b5fd9c2"
         },
         "item": {
-          "id": "4821e97c-5d1f-461e-98cb-d032696ead39",
+          "id": "d3bfb76c-8b2d-4ccb-825f-46065d0c538d",
           "name": "11 | Reject nonexistent genre",
           "request": {
             "url": {
@@ -66564,7 +66564,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "e64f2fc1-487e-4b79-a62d-c561f50ff468",
+                "id": "d53389bb-4117-4239-a93e-fc98df93b9a1",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));",
@@ -66572,7 +66572,7 @@
                   "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"GENRE_NOT_FOUND\"));",
                   "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
                 ],
-                "_lastExecutionId": "363304b6-92b7-4f14-8d58-806a2ef5c1b1"
+                "_lastExecutionId": "03acdf13-5b3d-4afb-a4bd-4d42517e0d20"
               }
             }
           ]
@@ -66616,7 +66616,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "69e76a1c-75bf-4926-affb-89e3afe420d8",
+              "value": "ab78b092-4ac4-496e-afbb-9b70b14713a4",
               "system": true
             },
             {
@@ -66652,7 +66652,7 @@
           }
         },
         "response": {
-          "id": "9e24f449-c575-41ea-93c3-f075aefc9e10",
+          "id": "42641f0f-d564-4e0d-aa0e-e4a37e4432a7",
           "status": "Bad Request",
           "code": 400,
           "header": [
@@ -66670,7 +66670,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:03 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:52 GMT"
             },
             {
               "key": "Connection",
@@ -66806,10 +66806,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 4,
+          "responseTime": 8,
           "responseSize": 119
         },
-        "id": "4821e97c-5d1f-461e-98cb-d032696ead39",
+        "id": "d3bfb76c-8b2d-4ccb-825f-46065d0c538d",
         "assertions": [
           {
             "assertion": "HTTP 400",
@@ -66831,15 +66831,15 @@
       },
       {
         "cursor": {
-          "ref": "1e54d80b-f64f-4ea5-b480-8565744d5773",
+          "ref": "6964f84d-7c02-403b-9325-06b2f043a2cf",
           "length": 25,
           "cycles": 1,
           "position": 11,
           "iteration": 0,
-          "httpRequestId": "24f3f4a9-108b-4a0c-b236-7ffcf1df0090"
+          "httpRequestId": "f39eafe0-de1f-45e8-bb38-017d45cb6097"
         },
         "item": {
-          "id": "7b5380ee-14c8-4441-9251-6c455023f888",
+          "id": "6cd00a5f-1839-4bab-a1ba-559b0ba7840d",
           "name": "12 | Reject SQL injection in ID",
           "request": {
             "url": {
@@ -66861,7 +66861,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "ac8a6d19-9bd5-4839-845b-d3571820adfd",
+                "id": "03106328-211e-4bca-afd1-7524df8b46a0",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));",
@@ -66869,7 +66869,7 @@
                   "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"INVALID_ID\"));",
                   "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
                 ],
-                "_lastExecutionId": "bc55012c-1843-449a-b5c4-a56d77131486"
+                "_lastExecutionId": "e1f89966-762b-4c24-9fe2-0c83ff074142"
               }
             }
           ]
@@ -66910,7 +66910,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "e3efa226-aa06-441f-b086-f92b299bba47",
+              "value": "a4fff22d-7a52-4a69-a615-79bb4a7f45f0",
               "system": true
             },
             {
@@ -66932,7 +66932,7 @@
           "method": "GET"
         },
         "response": {
-          "id": "188754c7-ad97-4062-9cbb-2baece14000b",
+          "id": "c0513f68-50df-46ea-8c35-5e95b1399013",
           "status": "Bad Request",
           "code": 400,
           "header": [
@@ -66950,7 +66950,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:03 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:52 GMT"
             },
             {
               "key": "Connection",
@@ -67058,10 +67058,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 2,
+          "responseTime": 1,
           "responseSize": 91
         },
-        "id": "7b5380ee-14c8-4441-9251-6c455023f888",
+        "id": "6cd00a5f-1839-4bab-a1ba-559b0ba7840d",
         "assertions": [
           {
             "assertion": "HTTP 400",
@@ -67083,15 +67083,15 @@
       },
       {
         "cursor": {
-          "ref": "882badee-51b0-4125-9d88-4488d108eedf",
+          "ref": "a2a467ea-0dca-4bb5-8a0a-2ea600cb5426",
           "length": 25,
           "cycles": 1,
           "position": 12,
           "iteration": 0,
-          "httpRequestId": "e62948ad-397b-4c77-9f39-b54169e4eda5"
+          "httpRequestId": "a643098d-a23f-4629-99c1-067f60365170"
         },
         "item": {
-          "id": "dbc48979-38cb-4d20-82b1-d41f363347bb",
+          "id": "a95a9112-5ac8-4ef6-a6d3-fde48884d665",
           "name": "13 | Reject SQL INT overflow",
           "request": {
             "url": {
@@ -67113,7 +67113,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "3ae5955d-09da-4627-be2b-302793804181",
+                "id": "32206531-6e50-49df-9246-66e092c79901",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));",
@@ -67121,7 +67121,7 @@
                   "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"INVALID_ID\"));",
                   "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
                 ],
-                "_lastExecutionId": "8a959735-0450-44f3-baca-301d03814c5b"
+                "_lastExecutionId": "cda0ac06-395d-4bea-87cd-ea782d590039"
               }
             }
           ]
@@ -67162,7 +67162,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "d1275de9-13b6-4cfd-822a-17f872a9d212",
+              "value": "b0dc8dff-67ea-40e9-9ff4-edf346f3ead9",
               "system": true
             },
             {
@@ -67184,7 +67184,7 @@
           "method": "GET"
         },
         "response": {
-          "id": "96edebce-25d5-4b66-96db-d5f73d4384eb",
+          "id": "0fbaa208-3a02-44d3-8c2e-7262aab6ed3c",
           "status": "Bad Request",
           "code": 400,
           "header": [
@@ -67202,7 +67202,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:03 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:52 GMT"
             },
             {
               "key": "Connection",
@@ -67313,7 +67313,7 @@
           "responseTime": 2,
           "responseSize": 91
         },
-        "id": "dbc48979-38cb-4d20-82b1-d41f363347bb",
+        "id": "a95a9112-5ac8-4ef6-a6d3-fde48884d665",
         "assertions": [
           {
             "assertion": "HTTP 400",
@@ -67335,15 +67335,15 @@
       },
       {
         "cursor": {
-          "ref": "f1996ef3-eb6c-44c0-b552-5a814fd4df82",
+          "ref": "76403e54-5ccc-4989-8419-3b01c99baf77",
           "length": 25,
           "cycles": 1,
           "position": 13,
           "iteration": 0,
-          "httpRequestId": "fdaec6fa-93c6-4ab3-aee9-8b8673e99d81"
+          "httpRequestId": "17e98a2d-9460-49bf-80cb-448b63a3eb70"
         },
         "item": {
-          "id": "ece0d789-ffe9-48f3-9bb6-ee7ba3e446b2",
+          "id": "be5e96e6-43cc-4216-876a-45323dbb76e0",
           "name": "14 | Missing movie returns 404",
           "request": {
             "url": {
@@ -67365,7 +67365,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "23f3ec4b-48e6-4b7f-a152-75a8b582adff",
+                "id": "def879ca-7750-4874-83a5-e4c06f56d5b2",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));",
@@ -67373,7 +67373,7 @@
                   "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"MOVIE_NOT_FOUND\"));",
                   "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
                 ],
-                "_lastExecutionId": "b068d4c0-50ab-4a9e-b21a-8119a80c774b"
+                "_lastExecutionId": "5a460320-634c-4e30-8e0c-d29ca9652278"
               }
             }
           ]
@@ -67414,7 +67414,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "5506df8a-b8f5-4192-842f-e890ea31017d",
+              "value": "7abca1cb-fc7f-44e4-a9a0-b1e45dd4bb2a",
               "system": true
             },
             {
@@ -67436,7 +67436,7 @@
           "method": "GET"
         },
         "response": {
-          "id": "5199933e-b8b3-462b-99ea-0d7d9f2ee976",
+          "id": "4fb8c527-2b0f-4778-a3a9-b198f04ae924",
           "status": "Not Found",
           "code": 404,
           "header": [
@@ -67454,7 +67454,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:03 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:52 GMT"
             },
             {
               "key": "Connection",
@@ -67537,10 +67537,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 6,
+          "responseTime": 4,
           "responseSize": 66
         },
-        "id": "ece0d789-ffe9-48f3-9bb6-ee7ba3e446b2",
+        "id": "be5e96e6-43cc-4216-876a-45323dbb76e0",
         "assertions": [
           {
             "assertion": "HTTP 404",
@@ -67562,15 +67562,15 @@
       },
       {
         "cursor": {
-          "ref": "b26f58b6-26d6-44e5-a128-54730f3c8036",
+          "ref": "e8194e0d-d1bf-4c70-b8fe-c75e8b73c286",
           "length": 25,
           "cycles": 1,
           "position": 14,
           "iteration": 0,
-          "httpRequestId": "8295ae87-223f-4a6c-904c-878435250c03"
+          "httpRequestId": "427f17f7-0af9-435f-96ca-d9f3801b09ec"
         },
         "item": {
-          "id": "61963b41-9c6f-4a30-92f2-9d52976c2ad0",
+          "id": "8d4860d4-e248-4905-8853-6d946b8021e0",
           "name": "15 | Update missing movie returns 404",
           "request": {
             "url": {
@@ -67607,7 +67607,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "1643cd36-b992-444a-9b38-a017f1a3ba51",
+                "id": "f48fc912-f4a2-403b-baa4-a9b4f6fc8b3c",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));",
@@ -67615,7 +67615,7 @@
                   "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"MOVIE_NOT_FOUND\"));",
                   "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
                 ],
-                "_lastExecutionId": "ee7cb71c-6a50-492a-9354-212c8973de13"
+                "_lastExecutionId": "25a5646d-e96e-4831-95b8-e76b77a81eff"
               }
             }
           ]
@@ -67660,7 +67660,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "eb94b0d2-c25e-456e-8361-3f9f1bc73609",
+              "value": "39b89a0d-aa2d-4a5b-a926-1aaf51502490",
               "system": true
             },
             {
@@ -67696,7 +67696,7 @@
           }
         },
         "response": {
-          "id": "9f2fcfc2-7ec0-491e-a74e-c63f95c6bfc0",
+          "id": "245386da-d963-4443-824c-8ac8dc03b562",
           "status": "Not Found",
           "code": 404,
           "header": [
@@ -67714,7 +67714,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:03 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:52 GMT"
             },
             {
               "key": "Connection",
@@ -67797,10 +67797,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 6,
+          "responseTime": 8,
           "responseSize": 66
         },
-        "id": "61963b41-9c6f-4a30-92f2-9d52976c2ad0",
+        "id": "8d4860d4-e248-4905-8853-6d946b8021e0",
         "assertions": [
           {
             "assertion": "HTTP 404",
@@ -67822,15 +67822,15 @@
       },
       {
         "cursor": {
-          "ref": "a0146856-2fc9-4af2-a866-b9eda70889f4",
+          "ref": "4283fda6-ea6e-476e-bc55-a70cbad7599a",
           "length": 25,
           "cycles": 1,
           "position": 15,
           "iteration": 0,
-          "httpRequestId": "9fbddc4a-fb0e-4e4b-9e10-3a62f627a8cd"
+          "httpRequestId": "717e9c9b-d39b-4236-a11b-8041d00439fa"
         },
         "item": {
-          "id": "e07bbef9-ff6a-48a3-a381-382d7424d3a4",
+          "id": "b02cec6b-3984-4bf9-816b-79b53adde632",
           "name": "16 | Protect movie with sessions",
           "request": {
             "url": {
@@ -67852,7 +67852,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "1140c93d-69da-4d5c-b8c8-38aedf6a733c",
+                "id": "6bd30922-0b20-477d-8ddc-6a19ed1a047e",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 409\", () => pm.response.to.have.status(409));",
@@ -67860,7 +67860,7 @@
                   "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"MOVIE_HAS_SESSIONS\"));",
                   "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
                 ],
-                "_lastExecutionId": "99151ced-5d3e-4286-9c1f-7061f3970d2f"
+                "_lastExecutionId": "955f2d49-508c-44dd-aae4-08d18be9cebf"
               }
             }
           ]
@@ -67901,7 +67901,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "07664328-0fca-4392-82c9-6de033dba487",
+              "value": "6cc64333-e68f-4e8c-8bb0-7f0f82ad05ef",
               "system": true
             },
             {
@@ -67923,7 +67923,7 @@
           "method": "DELETE"
         },
         "response": {
-          "id": "1090b679-b334-4666-82c6-f0c36ca2d558",
+          "id": "39ea4733-c850-4852-8660-e7131fc8b9dd",
           "status": "Conflict",
           "code": 409,
           "header": [
@@ -67941,7 +67941,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:03 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:52 GMT"
             },
             {
               "key": "Connection",
@@ -68096,10 +68096,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 7,
+          "responseTime": 6,
           "responseSize": 138
         },
-        "id": "e07bbef9-ff6a-48a3-a381-382d7424d3a4",
+        "id": "b02cec6b-3984-4bf9-816b-79b53adde632",
         "assertions": [
           {
             "assertion": "HTTP 409",
@@ -68121,15 +68121,15 @@
       },
       {
         "cursor": {
-          "ref": "a12406b9-debc-4831-a4fb-27658e7d3cf0",
+          "ref": "ae2bb677-4b86-4e73-8bda-3cef48ecbe1e",
           "length": 25,
           "cycles": 1,
           "position": 16,
           "iteration": 0,
-          "httpRequestId": "3674db74-81d8-4770-a9cd-b5e7b089398d"
+          "httpRequestId": "f4026324-8c5d-472b-b07a-db8463c270db"
         },
         "item": {
-          "id": "8051c89e-c147-4812-a6dc-06f5dac9c048",
+          "id": "b6dbac1c-27b0-4ede-9b81-5b3044d7d525",
           "name": "17 | Reject malformed JSON",
           "request": {
             "url": {
@@ -68165,7 +68165,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "18da810d-9d53-47e1-9dd6-678280e54c80",
+                "id": "e920625c-30e0-4aa8-b6bb-32858c12dc21",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));",
@@ -68173,7 +68173,7 @@
                   "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"INVALID_JSON\"));",
                   "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
                 ],
-                "_lastExecutionId": "d8e74eaf-9f6f-43f8-87c2-d63279d3c4b5"
+                "_lastExecutionId": "17f6e361-5a46-4148-9b21-62fe74bfad6b"
               }
             }
           ]
@@ -68217,7 +68217,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "3b4c61fe-369d-4165-a222-8edafa4020e5",
+              "value": "d463da58-7601-4695-bbb7-26ba83a2c10c",
               "system": true
             },
             {
@@ -68253,7 +68253,7 @@
           }
         },
         "response": {
-          "id": "f404ab46-28a4-4fb5-ba45-1c80d9ebd6d5",
+          "id": "6ddecd8c-64b9-42d5-bc2f-ad82bbd50a7b",
           "status": "Bad Request",
           "code": 400,
           "header": [
@@ -68271,7 +68271,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:03 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:53 GMT"
             },
             {
               "key": "Connection",
@@ -68356,10 +68356,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 1,
+          "responseTime": 5,
           "responseSize": 68
         },
-        "id": "8051c89e-c147-4812-a6dc-06f5dac9c048",
+        "id": "b6dbac1c-27b0-4ede-9b81-5b3044d7d525",
         "assertions": [
           {
             "assertion": "HTTP 400",
@@ -68381,15 +68381,15 @@
       },
       {
         "cursor": {
-          "ref": "ed7a6172-98db-4807-a24e-072443c2031f",
+          "ref": "5685886e-72c6-43be-8e7e-9bffb0bb9c2e",
           "length": 25,
           "cycles": 1,
           "position": 17,
           "iteration": 0,
-          "httpRequestId": "48f9da57-0c98-4a5e-9068-8d35009b7a48"
+          "httpRequestId": "6c4ab6eb-c1cd-49ea-8122-d50f1111b50a"
         },
         "item": {
-          "id": "b6f50544-1828-4d8b-ba6a-6252afc0f45a",
+          "id": "8b3f8b96-2309-44c9-8a08-9229a43f34fc",
           "name": "18 | Reject wrong Content-Type",
           "request": {
             "url": {
@@ -68425,7 +68425,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "6dc8444c-15f6-45d2-bf8c-a5cfa756de58",
+                "id": "c56fb71d-aac9-4eae-976b-015208b729f7",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 415\", () => pm.response.to.have.status(415));",
@@ -68433,7 +68433,7 @@
                   "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"UNSUPPORTED_MEDIA_TYPE\"));",
                   "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
                 ],
-                "_lastExecutionId": "7c3fc940-8da8-4399-9c21-11c575cfc111"
+                "_lastExecutionId": "00b1d28b-efde-4d21-8e03-2fbff693d9d0"
               }
             }
           ]
@@ -68477,7 +68477,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "5cbd36c1-a2e6-435e-85ec-530cf2ac53e8",
+              "value": "df92cd4a-c374-46ba-a850-18a089b39ef2",
               "system": true
             },
             {
@@ -68513,7 +68513,7 @@
           }
         },
         "response": {
-          "id": "678ad6fe-0a88-440d-a1b0-161bfa14d269",
+          "id": "acd0896a-f8f8-4db9-a735-c56a32fdc3d2",
           "status": "Unsupported Media Type",
           "code": 415,
           "header": [
@@ -68531,7 +68531,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:04 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:53 GMT"
             },
             {
               "key": "Connection",
@@ -68636,7 +68636,7 @@
           "responseTime": 2,
           "responseSize": 85
         },
-        "id": "b6f50544-1828-4d8b-ba6a-6252afc0f45a",
+        "id": "8b3f8b96-2309-44c9-8a08-9229a43f34fc",
         "assertions": [
           {
             "assertion": "HTTP 415",
@@ -68658,15 +68658,15 @@
       },
       {
         "cursor": {
-          "ref": "398e50f0-1a6a-4d6e-b993-82282d830335",
+          "ref": "3d4045a6-77d2-4e1d-9359-841a30661bbc",
           "length": 25,
           "cycles": 1,
           "position": 18,
           "iteration": 0,
-          "httpRequestId": "c7e0b700-5951-4b5b-86fd-12f7f109fb12"
+          "httpRequestId": "c0d16106-52e6-4f08-825b-5af455ea4258"
         },
         "item": {
-          "id": "89f0a232-61c0-4d96-bdcf-417d996ac8f2",
+          "id": "5618bf63-5f9e-4941-9ae1-51ca65380df1",
           "name": "19 | Reject oversized JSON",
           "request": {
             "url": {
@@ -68702,7 +68702,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "4442e076-8e43-43de-ba42-6cf39cda4d6d",
+                "id": "2b3de7c7-ffa3-490d-a6e1-829ef894016b",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 413\", () => pm.response.to.have.status(413));",
@@ -68710,7 +68710,7 @@
                   "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"PAYLOAD_TOO_LARGE\"));",
                   "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
                 ],
-                "_lastExecutionId": "a1d7a85b-34bb-46ad-ad66-abb5c301bdba"
+                "_lastExecutionId": "84d2d42a-b102-460d-9041-1622c4c16a8e"
               }
             }
           ]
@@ -68754,7 +68754,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "b2d2c1ed-479d-4ebd-8cd1-74cb17e4ccaa",
+              "value": "27519048-6b5f-41a2-9d27-383f3a271d15",
               "system": true
             },
             {
@@ -68790,7 +68790,7 @@
           }
         },
         "response": {
-          "id": "4f44233c-d15e-411e-8956-5a91f4334e82",
+          "id": "4c6ef4ae-0fdb-481d-a695-d773302eed12",
           "status": "Payload Too Large",
           "code": 413,
           "header": [
@@ -68808,7 +68808,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:04 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:53 GMT"
             },
             {
               "key": "Connection",
@@ -68921,10 +68921,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 1,
+          "responseTime": 2,
           "responseSize": 96
         },
-        "id": "89f0a232-61c0-4d96-bdcf-417d996ac8f2",
+        "id": "5618bf63-5f9e-4941-9ae1-51ca65380df1",
         "assertions": [
           {
             "assertion": "HTTP 413",
@@ -68946,15 +68946,15 @@
       },
       {
         "cursor": {
-          "ref": "80989a1c-7542-4bf7-a2c2-43096c4ae3a7",
+          "ref": "ec075c57-a419-4d6e-9b0d-66e92c88701f",
           "length": 25,
           "cycles": 1,
           "position": 19,
           "iteration": 0,
-          "httpRequestId": "3aae4879-5e7f-4e8f-b4c9-c118cd05ab57"
+          "httpRequestId": "dcb16f68-2c85-4b38-bb5a-84419f286bb4"
         },
         "item": {
-          "id": "b15420a2-1d34-4904-98fc-9e8c0863fd0f",
+          "id": "b1888b4d-02af-4d0a-9218-15b0dccc4de6",
           "name": "20 | Unsupported method",
           "request": {
             "url": {
@@ -68976,7 +68976,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "abcb3ca7-12dd-423d-a37d-42692f79971c",
+                "id": "496f986a-d278-4fe8-88f3-e6775c17d581",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 405\", () => pm.response.to.have.status(405));",
@@ -68984,7 +68984,7 @@
                   "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"METHOD_NOT_ALLOWED\"));",
                   "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
                 ],
-                "_lastExecutionId": "d822208e-304d-4556-bdd2-c7b15b71d33f"
+                "_lastExecutionId": "7d9c164f-35ba-4894-8e07-aaa23447fad8"
               }
             }
           ]
@@ -68996,7 +68996,7 @@
             "path": [
               "api",
               "movies",
-              "28"
+              "40"
             ],
             "host": [
               "127",
@@ -69025,7 +69025,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "98d1c294-7804-4958-9073-1abc9febdc58",
+              "value": "813b3762-482d-4abd-8e4a-8e7ea4c68de1",
               "system": true
             },
             {
@@ -69052,7 +69052,7 @@
           "method": "PATCH"
         },
         "response": {
-          "id": "f6ccc572-a2f3-48dc-a773-53cc8d7823f8",
+          "id": "3006666c-11f6-467b-a503-0b8dc2841f6a",
           "status": "Method Not Allowed",
           "code": 405,
           "header": [
@@ -69074,7 +69074,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:04 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:53 GMT"
             },
             {
               "key": "Connection",
@@ -69183,10 +69183,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 1,
+          "responseTime": 2,
           "responseSize": 92
         },
-        "id": "b15420a2-1d34-4904-98fc-9e8c0863fd0f",
+        "id": "b1888b4d-02af-4d0a-9218-15b0dccc4de6",
         "assertions": [
           {
             "assertion": "HTTP 405",
@@ -69208,15 +69208,15 @@
       },
       {
         "cursor": {
-          "ref": "927f188b-159b-475e-a5d5-7c5abe6d3792",
+          "ref": "9c457058-b1bf-4b1d-9ced-808137d1358f",
           "length": 25,
           "cycles": 1,
           "position": 20,
           "iteration": 0,
-          "httpRequestId": "0f115e19-4edc-44b5-a27d-270dec805520"
+          "httpRequestId": "0fd8fe36-1456-4d68-9499-d22ac3b03679"
         },
         "item": {
-          "id": "cfcefe5b-70d2-4be9-be6e-442598785d98",
+          "id": "5ce8377c-8a2c-4d50-a3c7-96eadaf1be6b",
           "name": "21 | Unknown API route",
           "request": {
             "url": {
@@ -69237,7 +69237,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "eee614bb-b97f-44c7-bf3f-fec5a98adaa5",
+                "id": "7bcf15f9-ca46-4ba8-a43d-f4ab236efd20",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));",
@@ -69245,7 +69245,7 @@
                   "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"ROUTE_NOT_FOUND\"));",
                   "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
                 ],
-                "_lastExecutionId": "e6104d8c-f344-4929-a4f4-d5e5679d3532"
+                "_lastExecutionId": "7fb701dd-f175-42ac-9f42-8eab47767335"
               }
             }
           ]
@@ -69285,7 +69285,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "053d57c0-6352-4e33-ba8b-8fb55bda71f4",
+              "value": "964a12bb-355e-4b8c-a165-f92c65d00623",
               "system": true
             },
             {
@@ -69307,7 +69307,7 @@
           "method": "GET"
         },
         "response": {
-          "id": "7a4a9157-6cb8-486e-b867-6b23cad86cd1",
+          "id": "ce60d05c-5e2d-4b39-9b7a-89a72a1e8b2f",
           "status": "Not Found",
           "code": 404,
           "header": [
@@ -69325,7 +69325,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:04 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:53 GMT"
             },
             {
               "key": "Connection",
@@ -69421,7 +69421,7 @@
           "responseTime": 2,
           "responseSize": 76
         },
-        "id": "cfcefe5b-70d2-4be9-be6e-442598785d98",
+        "id": "5ce8377c-8a2c-4d50-a3c7-96eadaf1be6b",
         "assertions": [
           {
             "assertion": "HTTP 404",
@@ -69443,15 +69443,15 @@
       },
       {
         "cursor": {
-          "ref": "d5b77115-aa7f-4789-ae5e-e58151a24943",
+          "ref": "686ba2af-42f8-41df-b840-379c5d09459e",
           "length": 25,
           "cycles": 1,
           "position": 21,
           "iteration": 0,
-          "httpRequestId": "97db2eb7-d072-4b6f-b379-ad197fc1919c"
+          "httpRequestId": "8291a8a1-8131-4eb4-9fd3-aab79dd86390"
         },
         "item": {
-          "id": "986ce948-907a-493a-980b-fe22ccc733d4",
+          "id": "593051b5-94d8-4ba9-926b-fcbac36eec9e",
           "name": "22 | DELETE created test movie",
           "request": {
             "url": {
@@ -69473,14 +69473,14 @@
             {
               "listen": "test",
               "script": {
-                "id": "434bfff1-9e29-4285-be06-d126d8ed9b4a",
+                "id": "7390eaca-e44f-4b3f-8a29-edd4da94177f",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
                   "pm.test(\"JSON response\", () => pm.response.to.be.json);",
                   "pm.test(\"Deleted own fixture\", () => pm.expect(pm.response.json().movie_id).to.eql(Number(pm.collectionVariables.get(\"movieId\"))));"
                 ],
-                "_lastExecutionId": "ac3a0ff9-015a-43a4-8f32-1287a1be6efa"
+                "_lastExecutionId": "79d6e719-0a58-474d-970d-d1a84d6596f9"
               }
             }
           ]
@@ -69492,7 +69492,7 @@
             "path": [
               "api",
               "movies",
-              "28"
+              "40"
             ],
             "host": [
               "127",
@@ -69521,7 +69521,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "d1ae0bce-7545-47d3-a3f2-56be5c8ab277",
+              "value": "5f4c3451-c71a-4711-aa6b-9b4eb173766a",
               "system": true
             },
             {
@@ -69543,7 +69543,7 @@
           "method": "DELETE"
         },
         "response": {
-          "id": "bf78fa3b-f193-4fdd-9b04-7b573ac60f43",
+          "id": "27d2f9da-cc8f-4c64-9990-f8399159b70d",
           "status": "OK",
           "code": 200,
           "header": [
@@ -69557,11 +69557,11 @@
             },
             {
               "key": "ETag",
-              "value": "W/\"40-iAiTT7k5OpAKneGePxL2esSTIEY\""
+              "value": "W/\"40-LRHSkn8wJXVPLDxTaXWFCqKCEfQ\""
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:04 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:53 GMT"
             },
             {
               "key": "Connection",
@@ -69636,8 +69636,8 @@
               100,
               34,
               58,
-              50,
-              56,
+              52,
+              48,
               125
             ]
           },
@@ -69645,7 +69645,7 @@
           "responseTime": 6,
           "responseSize": 64
         },
-        "id": "986ce948-907a-493a-980b-fe22ccc733d4",
+        "id": "593051b5-94d8-4ba9-926b-fcbac36eec9e",
         "assertions": [
           {
             "assertion": "HTTP 200",
@@ -69663,15 +69663,15 @@
       },
       {
         "cursor": {
-          "ref": "c87d775b-ab09-406e-b2d6-b9073fe3a694",
+          "ref": "5d2643d7-7619-448a-810b-160ff10cf189",
           "length": 25,
           "cycles": 1,
           "position": 22,
           "iteration": 0,
-          "httpRequestId": "8906c116-4473-4591-8103-548cc1d228d4"
+          "httpRequestId": "0a53b7a1-28f8-4b9c-9ec4-02875307764c"
         },
         "item": {
-          "id": "cf1246d9-f4d5-45ad-89dc-eacbabcfd0ec",
+          "id": "c59a6342-7f1b-4a85-8e97-dc2785c556ea",
           "name": "23 | READ after delete",
           "request": {
             "url": {
@@ -69693,7 +69693,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "8f691280-bf1d-424b-b979-949e33d62de6",
+                "id": "4395dd34-da7f-4fa3-a903-0fc9510e1c1b",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));",
@@ -69701,7 +69701,7 @@
                   "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"MOVIE_NOT_FOUND\"));",
                   "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
                 ],
-                "_lastExecutionId": "55010090-7b31-4da0-9594-ec21aaecca14"
+                "_lastExecutionId": "324af595-74b5-4666-860c-3b31ba1fca00"
               }
             }
           ]
@@ -69713,7 +69713,7 @@
             "path": [
               "api",
               "movies",
-              "28"
+              "40"
             ],
             "host": [
               "127",
@@ -69742,7 +69742,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "56a1f09a-09f1-4f8b-bc35-7d87438df98a",
+              "value": "10e12bae-09f0-4995-ae68-051b2ea4f083",
               "system": true
             },
             {
@@ -69764,7 +69764,7 @@
           "method": "GET"
         },
         "response": {
-          "id": "74e0140b-0994-41b2-aca1-dc864cfce2a9",
+          "id": "3548d2e4-5420-4f42-9b46-94c7f4909632",
           "status": "Not Found",
           "code": 404,
           "header": [
@@ -69782,7 +69782,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:04 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:53 GMT"
             },
             {
               "key": "Connection",
@@ -69865,10 +69865,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 3,
+          "responseTime": 4,
           "responseSize": 66
         },
-        "id": "cf1246d9-f4d5-45ad-89dc-eacbabcfd0ec",
+        "id": "c59a6342-7f1b-4a85-8e97-dc2785c556ea",
         "assertions": [
           {
             "assertion": "HTTP 404",
@@ -69890,15 +69890,15 @@
       },
       {
         "cursor": {
-          "ref": "91e27586-2bca-4fb0-ad84-3873e7e3f8d6",
+          "ref": "d59dee9c-548f-4dce-933e-1d2b0193f77b",
           "length": 25,
           "cycles": 1,
           "position": 23,
           "iteration": 0,
-          "httpRequestId": "29b04b4d-d8fb-4884-9ec8-7a86a4ae012a"
+          "httpRequestId": "e11b6582-939b-4f6e-b974-6b757a1c453f"
         },
         "item": {
-          "id": "06b7b792-c712-4686-8f55-20528831aa74",
+          "id": "eb375620-8913-4895-8b6f-b75e2c802366",
           "name": "24 | DELETE again returns 404",
           "request": {
             "url": {
@@ -69920,7 +69920,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "302b1e0e-8682-44b3-bcd2-ebeace73dadd",
+                "id": "4ae59f7d-f5ad-4382-ba51-a84dd264fc09",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));",
@@ -69928,7 +69928,7 @@
                   "pm.test(\"Error code\", () => pm.expect(pm.response.json().code).to.eql(\"MOVIE_NOT_FOUND\"));",
                   "pm.test(\"Readable error\", () => pm.expect(pm.response.json().error).to.be.a(\"string\").and.not.empty);"
                 ],
-                "_lastExecutionId": "abffade3-74a7-4042-b748-33975135834c"
+                "_lastExecutionId": "299ed887-f472-442f-928f-1edf52787838"
               }
             }
           ]
@@ -69940,7 +69940,7 @@
             "path": [
               "api",
               "movies",
-              "28"
+              "40"
             ],
             "host": [
               "127",
@@ -69969,7 +69969,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "e221c44b-2c05-44e2-9d3c-768a6d4a45e6",
+              "value": "d7c6b6f6-632d-4a23-bddd-009fd7a90945",
               "system": true
             },
             {
@@ -69991,7 +69991,7 @@
           "method": "DELETE"
         },
         "response": {
-          "id": "17b7a57e-8a23-4deb-b082-6c2be51241ff",
+          "id": "dd5558da-0484-48ae-a483-69722608807c",
           "status": "Not Found",
           "code": 404,
           "header": [
@@ -70009,7 +70009,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:04 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:53 GMT"
             },
             {
               "key": "Connection",
@@ -70092,10 +70092,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 3,
+          "responseTime": 4,
           "responseSize": 66
         },
-        "id": "06b7b792-c712-4686-8f55-20528831aa74",
+        "id": "eb375620-8913-4895-8b6f-b75e2c802366",
         "assertions": [
           {
             "assertion": "HTTP 404",
@@ -70117,15 +70117,15 @@
       },
       {
         "cursor": {
-          "ref": "fc64f316-abed-40db-b37d-e8038a94fb0b",
+          "ref": "036d00f0-b5a4-4d16-96a5-fa9cb3584da1",
           "length": 25,
           "cycles": 1,
           "position": 24,
           "iteration": 0,
-          "httpRequestId": "816e1225-ca16-4056-a256-58c7d0c2188d"
+          "httpRequestId": "ac301922-3f7a-4c2f-b71c-1dc121cb0bbd"
         },
         "item": {
-          "id": "02a6ca27-3168-4519-974b-8d281cc6253e",
+          "id": "aef1cba5-854a-484e-9acd-54405e87ff75",
           "name": "25 | Original catalog count restored",
           "request": {
             "url": {
@@ -70146,14 +70146,14 @@
             {
               "listen": "test",
               "script": {
-                "id": "0e8559c5-89aa-48f1-a055-52f2f559a3cc",
+                "id": "946c2244-7ec3-47a3-95c9-658bfb612e75",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
                   "pm.test(\"JSON response\", () => pm.response.to.be.json);",
                   "pm.test(\"No leftover test movie\", () => pm.expect(pm.response.json().length).to.eql(Number(pm.collectionVariables.get(\"initialCount\"))));"
                 ],
-                "_lastExecutionId": "d167f5e8-5764-48cf-bf8c-0d1c2ae3fa34"
+                "_lastExecutionId": "6583d60d-17b5-417c-abb7-dcd3e83fe4ea"
               }
             }
           ]
@@ -70193,7 +70193,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "aa27d978-23e3-4550-ba28-a85033dc4308",
+              "value": "d51f1f77-e730-48b7-bce4-5ea7ca041b16",
               "system": true
             },
             {
@@ -70215,7 +70215,7 @@
           "method": "GET"
         },
         "response": {
-          "id": "2e204dd8-5884-47c1-ad50-ed3bf21044bd",
+          "id": "d530fbdd-1348-4033-817c-5798c610ed84",
           "status": "OK",
           "code": 200,
           "header": [
@@ -70233,7 +70233,7 @@
             },
             {
               "key": "Date",
-              "value": "Wed, 04 Nov 2026 17:10:04 GMT"
+              "value": "Thu, 05 Nov 2026 04:07:53 GMT"
             },
             {
               "key": "Connection",
@@ -76731,7 +76731,7 @@
           "responseTime": 6,
           "responseSize": 6478
         },
-        "id": "02a6ca27-3168-4519-974b-8d281cc6253e",
+        "id": "aef1cba5-854a-484e-9acd-54405e87ff75",
         "assertions": [
           {
             "assertion": "HTTP 200",

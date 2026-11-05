@@ -1,5 +1,7 @@
 # Апайға Postman арқылы көрсету реті
 
+Апай басқа кестені немесе сүзілген нәтижені сұраса, [жеті кестеге арналған URL және мысалдарды](ALL_TABLES.md) қолданыңыз. Дайын коллекция: `postman/CinemaLab10_AllTables.postman_collection.json`.
+
 ## Қандай бағдарламалар қолданылады
 
 - **Visual Studio Code**: `server/index.js`, `server/movies.js`, `server/db.js` кодын ашу.
