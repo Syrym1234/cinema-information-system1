@@ -1,5 +1,5 @@
 {
-  "verified_at": "2026-11-05T09:46:20.427Z",
+  "verified_at": "2026-11-05T10:02:16.843Z",
   "database": "CinemaLabDB",
   "total_groups": 20,
   "group_booking_customer_rows": 75,
@@ -11,24 +11,26 @@
   "qualifying_customer_pairs": 53,
   "qualifying_group_seats": 54,
   "all_organizers_distinct": true,
-  "popcorn_counts_and_food_lists_match_source": true,
-  "popcorn_control_count": 3,
+  "popcorn_order_counts_and_food_rows_match_source": true,
+  "popcorn_control_order_count": 1,
+  "basic_sql_functions_only": true,
+  "detail_group_id": 1,
+  "detail_companion_rows": 4,
+  "detail_food_rows": 2,
   "food_order_required_rows": 6,
   "popcorn_group_excluded": true,
   "cheap_group_excluded": true,
   "independent_counts_and_companions_match": true,
   "example": {
-    "Топтық тапсырыс ID": 1,
+    "Топ ID": 1,
     "Ұйымдастырушы ID": 34,
     "Топ ұйымдастырушысы": "Бақтыбек Сырым",
-    "Попкорн саны": 0,
-    "Тағамдары": "Cola 0.5 л × 6; Начос ірімшікпен × 3",
-    "Бірге брондағандар": "1 — Дарханбай Қуаныш; 2 — Данияров Ерасыл; 3 — Меделханов Бағыжан; 4 — Заманбек Аманжол",
     "Фильм": "Көрінбейтін жол",
     "Сеанс уақыты": "2026-10-23T18:00:00.000Z",
     "Сеанс бағасы": 3146,
-    "Барлық сеанстың орташа бағасы": 2868.8,
-    "Адам саны": 6,
-    "Тапсырыс берген клиент саны": 5
+    "Орташа баға": 2868.800892,
+    "Орын саны": 6,
+    "Клиент саны": 5,
+    "Попкорны бар тапсырыс саны": 0
   }
 }

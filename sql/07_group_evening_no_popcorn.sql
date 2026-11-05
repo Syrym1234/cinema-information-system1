@@ -1,162 +1,57 @@
-/*
-  Тапсырма: кешкі сеансқа жасалған, бағасы барлық сеанстардың
-  орташа бағасынан жоғары және тағам тапсырыстарында попкорн жоқ
-  топтық броньдарды, фильмді және қатысушылардың ID-і мен аты-жөнін шығару.
-
-  Нақты база: CinemaLabDB (CinemaSchoolDB емес).
-  Кешкі уақыт: 18:00 және одан кейін.
-  held / paid броньдары ескеріледі; cancelled / expired ескерілмейді.
-  Бір брондалған орын бір көрермен деп есептеледі.
-  Бір жол = бір топ. Уақыт бойынша алғашқы 6 сәйкес топ көрсетіледі.
-  «Бірге брондағандар» ұйымдастырушымен бірге брондаған клиенттерді көрсетеді.
-  Әр орынға отырған адамның жеке ID-і сақталмайды; орын саны бөлек беріледі.
-  Тағам тапсырысы мүлде жоқ топтар да попкорнсыз деп есептеледі.
-  Тек SELECT орындалады; деректер өзгертілмейді.
+/* Кешкі, орташа бағадан қымбат, попкорнсыз топтық броньдар.
+   Бір жол — бір топ. Алғашқы 6 топ көрсетіледі.
+   Орын саны мен клиент саны бөлек есептеледі.
+   Тек SELECT: деректер өзгермейді.
 */
 USE CinemaLabDB;
 GO
 
 SELECT TOP (6)
-    gb.group_id AS [Топтық тапсырыс ID],
-    organizer.customer_id AS [Ұйымдастырушы ID],
-    organizer.full_name AS [Топ ұйымдастырушысы],
-    -- Попкорн саны тағам жолдарынан есептеледі, дайын 0 мәні берілмейді.
-    COALESCE((
-        SELECT SUM(foi.quantity)
-        FROM dbo.Reservations AS r
-        INNER JOIN dbo.FoodOrders AS fo ON fo.reservation_id = r.reservation_id
-        INNER JOIN dbo.FoodOrderItems AS foi ON foi.food_order_id = fo.food_order_id
-        INNER JOIN dbo.MenuItems AS mi ON mi.menu_item_id = foi.menu_item_id
-        WHERE r.group_id = gb.group_id AND r.session_id = gb.session_id
-          AND r.reservation_status IN ('held', 'paid')
-          AND fo.order_status <> 'cancelled' AND foi.quantity > 0
-          AND (mi.category = N'Попкорн'
-               OR LOWER(mi.item_name) LIKE N'%попкорн%'
-               OR LOWER(mi.item_name) LIKE N'%popcorn%')
-    ), 0) AS [Попкорн саны],
-    COALESCE((
-        SELECT STRING_AGG(
-            CAST(CONCAT(food.item_name, N' × ', food.quantity) AS NVARCHAR(MAX)), N'; '
-        ) WITHIN GROUP (ORDER BY food.menu_item_id)
-        FROM (
-            SELECT mi.menu_item_id, mi.item_name, SUM(foi.quantity) AS quantity
-            FROM dbo.Reservations AS r
-            INNER JOIN dbo.FoodOrders AS fo ON fo.reservation_id = r.reservation_id
-            INNER JOIN dbo.FoodOrderItems AS foi ON foi.food_order_id = fo.food_order_id
-            INNER JOIN dbo.MenuItems AS mi ON mi.menu_item_id = foi.menu_item_id
-            WHERE r.group_id = gb.group_id AND r.session_id = gb.session_id
-              AND r.reservation_status IN ('held', 'paid')
-              AND fo.order_status <> 'cancelled' AND foi.quantity > 0
-            GROUP BY mi.menu_item_id, mi.item_name
-        ) AS food
-    ), N'Тағам тапсырысы жоқ') AS [Тағамдары],
-    COALESCE((
-        SELECT STRING_AGG(
-            CAST(CONCAT(other.customer_id, N' — ', other.full_name) AS NVARCHAR(MAX)), N'; '
-        ) WITHIN GROUP (ORDER BY other.customer_id)
-        FROM (
-            SELECT DISTINCT c2.customer_id, c2.full_name
-            FROM dbo.Reservations AS r2
-            INNER JOIN dbo.Customers AS c2 ON c2.customer_id = r2.customer_id
-            WHERE r2.group_id = gb.group_id
-              AND r2.session_id = gb.session_id
-              AND r2.reservation_status IN ('held', 'paid')
-              AND r2.customer_id <> organizer.customer_id
-              AND EXISTS (
-                  SELECT 1 FROM dbo.ReservationSeats AS rs2
-                  WHERE rs2.reservation_id = r2.reservation_id
-                    AND rs2.session_id = gb.session_id
-              )
-        ) AS other
-    ), N'Басқа клиент тіркелмеген') AS [Бірге брондағандар],
+    gb.group_id AS [Топ ID],
+    c.customer_id AS [Ұйымдастырушы ID],
+    c.full_name AS [Топ ұйымдастырушысы],
     m.title AS [Фильм],
     s.start_at AS [Сеанс уақыты],
     s.base_price AS [Сеанс бағасы],
-    CAST((SELECT AVG(s2.base_price)
-          FROM dbo.Sessions AS s2) AS DECIMAL(10, 2)) AS [Барлық сеанстың орташа бағасы],
-
-    -- Бір топ бір рет көрсетілетіндіктен, жалпы орын саны қайталанбайды.
-    (SELECT COUNT(*)
-     FROM dbo.ReservationSeats AS rs
-     INNER JOIN dbo.Reservations AS r
-         ON r.reservation_id = rs.reservation_id
-     WHERE r.group_id = gb.group_id
-       AND r.session_id = gb.session_id
-       AND rs.session_id = gb.session_id
-       AND r.reservation_status IN ('held', 'paid')) AS [Адам саны],
-
-    -- Бір клиент бірнеше адамға орын брондауы мүмкін.
-    (SELECT COUNT(DISTINCT r.customer_id)
-     FROM dbo.Reservations AS r
-     INNER JOIN dbo.ReservationSeats AS rs
-         ON rs.reservation_id = r.reservation_id
-        AND rs.session_id = r.session_id
-     WHERE r.group_id = gb.group_id
-       AND r.session_id = gb.session_id
-       AND r.reservation_status IN ('held', 'paid')) AS [Тапсырыс берген клиент саны]
-
+    (SELECT AVG(base_price) FROM dbo.Sessions) AS [Орташа баға],
+    COUNT(rs.reservation_seat_id) AS [Орын саны],
+    COUNT(DISTINCT r.customer_id) AS [Клиент саны],
+    (SELECT COUNT(DISTINCT fo.food_order_id)
+     FROM dbo.Reservations AS r2
+     JOIN dbo.FoodOrders AS fo ON fo.reservation_id = r2.reservation_id
+     JOIN dbo.FoodOrderItems AS fi ON fi.food_order_id = fo.food_order_id
+     JOIN dbo.MenuItems AS mi ON mi.menu_item_id = fi.menu_item_id
+     WHERE r2.group_id = gb.group_id
+       AND r2.session_id = gb.session_id
+       AND r2.reservation_status IN ('held', 'paid')
+       AND fo.order_status <> 'cancelled'
+       AND fi.quantity > 0
+       AND mi.category = N'Попкорн') AS [Попкорны бар тапсырыс саны]
 FROM dbo.GroupBookings AS gb
-INNER JOIN dbo.Customers AS organizer ON organizer.customer_id = gb.organizer_customer_id
-INNER JOIN dbo.Sessions AS s ON s.session_id = gb.session_id
-INNER JOIN dbo.Movies AS m ON m.movie_id = s.movie_id
-WHERE CAST(s.start_at AS TIME) >= CAST('18:00:00' AS TIME)
-
-  -- Бір мән қайтаратын ішкі сұраныс: барлық сеанстың орташа бағасы.
-  AND s.base_price > (
-      SELECT AVG(s2.base_price)
-      FROM dbo.Sessions AS s2
-  )
-
-  -- Топта кемінде бір жарамды брондалған орын бар.
-  AND EXISTS (
-      SELECT 1
-      FROM dbo.Reservations AS r
-      INNER JOIN dbo.ReservationSeats AS rs ON rs.reservation_id = r.reservation_id
-      WHERE r.group_id = gb.group_id AND r.session_id = gb.session_id
-        AND rs.session_id = gb.session_id
-        AND r.reservation_status IN ('held', 'paid')
-  )
-
-  -- Топтағы кез келген броньның тағам тапсырысында попкорн болса,
-  -- бұл топ нәтижеден толық алынып тасталады.
+JOIN dbo.Customers AS c ON c.customer_id = gb.organizer_customer_id
+JOIN dbo.Sessions AS s ON s.session_id = gb.session_id
+JOIN dbo.Movies AS m ON m.movie_id = s.movie_id
+JOIN dbo.Reservations AS r
+    ON r.group_id = gb.group_id AND r.session_id = gb.session_id
+JOIN dbo.ReservationSeats AS rs
+    ON rs.reservation_id = r.reservation_id AND rs.session_id = gb.session_id
+WHERE r.reservation_status IN ('held', 'paid')
+  AND CAST(s.start_at AS TIME) >= '18:00:00'
+  AND s.base_price > (SELECT AVG(base_price) FROM dbo.Sessions)
   AND NOT EXISTS (
       SELECT 1
-      FROM dbo.Reservations AS r
-      INNER JOIN dbo.FoodOrders AS fo
-          ON fo.reservation_id = r.reservation_id
-      INNER JOIN dbo.FoodOrderItems AS foi
-          ON foi.food_order_id = fo.food_order_id
-      INNER JOIN dbo.MenuItems AS mi
-          ON mi.menu_item_id = foi.menu_item_id
-      WHERE r.group_id = gb.group_id
-        AND r.session_id = gb.session_id
-        AND r.reservation_status IN ('held', 'paid')
+      FROM dbo.Reservations AS r2
+      JOIN dbo.FoodOrders AS fo ON fo.reservation_id = r2.reservation_id
+      JOIN dbo.FoodOrderItems AS fi ON fi.food_order_id = fo.food_order_id
+      JOIN dbo.MenuItems AS mi ON mi.menu_item_id = fi.menu_item_id
+      WHERE r2.group_id = gb.group_id
+        AND r2.session_id = gb.session_id
+        AND r2.reservation_status IN ('held', 'paid')
         AND fo.order_status <> 'cancelled'
-        AND foi.quantity > 0
-        AND (mi.category = N'Попкорн'
-             OR LOWER(mi.item_name) LIKE N'%попкорн%'
-             OR LOWER(mi.item_name) LIKE N'%popcorn%')
+        AND fi.quantity > 0
+        AND mi.category = N'Попкорн'
   )
-
+GROUP BY gb.group_id, gb.session_id, c.customer_id, c.full_name,
+         m.title, s.start_at, s.base_price
 ORDER BY s.start_at, gb.group_id;
 GO
-
-/*
-  Егер міндетті түрде тағам тапсырысы бар топтар ғана керек болса,
-  ORDER BY алдындағы WHERE шарттарына төмендегі AND EXISTS қосылады.
-  Бұл қосымша шарт попкорнсыз тағам тапсырысы нақты бар топтарды ғана алады.
-
-  AND EXISTS (
-      SELECT 1
-      FROM dbo.Reservations AS r
-      INNER JOIN dbo.FoodOrders AS fo
-          ON fo.reservation_id = r.reservation_id
-      INNER JOIN dbo.FoodOrderItems AS foi
-          ON foi.food_order_id = fo.food_order_id
-      WHERE r.group_id = gb.group_id
-        AND r.session_id = gb.session_id
-        AND r.reservation_status IN ('held', 'paid')
-        AND fo.order_status <> 'cancelled'
-        AND foi.quantity > 0
-  )
-*/
