@@ -88,6 +88,9 @@ const stripGo = sql => sql.replace(/^\s*GO\s*$/gmi, '');
   const details=(await pool.request().query(stripGo(detail))).recordsets;
   assert.equal(details.length,2);
   const detailGroup=groups.get(1);
+  assert.equal(detailGroup.members.size,5,'Teacher requirement: five customers');
+  assert.equal(detailGroup.seats.length,5,'Teacher requirement: five seats');
+  assert([...detailGroup.members.values()].every(count=>count===1),'One seat per customer in the first group');
   const expectedMembers=[...detailGroup.members]
     .sort((a,b)=>a[0]-b[0]).map(([id,count])=>({
       'Топ ID':1,'Клиент ID':id,'Брондаған клиент':customers.get(id).full_name,'Брондаған орын саны':count

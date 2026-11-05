@@ -1,0 +1,17 @@
+{
+  "verified_at": "2026-11-05T10:30:03.340Z",
+  "database": "CinemaLabDB",
+  "group_id": 1,
+  "customers": 5,
+  "seats": 5,
+  "each_customer_has_one_seat": true,
+  "removed_reservation_seat_id": 57,
+  "removed_demo_ticket_id": "FE43BFFC-B5A6-4AC1-919F-294AF9F401D6",
+  "payment_id": 30,
+  "old_demo_payment": 5200,
+  "new_demo_payment": 2600,
+  "total_seats": 335,
+  "total_tickets": 298,
+  "other_rows_unchanged": true,
+  "idempotent": true
+}
