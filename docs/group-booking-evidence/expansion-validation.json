@@ -1,0 +1,52 @@
+{
+  "created_at": "2026-11-05T09:28:36.509Z",
+  "database": "CinemaLabDB",
+  "result": {
+    "added_groups": 14,
+    "added_reservations": 69,
+    "added_seats": 69,
+    "added_food_orders": 15
+  },
+  "repeat": {
+    "added_groups": 0,
+    "added_reservations": 0,
+    "added_seats": 0,
+    "added_food_orders": 0
+  },
+  "counts": {
+    "Genres": 9,
+    "Movies": 24,
+    "Halls": 4,
+    "Seats": 240,
+    "Sessions": 560,
+    "Customers": 60,
+    "GroupBookings": 20,
+    "Reservations": 229,
+    "ReservationSeats": 336,
+    "Payments": 207,
+    "Tickets": 299,
+    "MenuItems": 12,
+    "FoodOrders": 43,
+    "FoodOrderItems": 86
+  },
+  "added": {
+    "Genres": 0,
+    "Movies": 0,
+    "Halls": 0,
+    "Seats": 0,
+    "Sessions": 0,
+    "Customers": 0,
+    "GroupBookings": 14,
+    "Reservations": 69,
+    "ReservationSeats": 69,
+    "Payments": 69,
+    "Tickets": 69,
+    "MenuItems": 0,
+    "FoodOrders": 15,
+    "FoodOrderItems": 30
+  },
+  "original_rows_preserved": true,
+  "no_duplicate_active_seats": true,
+  "matching_sessions_halls": true,
+  "payments_match_added_seats": true
+}

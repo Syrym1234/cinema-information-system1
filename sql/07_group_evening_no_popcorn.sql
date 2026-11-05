@@ -8,7 +8,8 @@
   held / paid броньдары ескеріледі; cancelled / expired ескерілмейді.
   Бір брондалған орын бір көрермен деп есептеледі.
   Бір жол = бір топтағы бір клиент; оның бірнеше броні біріктіріледі.
-  Әр орынға отырған адамның жеке ID-і сақталмайды, брондаушы клиент көрсетіледі.
+  «Бірге брондағандар» осы топтағы басқа брондаушы клиенттерді көрсетеді.
+  Әр орынға отырған адамның жеке ID-і сақталмайды; орын саны бөлек беріледі.
   Тағам тапсырысы мүлде жоқ топтар да попкорнсыз деп есептеледі.
   Тек SELECT орындалады; деректер өзгертілмейді.
 */
@@ -19,6 +20,26 @@ SELECT
     gb.group_id AS [Топтық тапсырыс ID],
     c.customer_id AS [Клиент ID],
     c.full_name AS [Клиенттің аты-жөні],
+    organizer.full_name AS [Топ ұйымдастырушысы],
+    COALESCE((
+        SELECT STRING_AGG(
+            CAST(CONCAT(other.customer_id, N' — ', other.full_name) AS NVARCHAR(MAX)), N'; '
+        ) WITHIN GROUP (ORDER BY other.customer_id)
+        FROM (
+            SELECT DISTINCT c2.customer_id, c2.full_name
+            FROM dbo.Reservations AS r2
+            INNER JOIN dbo.Customers AS c2 ON c2.customer_id = r2.customer_id
+            WHERE r2.group_id = gb.group_id
+              AND r2.session_id = gb.session_id
+              AND r2.reservation_status IN ('held', 'paid')
+              AND r2.customer_id <> c.customer_id
+              AND EXISTS (
+                  SELECT 1 FROM dbo.ReservationSeats AS rs2
+                  WHERE rs2.reservation_id = r2.reservation_id
+                    AND rs2.session_id = gb.session_id
+              )
+        ) AS other
+    ), N'Басқа клиент тіркелмеген') AS [Бірге брондағандар],
     m.title AS [Фильм],
     s.start_at AS [Сеанс уақыты],
     s.base_price AS [Сеанс бағасы],
@@ -48,6 +69,7 @@ SELECT
        AND r.reservation_status IN ('held', 'paid')) AS [Тапсырыс берген клиент саны]
 
 FROM dbo.GroupBookings AS gb
+INNER JOIN dbo.Customers AS organizer ON organizer.customer_id = gb.organizer_customer_id
 INNER JOIN dbo.Sessions AS s ON s.session_id = gb.session_id
 INNER JOIN dbo.Movies AS m ON m.movie_id = s.movie_id
 INNER JOIN (
@@ -97,8 +119,7 @@ GO
 /*
   Егер міндетті түрде тағам тапсырысы бар топтар ғана керек болса,
   ORDER BY алдындағы WHERE шарттарына төмендегі AND EXISTS қосылады.
-  Қазіргі тексерілген CinemaLabDB деректерінде бұл қатаң нұсқа 0 жол береді:
-  жалғыз кешкі, орташа бағадан қымбат топта тағам тапсырысы жоқ.
+  Бұл қосымша шарт попкорнсыз тағам тапсырысы нақты бар топтарды ғана алады.
 
   AND EXISTS (
       SELECT 1
