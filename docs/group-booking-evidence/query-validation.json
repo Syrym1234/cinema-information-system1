@@ -1,5 +1,5 @@
 {
-  "verified_at": "2026-11-05T10:02:16.843Z",
+  "verified_at": "2026-11-05T10:24:40.388Z",
   "database": "CinemaLabDB",
   "total_groups": 20,
   "group_booking_customer_rows": 75,
@@ -15,8 +15,14 @@
   "popcorn_control_order_count": 1,
   "basic_sql_functions_only": true,
   "detail_group_id": 1,
-  "detail_companion_rows": 4,
+  "detail_companion_rows": 5,
   "detail_food_rows": 2,
+  "paid_group_booking_rows": 5,
+  "unpaid_booking_rows_all_database": 22,
+  "group_payment_amounts_match_seats": true,
+  "food_order_owner_and_amounts_match": true,
+  "group_paid_seats": 6,
+  "group_ticket_payments": 17784,
   "food_order_required_rows": 6,
   "popcorn_group_excluded": true,
   "cheap_group_excluded": true,
@@ -29,8 +35,10 @@
     "Сеанс уақыты": "2026-10-23T18:00:00.000Z",
     "Сеанс бағасы": 3146,
     "Орташа баға": 2868.800892,
-    "Орын саны": 6,
-    "Клиент саны": 5,
+    "Брондалған орын саны": 6,
+    "Брондаған клиент саны": 5,
+    "Төленген бронь саны": 5,
+    "Төленбеген бронь саны": 0,
     "Попкорны бар тапсырыс саны": 0
   }
 }

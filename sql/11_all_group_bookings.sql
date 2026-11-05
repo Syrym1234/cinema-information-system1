@@ -11,7 +11,9 @@ SELECT
     s.start_at AS [Сеанс],
     s.base_price AS [Сеанс бағасы],
     COUNT(DISTINCT r.customer_id) AS [Клиент саны],
-    COUNT(rs.reservation_seat_id) AS [Брондалған орын саны]
+    COUNT(rs.reservation_seat_id) AS [Брондалған орын саны],
+    COUNT(DISTINCT p.reservation_id) AS [Төленген бронь саны],
+    COUNT(DISTINCT r.reservation_id) - COUNT(DISTINCT p.reservation_id) AS [Төленбеген бронь саны]
 FROM dbo.GroupBookings AS gb
 JOIN dbo.Customers AS c ON c.customer_id = gb.organizer_customer_id
 JOIN dbo.Sessions AS s ON s.session_id = gb.session_id
@@ -20,6 +22,8 @@ JOIN dbo.Reservations AS r
     ON r.group_id = gb.group_id AND r.session_id = gb.session_id
 JOIN dbo.ReservationSeats AS rs
     ON rs.reservation_id = r.reservation_id AND rs.session_id = gb.session_id
+LEFT JOIN dbo.Payments AS p
+    ON p.reservation_id = r.reservation_id AND p.payment_status = 'demo_paid'
 WHERE r.reservation_status IN ('held', 'paid')
 GROUP BY gb.group_id, c.customer_id, c.full_name, m.title, s.start_at, s.base_price
 ORDER BY s.start_at, gb.group_id;

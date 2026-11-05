@@ -1,14 +1,14 @@
-/* №1 топ туралы екі қарапайым сұраныс.
+/* №1 топтың барлық брондаушы клиенттері мен тағамдары.
    Басқа топты көру үшін екі WHERE шартындағы топ ID-ін өзгертіңіз.
 */
 USE CinemaLabDB;
 GO
 
--- 1. Ұйымдастырушымен бірге кімдер брондаған?
+-- 1. Ұйымдастырушыны қоса алғанда, кім қанша орын брондаған?
 SELECT
     gb.group_id AS [Топ ID],
     c.customer_id AS [Клиент ID],
-    c.full_name AS [Бірге брондаған клиент],
+    c.full_name AS [Брондаған клиент],
     COUNT(rs.reservation_seat_id) AS [Брондаған орын саны]
 FROM dbo.GroupBookings AS gb
 JOIN dbo.Reservations AS r
@@ -18,7 +18,6 @@ JOIN dbo.ReservationSeats AS rs
     ON rs.reservation_id = r.reservation_id AND rs.session_id = gb.session_id
 WHERE gb.group_id = 1
   AND r.reservation_status IN ('held', 'paid')
-  AND c.customer_id <> gb.organizer_customer_id
 GROUP BY gb.group_id, c.customer_id, c.full_name
 ORDER BY c.customer_id;
 GO
