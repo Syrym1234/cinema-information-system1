@@ -20,6 +20,36 @@ SELECT TOP (6)
     gb.group_id AS [Топтық тапсырыс ID],
     organizer.customer_id AS [Ұйымдастырушы ID],
     organizer.full_name AS [Топ ұйымдастырушысы],
+    -- Попкорн саны тағам жолдарынан есептеледі, дайын 0 мәні берілмейді.
+    COALESCE((
+        SELECT SUM(foi.quantity)
+        FROM dbo.Reservations AS r
+        INNER JOIN dbo.FoodOrders AS fo ON fo.reservation_id = r.reservation_id
+        INNER JOIN dbo.FoodOrderItems AS foi ON foi.food_order_id = fo.food_order_id
+        INNER JOIN dbo.MenuItems AS mi ON mi.menu_item_id = foi.menu_item_id
+        WHERE r.group_id = gb.group_id AND r.session_id = gb.session_id
+          AND r.reservation_status IN ('held', 'paid')
+          AND fo.order_status <> 'cancelled' AND foi.quantity > 0
+          AND (mi.category = N'Попкорн'
+               OR LOWER(mi.item_name) LIKE N'%попкорн%'
+               OR LOWER(mi.item_name) LIKE N'%popcorn%')
+    ), 0) AS [Попкорн саны],
+    COALESCE((
+        SELECT STRING_AGG(
+            CAST(CONCAT(food.item_name, N' × ', food.quantity) AS NVARCHAR(MAX)), N'; '
+        ) WITHIN GROUP (ORDER BY food.menu_item_id)
+        FROM (
+            SELECT mi.menu_item_id, mi.item_name, SUM(foi.quantity) AS quantity
+            FROM dbo.Reservations AS r
+            INNER JOIN dbo.FoodOrders AS fo ON fo.reservation_id = r.reservation_id
+            INNER JOIN dbo.FoodOrderItems AS foi ON foi.food_order_id = fo.food_order_id
+            INNER JOIN dbo.MenuItems AS mi ON mi.menu_item_id = foi.menu_item_id
+            WHERE r.group_id = gb.group_id AND r.session_id = gb.session_id
+              AND r.reservation_status IN ('held', 'paid')
+              AND fo.order_status <> 'cancelled' AND foi.quantity > 0
+            GROUP BY mi.menu_item_id, mi.item_name
+        ) AS food
+    ), N'Тағам тапсырысы жоқ') AS [Тағамдары],
     COALESCE((
         SELECT STRING_AGG(
             CAST(CONCAT(other.customer_id, N' — ', other.full_name) AS NVARCHAR(MAX)), N'; '
