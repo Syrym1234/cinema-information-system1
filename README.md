@@ -7,6 +7,7 @@
 - [Дайын PDF есеп](output/pdf/Cinema_Lab10_Report.pdf).
 - [Word есебі](output/docx/Cinema_Lab10_Report.docx) · [алты нақты Postman скриншоты](docs/lab10/evidence/postman-web/README.md) · [қорғауда көрсету реті](docs/lab10/POSTMAN_DEMO.md).
 - [Жеті кестені толық шығару және сүзу](docs/lab10/ALL_TABLES.md) · [барлық кестелердің Postman коллекциясы](postman/CinemaLab10_AllTables.postman_collection.json).
+- [Кешкі топтық броньдар және попкорнсыз тапсырыстар туралы SQL ішкі сұранысы](docs/group_booking_query.md) — кеңейтілген `CinemaLabDB` базасына арналған.
 - [Postman коллекциясы](postman/CinemaLab10.postman_collection.json) · [OpenAPI](docs/lab10/openapi.json).
 
 №10 жұмыста **Movies** ресурсына GET / POST / PUT / DELETE толық CRUD қосылды.
